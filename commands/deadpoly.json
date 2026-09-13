@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "slug": "deadpoly",
+  "game": {
+    "displayName": "DeadPoly Dedicated Server",
+    "appId": 2208380,
+    "aliases": [
+      "DeadPoly",
+      "Deadpoly",
+      "DeadPoly (Rebuild)"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://deadpoly.wiki/Admin_Commands",
+      "title": "Admin Commands - DeadPoly Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/app/1621070/discussions/0/595158486787280918/",
+      "title": "NEED SERVER AND ADMIN HELP @DEADPOLY-DEV (developer reply)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://hosthavoc.com/wiki/game-servers/deadpoly/add-admins",
+      "title": "How to Add Admins to Your DeadPoly Server - Host Havoc",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://hosthavoc.com/wiki/game-servers/deadpoly",
+      "title": "DeadPoly Server Guides - Host Havoc",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/Raziel7893/WindowsGSM.DeadPoly",
+      "title": "WindowsGSM.DeadPoly plugin",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamdb.info/app/2208380/info/",
+      "title": "DeadPoly Dedicated Server (App 2208380) - SteamDB",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "No command channel found. DeadPoly's dedicated server (Steam tool app 2208380, parent game 1621070) ships no RCON listener, no admin HTTP/REST API, and no documented console or stdin command interface. Moderation is entirely client-side: an admin joins the server, enables Admin Mode (CTRL+]) and uses keybinds and an on-screen admin panel that act on the player currently targeted - the DeadPoly wiki's Admin Commands page lists only keybinds (e.g. K kill/remove part, SHIFT+K kill and temp ban, SHIFT+L open the target's Steam profile) plus panel icons for kick, ban, teleport, freeze and kill. There is no text command syntax to record, so no commands are written here; the developer states on Steam that admin capability is 'intentionally limited to try and prevent abuse'. Admins are granted by config, not by command: current builds use Admins=\"\" in Game.ini keyed on the player's EOS id (the 'My ID' value under the in-game TRUSTS panel, which also appears as the ReadpointEOS value beside a player's name in 'Login request' log lines); legacy builds used an admins= line in Engine.ini keyed on SteamID64. Because the moderation identifier changed from SteamID64 to an EOS id and no source publishes its exact format, no playerId is recorded here rather than risk a pattern that silently matches nothing. No ban-list file location is published by any source; bans made through the admin panel are described only as temporary. Host Havoc, a DeadPoly host, publishes seven DeadPoly guides and none covers a console, RCON or admin commands, and the WindowsGSM DeadPoly plugin implements no console and notes that no server documentation was found. Confidence is low because the conclusion rests on the consistent absence of any documented channel across four independent sources plus the developer's description of an in-game-only admin mode, not on a positive statement from the developer that no remote console exists; a probe of the server's ports would settle it."
+}

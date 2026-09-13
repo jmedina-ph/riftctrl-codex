@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "slug": "starmade",
+  "game": {
+    "displayName": "StarMade Dedicated Server",
+    "appId": 244770,
+    "aliases": [
+      "StarMade",
+      "Star-Made",
+      "SM"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 4242,
+    "portSetting": null,
+    "enableSetting": "SUPER_ADMIN_PASSWORD_USE",
+    "passwordSetting": "SUPER_ADMIN_PASSWORD"
+  },
+  "playerId": {
+    "label": "Username",
+    "example": "schema",
+    "pattern": "[A-Za-z0-9_\\-.]{1,32}"
+  },
+  "commands": {
+    "info": "/status",
+    "listPlayers": "/player_list",
+    "kick": "/kick {playerId}",
+    "ban": "/ban_name {playerId}",
+    "unban": "/unban_name {playerId}",
+    "say": "/server_message_broadcast plain \"{message}\""
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^(?:RETURN: )?\\[PL\\] Name: (?<playerId>(?<name>.+?))\\s*$"
+  },
+  "sources": [
+    {
+      "url": "https://starmadepedia.net/wiki/Commands",
+      "title": "Commands - StarMade Wiki (starmadepedia), admin command table",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://starmadepedia.net/wiki/Server.cfg",
+      "title": "Server.cfg - StarMade Wiki (SUPER_ADMIN_PASSWORD_USE, SUPER_ADMIN_PASSWORD)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=495940080",
+      "title": "StarMade Console Commands & Admin Commands - Steam guide",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails?id=353262035",
+      "title": "Console Commands - Steam guide (parameter lists and examples)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/Koderz/Star.Net",
+      "title": "Star.Net - implementation of the StarMade SuperAdmin (StarNet) protocol in .NET; StarNet.PlayerExtensions.cs parses /player_list, StarNet.cs speaks the wire protocol on port 4242",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://starmadedock.net/threads/starnet.25741/",
+      "title": "StarNet - StarMade Dock (usage: starnet.jar [serverIP:port] [superAdminPass] [command]; super admin must be enabled in server.cfg)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://starmadedock.net/threads/how-do-you-shut-down-a-dedicated-server-via-cmd-or-ps.29191/",
+      "title": "StarMade Dock - 'java -jar starnet.jar 127.0.0.1:4242 <super admin pass> /shutdown 0'",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/StarMade-Community/StarMade-Pelican",
+      "title": "StarMade-Pelican egg - launches with -server -port:<PORT> and stops with the console command /shutdown 10",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://starmadedock.net/threads/admin-command-list-and.20158/",
+      "title": "Admin Command List (/) and (//) - StarMade Dock, command dump from server logs",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://starmadedock.net/threads/starmade-0-09378-fixes-shield-balance-new-admin-tools.22982/",
+      "title": "StarMade 0.09378 release notes - StarNet introduced, off by default, uses the super password",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/tschaerni/smcp",
+      "title": "smcp - StarMade control panel; drives the server console inside screen, default port 4242",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "THE LEADING SLASH IS REQUIRED. StarMade admin commands are the same strings whether typed in the server's own console, typed in in-game chat by an admin, or sent remotely, and they always start with '/'. Independent confirmation: the Pelican egg stops the server by sending '/shutdown 10' to the console, and the StarNet examples on StarMade Dock pass '/shutdown 0' as the remote command.\n\nTRANSPORT is recorded as rcon/custom because StarMade ships a real remote admin channel, StarNet, but it is NOT Source RCON. StarNet is a length-prefixed binary protocol spoken on the ordinary game port (4242 by default) in which the super-admin password and the command text are sent in one packet and the server replies with an array of strings. The reference client is the StarNet.jar bundled with the server: 'java -jar StarNet.jar <host>:<port> <superAdminPassword> \"<command>\"'. Star.Net (Koderz) is an independent reimplementation and is the best available description of the wire format. The channel is OFF by default: SUPER_ADMIN_PASSWORD_USE defaults to false in server.cfg and SUPER_ADMIN_PASSWORD defaults to the placeholder 'mypassword'; both must be set before StarNet works.\n\nFALLBACK: the identical command text also works written to the dedicated server's stdin console, which is always available and needs no configuration. Community tooling that predates or ignores StarNet (smcp, the Spock IRC bot, hosting panel consoles) drives the server exactly that way, usually through GNU screen. A runtime that cannot speak the StarNet binary protocol should send these same strings to stdin rather than treat the game as uncommandable.\n\nPORT: there is no port key in server.cfg. The port is a launch flag, '-port:<PORT>', which is why portSetting is null; 4242 is the default in every source seen.\n\nplayerId is the in-game PLAYER NAME, not a Steam ID or an account id - /kick, /ban_name and /unban_name all take a name. StarMade also has account-level and IP-level bans (/ban_account <starmadeAccountName>, /ban_ip <ip>, /unban_ip <ip>, /list_banned_name, /list_banned_ip) which target different identifiers and are deliberately not recorded as the primary ban. The pattern allows no spaces, which matches every documented example; if a server ever admits a name with a space the command would need quoting.\n\nplayerParse: /player_list returns a multi-line block per online player - '[PL] LOGIN: [...]' (repeated), '[PL] CONTROLLING-POS: (x, y, z)', '[PL] CONTROLLING: ...', '[PL] SECTOR: (x, y, z)', '[PL] FACTION: ...', '[PL] CREDITS: n', '[PL] UPGRADED: true|false', '[PL] SM-NAME: <account>', '[PL] IP: /<ip>', and finally '[PL] Name: <playerName>'. Only that last line is matched, so one row is produced per player; the field names and prefixes come from the regexes in Star.Net's StarNet.PlayerExtensions.cs. The optional 'RETURN: ' prefix in linePattern is tolerance for the StarNet.jar command-line tool, which prefixes returned strings when it prints them; a native protocol client receives the lines bare. A failed admin command answers 'Admin command failed: Error packing parameters'.\n\nKICK REASON: both Steam command guides document '/kick_reason <name> \"<reason>\"' alongside plain /kick. Plain /kick is recorded because it is the form attested by every source including starmadepedia, and because /kick_reason with an empty reason string is untested. Swap in '/kick_reason {playerId} \"{reason}\"' only if a reason is always supplied.\n\nBAN VARIANTS, UNRESOLVED: starmadepedia and one Steam guide document '/ban_name <name>' with no further arguments. The other Steam guide documents a '/ban' taking Name, Kick(true/false), Reason and Time-in-minutes, example '/ban schema true hacking 90', and a log-derived command dump on StarMade Dock lists both /ban and /ban_name as existing commands. /ban_name is recorded because its single-argument form is agreed on by the most sources; if a timed ban is needed, '/ban {playerId} true \"{reason}\" {duration}' is the candidate form but it has one source only and was not verified.\n\nSAY: '/server_message_broadcast <type> \"<message>\"' where type is plain, info, warning or error - plain prints as text, the others raise a popup dialog. 'plain' is recorded as the least intrusive. '/server_message_to <type> <playerName> \"<message>\"' is the single-player equivalent. There is NO motd command: the server welcome message is a file that '/refresh_server_msg' reloads, so nothing takes {message} for it.\n\nDISAGREEMENT: hosting-company knowledgebases (Legion Hosting, Pingperfect) publish '/ban [player]', '/unban [player]' and '/save' as StarMade admin commands. No primary source lists a bare /unban or a bare /save - the documented names are /unban_name, /unban_ip and /force_save - so those pages look like generic filler and are not recorded.\n\nNo banList block: the ban file layout inside the server directory was not established from any primary source, and /unban_name is a working live unban, so a file path is not needed. appId 244770 is the StarMade game app on Steam: there is no separate dedicated-server app, the server is the same jar run with -server, and StarMade is also distributed as a free direct download from the developer."
+}

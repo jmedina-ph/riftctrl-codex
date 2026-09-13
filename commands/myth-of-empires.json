@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "slug": "myth-of-empires",
+  "game": {
+    "displayName": "Myth of Empires Dedicated Server",
+    "appId": 1794810,
+    "aliases": [
+      "Myth of Empires",
+      "MoE",
+      "帝国神话"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "defaultPort": null,
+    "portSetting": "ShutDownServicePort",
+    "enableSetting": "bStartShutDownServiceInPrivateServer",
+    "passwordSetting": "ShutDownServiceKey"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "76561198000000000",
+    "pattern": "7656119[0-9]{10}"
+  },
+  "commands": {
+    "kick": "KickOff {playerId}",
+    "ban": "SetBlackList {playerId} True",
+    "unban": "SetBlackList {playerId} False"
+  },
+  "sources": [
+    {
+      "url": "https://www.mythofempires.com/newsall/2024/0220/556.html",
+      "title": "Myth of Empires V1.0 Dedicated Servers Setup Guide (official) - \"Enable Remote Management: Default is enabled; allows remote management using tools like RCON\"; GM accounts are Steam IDs",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2658959616",
+      "title": "Myth of Empires Dedicated Server Guide (OUTDATED) - Steam guide; RCON via -ShutDownServicePort/-ShutDownServiceIP/-ShutDownServiceKey, commands ShutdownServer, SaveWorld, KickOff <SteamID>, SetBlackList <SteamID> True/False, GetPlayers",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=3169663150",
+      "title": "Myth of Empires Rough Stand-Alone setup Guide - Steam guide; maps the server tool's Remote Management IP/Port/Password fields to -bStartShutDownServiceInPrivateServer=true -ShutDownServiceIP -ShutDownServicePort=13888 -ShutDownServiceKey",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://clientarea.ascendservers.com/knowledgebase/376/Myth-Of-Empires--Admin-Commands.html",
+      "title": "Myth Of Empires | Admin Commands - Ascend Servers knowledgebase - \"cheat KickOff <SteamID64>\", cheat SetAdmin/GotoPlayer/PullPlayer/KillPlayer take SteamID64",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://survivalservers.com/wiki/index.php?title=Myth_of_Empires_Admin_Commands",
+      "title": "Myth of Empires Admin Commands - Survival Servers wiki - lists ShutdownServer / Cheat SaveWorld / Cheat GetPlayers as the RCON commands and notes Cheat Say only logs and GetPlayers shows no output",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.magicgameworld.com/myth-of-empires-cheats-console-commands/",
+      "title": "Myth of Empires: Cheats & Console Commands - \"Cheat Say <Text> - Logs text (doesn't display in-game)\", \"Cheat GetPlayers - no visible output\"",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.gtxgaming.co.uk/clientarea/index.php?rp=/knowledgebase/760/How-to-ban-or-unban-a-player-on-your-Myth-of-Empires-game-server.html",
+      "title": "How to ban or unban a player on your Myth of Empires game server - GTXGaming (contradicting article: players / addban GUID / loadbans / bans / removeban #)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamdb.info/app/1794810/info/",
+      "title": "Myth of Empires Dedicated Server (App 1794810) - SteamDB",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "The developer calls the remote channel \"Remote Management\" and states it \"allows remote management using tools like RCON\"; in the server tool and .bat it is the ShutDownService: -bStartShutDownServiceInPrivateServer=true, -ShutDownServiceIP, -ShutDownServicePort (13888 in the published example), -ShutDownServiceKey (the RCON password; an old guide reports the stock key 123456 - change it). No default port is published: the official guide only says Game/Query/Remote Management ports must each be unique and in 1024-65535. WIRE PROTOCOL IS UNDOCUMENTED, so rcon.flavour is deliberately omitted: no source states whether the ShutDownService speaks Valve Source RCON framing (likely, given the ARK-derived UE4 codebase and the fact that host panels expose a generic RCON web console for it) or its own dialect. Probe before assuming. Moderation is by SteamID64 throughout - GM accounts are set with -ServerAdminAccounts=<SteamID64>, and every player-targeting command in the published lists takes a SteamID64. Kick is the best-supported command: the dedicated-server guide lists \"KickOff <SteamID>\" among the RCON commands and the Ascend/Citadel knowledgebases list the in-game form \"cheat KickOff <SteamID64>\" (prefix with \"cheat \" if the bare form is rejected). BAN IS SINGLE-SOURCED AND HEDGED: only the Steam dedicated-server guide documents it, as \"SetBlackList <SteamID> True/False - Sets Ban...allegedly\" - its own author was unsure it works, so treat kick as reliable and verify ban/unban against a live server before trusting it. GTXGaming's ban article disagrees completely (players / addban <GUID> / loadbans / bans / removeban #<n>); that command set matches no other Myth of Empires source, uses a GUID rather than a Steam ID, and looks like boilerplate copied from another title, so it is recorded as disagreement, not adopted. NO listPlayers RECORDED ON PURPOSE: the only roster command published is GetPlayers (in-game \"cheat GetPlayers\"), and every source that mentions it says it returns no visible output, with the dedicated-server guide reporting it \"throws memory errors and crashes the server\" - so the roster must come from the Steam query port, not from the console. NO say RECORDED: \"Cheat Say <Text>\" is documented by several independent pages as writing to the log only and not displaying to players, i.e. a command that exists but does nothing useful as a broadcast; in-game GMs announce through the Server Settings panel instead. No MOTD or info/status command is published. Other RCON commands seen: ShutdownServer, SaveWorld. Confidence is low: the transport and its settings are corroborated by the developer plus two independent guides, but the ban/unban text rests on one hedged source and the RCON dialect is unconfirmed."
+}

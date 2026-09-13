@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "slug": "archean",
+  "game": {
+    "displayName": "Archean Server",
+    "appId": 3557220,
+    "aliases": [
+      "Archean",
+      "Archean server",
+      "Archean Dedicated Server"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://wiki.archean.space/en/multiplayer/settingup.html",
+      "title": "Setting up a server - Archean Wiki",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.archean.space/en/misc/chat.html",
+      "title": "Chat & Commands - Archean Wiki",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/batcholi/Archean_wiki/master/src/en/multiplayer/settingup.md",
+      "title": "Archean_wiki source: src/en/multiplayer/settingup.md",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/3557220/",
+      "title": "Archean server - SteamDB",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "No remote command channel found. The developer-maintained wiki documents the whole dedicated server surface - server.ini (listen_port 8881 TCP+UDP, server_online, accept_remote_connections, max_simultaneous_players, password, automatic_blacklist), admins.txt, mods, Docker - and never mentions RCON, a web/REST admin API, or typing commands at the server process. Archean_server[.exe] does run \"in console mode\", but the wiki describes that console only as an interactive first-run configuration prompt (it stops asking once server_public_name is set in server.ini); nothing states it accepts kick/ban/list input afterwards, so stdin was NOT recorded rather than guessed. Moderation exists, but only from inside a connected game client: an admin (player id listed one per line in /Archean-data/server/admins.txt, Steam64 ID for Steam players) types chat commands - /list (connected players), /info (server name, CPU load, ticks/s), /kick <username|id>, /ban <username|id>, /save - or uses the F4 administration panel, whose Players tab can kick. There is no documented broadcast/say command and no documented ban-list file, so no banList is recorded. Confidence is low because every statement above traces back to the one official wiki (and its GitHub source); no independent second source covers Archean server administration, and no source contradicts it either. If a future build adds a server console command reader or RCON this file must be revisited."
+}

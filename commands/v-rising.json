@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "slug": "v-rising",
+  "game": {
+    "displayName": "V Rising Dedicated Server",
+    "appId": 1829350,
+    "aliases": [
+      "V Rising",
+      "VRising",
+      "VRisingServer",
+      "VRising Dedicated Server"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 25575,
+    "portSetting": "Rcon.Port",
+    "enableSetting": "Rcon.Enabled",
+    "passwordSetting": "Rcon.Password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "76561198012345678",
+    "pattern": "7656119[0-9]{10}"
+  },
+  "commands": {
+    "info": "version",
+    "say": "announce {message}"
+  },
+  "banList": {
+    "paths": [
+      "Settings/banlist.txt",
+      "save-data/Settings/banlist.txt"
+    ],
+    "lineIdPattern": "^\\s*([0-9]{17})\\s*$"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/StunlockStudios/vrising-dedicated-server-instructions/blob/master/1.1.x-pc/INSTRUCTIONS.md",
+      "title": "V Rising Dedicated Server Instructions 1.1.x-pc (Stunlock Studios)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/StunlockStudios/vrising-dedicated-server-instructions/blob/master/1.0.x/INSTRUCTIONS.md",
+      "title": "V Rising Dedicated Server Instructions 1.0.x (Stunlock Studios)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/StunlockStudios/vrising-dedicated-server-instructions/blob/master/1.1.x-pc/examples/start_server_example_02.bat",
+      "title": "Stunlock Studios official example launch script (start_server_example_02.bat)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.gameserverkings.com/knowledge-base/vrising/how-to-add-admins-and-commands/",
+      "title": "V Rising Admin Commands: Full Console and RCON List",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/1604030/discussions/0/3842179510158017776/",
+      "title": "RCON isn't really much use at present :: V Rising General Discussions",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": "2026-09-13",
+  "notes": "V Rising speaks Valve Source RCON (Stunlock's own docs link the Source RCON Protocol spec) on its own TCP port, enabled through the Rcon block of ServerHostSettings.json (Enabled/Port/Password/BindAddress, also settable as -rconEnabled/-rconPort/-rconPassword/-rconBindAddress or VR_RCON_*). The setting names are recorded dotted because they are nested inside that JSON object, not flat keys. 25575 is the value in Stunlock's own example block and is what every host uses, but the docs call it an example and say the port can be changed to any valid TCP port. The important finding is what RCON CANNOT do: Stunlock's command table has exactly ten entries - help, announce, announcerestart, shutdown, cancelshutdown, name, description, password, version, time - identical in the 1.0.x and 1.1.x-pc instructions, and the page itself calls it 'limited functionality'. There is no listPlayers, no kick, no ban and no unban over RCON, so those keys are omitted rather than guessed; 'announce' is the whole of broadcast and 'version' is the only thing resembling a status probe. Moderation lives on a different surface entirely: an admin enables the in-game console, authenticates with 'adminauth' (their steamId must be in <PersistentDataPath>/Settings/adminlist.txt) and then uses kick, banuser, bancharacter, banned and unban from the game client - kick and bancharacter take a character name and need the player online, banuser takes a SteamID64 and works offline, and unban takes the index number printed by 'banned', not an id. None of that is reachable from RCON. Bans written that way land in <PersistentDataPath>/Settings/banlist.txt, one steamId per line, hand-editable. The paths here are relative to <PersistentDataPath>: the documented default on Windows is %USERPROFILE%\\AppData\\LocalLow\\Stunlock Studios\\VRisingServer\\Settings\\, and servers launched with a custom -persistentDataPath put it under that directory instead - note that Stunlock's own start_server_example_02.bat passes '-persistentDataPath ..\\..\\save-data\\%SV_ID%', i.e. a per-server-id subfolder, so on that layout the file is save-data/<serverId>/Settings/banlist.txt rather than save-data/Settings/banlist.txt. banList carries no liveUnban because the in-game 'unban' is not an RCON command and does not take a player id. Disagreement: several hosting-company pages present the in-game console moderation commands as if they were RCON commands; Stunlock's table, gameserverkings ('RCON ... cannot spawn items, kick players or teleport anyone') and the Steam thread ('You can't list players, you can't kick/ban/unban players, you can't check server status') all agree they are not. One loose end: that same official example launch script passes -rconExperimentalEnabled, -apiEnabled and -apiPort, none of which appear anywhere in INSTRUCTIONS.md, so an undocumented expanded RCON command set and an HTTP API may exist on current builds and would be worth probing before trusting this file's command list as complete."
+}

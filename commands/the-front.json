@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "slug": "the-front",
+  "game": {
+    "displayName": "The Front Dedicated Server",
+    "appId": 2334200,
+    "aliases": [
+      "The Front",
+      "The Front Linux Dedicated Server",
+      "tfserver",
+      "ProjectWar"
+    ]
+  },
+  "transport": "none",
+  "playerId": {
+    "label": "Steam ID",
+    "example": "76561198012345678",
+    "pattern": "7656119[0-9]{10}"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/GameServerManagers/LinuxGSM/blob/master/lgsm/config-default/config-lgsm/tfserver/_default.cfg",
+      "title": "LinuxGSM tfserver _default.cfg - appid 2334200, consoleinteract=\"no\", zero rcon settings, full startparameters string",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://linuxgsm.com/servers/tfserver/",
+      "title": "LinuxGSM - The Front Linux Game Server",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.4netplayers.com/en/wiki/the-front/admin-commands/",
+      "title": "Admin commands for The Front - entered in the in-game console ([~] key); RCON never mentioned",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.survivalservers.com/wiki/The_Front_Admin_Commands",
+      "title": "The Front Admin Commands - entered in the in-game console (backtick key)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=3049715226",
+      "title": "How to host your own The Front private dedicated server - ServerAdminAccounts only, no remote admin surface",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://hebergtonserv.com/tutoriels/commandes-admin-the-front/",
+      "title": "Liste complete des commandes admin The Front - states \"Pas de RCON Source natif\"",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamdb.info/app/2334200/",
+      "title": "SteamDB - The Front Linux Dedicated Server (app 2334200, type Tool)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "The Front's dedicated server exposes no command channel, so nothing can be sent to it to list, kick, ban or broadcast. LinuxGSM's tfserver _default.cfg (appid=\"2334200\") sets consoleinteract=\"no\" - the server process does not read typed input - and contains no occurrence of \"rcon\" at all: no port, no enable flag, no password. Its startparameters string covers only ports, gameplay rates, ServerAdminAccounts and ServerPassword; the only out-of-band control surface is -ShutDownServicePort (LinuxGSM default 5003), which stops the server and has no player-moderation endpoints. There is no REST admin API and no web panel shipped with the server, and the Steam hosting guide likewise documents nothing beyond ServerAdminAccounts=STEAM64ID;... Admin/GM actions exist only inside the GAME CLIENT for an account whose SteamID64 is listed in ServerAdminAccounts: the admin opens the in-game console (backtick, or [~] on an English layout) and types commands such as KickPlayerOff <playerID>, BanPlayer <playerID> login, PermitPlayer <playerID> login and SaveWorld. The survivalservers and 4netplayers wikis independently agree on that set and both describe client-side console entry; neither mentions RCON at all, which is silence rather than an affirmative denial. Only hebergtonserv.com states outright \"Pas de RCON Source natif\", and it is also the only source for the Shift+G admin menu and the ServerConfig_.ini path; that same page recommends piping stdin via screen/tmux, which consoleinteract=\"no\" contradicts, and it additionally lists KickPlayer <id>, BanPlayer <id>, BroadcastMessage <message> and ListAllPlayers, which neither wiki corroborates. None of those are recorded. The confirmed commands are client-side GM commands typed by a logged-in player, not text a server manager can send down a pipe, so no commands key is emitted. The Front moderates by Steam64 account id - ServerAdminAccounts takes 17-digit Steam IDs and the GM commands take a playerID - which is why playerId is recorded even though no command channel exists; the host-level floor should target that identifier. Steam app 2334200 is specifically \"The Front Linux Dedicated Server\" (type Tool); the game itself is app 2285150 and the Windows server tool is app 2612550."
+}

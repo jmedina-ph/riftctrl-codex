@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "slug": "unturned",
+  "game": {
+    "displayName": "Unturned Dedicated Server",
+    "appId": 1110390,
+    "aliases": [
+      "Unturned",
+      "Unturned 3",
+      "U3",
+      "Unturned Headless Server"
+    ]
+  },
+  "transport": "stdin",
+  "stdin": {
+    "note": "Commands are typed into the dedicated server's own console (standard input) with no prefix - the leading / or @ is only needed when an admin types a command in in-game chat. SDG's Command IO doc states 'By default Unturned executes commands from console input'. Arguments are separated by a forward slash '/', not by spaces (Parser.getComponentsFromSerial(parameter, '/') in the command sources). Linux headless servers are normally run under screen or tmux; the official wiki's Linux dedicated server page gives a systemd example that sends commands with: screen -S unturned-server -p 0 -X stuff \"save^Mshutdown^M\". The launch flag -NoDefaultConsole disables the vanilla console I/O handler (plugins replace it via CommandWindow.setIOHandler), so do not use it if you intend to drive the server by stdin."
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "76561198000000000",
+    "pattern": "7656119[0-9]{10}"
+  },
+  "commands": {
+    "info": "Debug",
+    "listPlayers": "Players",
+    "kick": "Kick {playerId}/{reason}",
+    "ban": "Ban {playerId}/{reason}/{duration}",
+    "unban": "Unban {playerId}",
+    "say": "Say {message}",
+    "motd": "Welcome {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "(?<playerId>7656119[0-9]{10})[^0-9A-Za-z]{1,4}(?<name>[^,\\[\\]()\"]{1,64}?)\\s*(?:[,\\[\\]()\"]|$)"
+  },
+  "sources": [
+    {
+      "url": "https://docs.smartlydressedgames.com/en/latest/servers/server-hosting.html",
+      "title": "Setting up a Server - Unturned 3.x documentation",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://docs.smartlydressedgames.com/en/latest/servers/command-io.html",
+      "title": "Command IO - Unturned 3.x documentation",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://unturned.wiki.gg/wiki/Commands",
+      "title": "Commands - Official Unturned Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/Unturned-Datamining/Unturned-Datamining/blob/master/Assembly-CSharp/SDG.Unturned/CommandBan.cs",
+      "title": "CommandBan.cs (decompiled SDG.Unturned)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/Unturned-Datamining/Unturned-Datamining/blob/master/Assembly-CSharp/SDG.Unturned/CommandPlayers.cs",
+      "title": "CommandPlayers.cs (decompiled SDG.Unturned)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/Unturned-Datamining/Unturned-Datamining/blob/master/Assembly-CSharp/SDG.Unturned/SteamBlacklist.cs",
+      "title": "SteamBlacklist.cs (decompiled SDG.Unturned)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.restoremonarchy.com/docs/servers/unturned-server/vanilla-commands",
+      "title": "Vanilla Commands - Unturned Server (Restore Monarchy)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://unturned.wiki.gg/wiki/Linux_dedicated_server",
+      "title": "Linux dedicated server - Official Unturned Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Vanilla Unturned has no RCON and no web API; the dedicated server is driven by its console (stdin), and SDG's Command IO page documents replacing that I/O only in-process via ICommandInputOutput + CommandWindow.setIOHandler (plugin territory, not a network channel). Argument separator is '/', confirmed three ways: the official wiki ('each parameter included should be separated by a forward slash'), community server docs, and the decompiled command classes, which all call Parser.getComponentsFromSerial(parameter, '/'). {duration} on Ban is SECONDS; omit it (CommandBan accepts 1, 2 or 3 components) and it passes SteamBlacklist.PERMANENT = 31536000u - i.e. the 'permanent' ban is really 365 days, which is why the wikis describe the default as one year. Kick resolves its first argument with PlayerTool.tryGetSteamPlayer (1 or 2 components) and Ban with PlayerTool.tryGetSteamID, so both accept either a 64-bit Steam ID or the name of a currently connected player, but Unban accepts a Steam ID only - moderate by Steam ID. Say and Welcome accept either 1 component (message) or 4 (message/R/G/B); a message containing '/' is split and rejected, so strip slashes from {message}. Welcome sets ChatManager.welcomeText, the text shown to clients on connect, which is Unturned's MOTD. Info uses Debug, which prints UPS/TPS and ticking zombie/animal counts. No banList is recorded because bans live in the binary Servers/<instance>/Server/Blacklist.dat (written through a River stream with a version byte and a uint16 entry count, not lines) and because Unban works live. Commands are case-insensitive; the capitalisation here follows the official wiki. Caveat on playerParse: CommandPlayers prints one localized line per player, formatted from PlayerIDText with steamID, playerName, characterName and ping in that order, but the English format string is in a bundled .dat that could not be retrieved, so linePattern is deliberately tolerant and anchored on the 17-digit Steam ID; the id is reliable, the captured name may include trailing fields on some formats. Note also that RocketMod/OpenMod replace the vanilla parser and switch these same commands to space-separated, quoted arguments - these values are for a vanilla server. appId 1110390 is the 'Unturned Dedicated Server' app; the game itself is 304930."
+}

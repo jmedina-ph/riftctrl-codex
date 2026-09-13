@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "slug": "empyrion-galactic-survival",
+  "game": {
+    "displayName": "Empyrion - Galactic Survival Dedicated Server",
+    "appId": 530870,
+    "aliases": [
+      "Empyrion - Galactic Survival",
+      "Empyrion",
+      "EGS"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 30004,
+    "portSetting": "Tel_Port",
+    "enableSetting": "Tel_Enabled",
+    "passwordSetting": "Tel_Pwd"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "76561198012345678",
+    "pattern": "7656119[0-9]{10}"
+  },
+  "commands": {
+    "listPlayers": "plys",
+    "kick": "kick {playerId} '{reason}'",
+    "ban": "ban {playerId} {duration}",
+    "unban": "unban {playerId}",
+    "say": "say '{message}'"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "(?<playerId>7656119[0-9]{10})[^A-Za-z0-9]+(?<name>[^,;\\r\\n]+)"
+  },
+  "sources": [
+    {
+      "url": "https://empyrion.fandom.com/wiki/Telnet_Commands",
+      "title": "Telnet Commands - Official Empyrion: Galactic Survival Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://empyrion.fandom.com/wiki/Console_commands_kick",
+      "title": "Console commands kick - Official Empyrion Wiki (kick <SteamID/PlayerName> <Opt:Message>)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://empyrion.fandom.com/wiki/Console_commands_ban",
+      "title": "Console commands ban - Official Empyrion Wiki (ban <steamid/PlayerName> <duration>)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://empyrion.fandom.com/wiki/Console_commands_unban",
+      "title": "Console commands unban - Official Empyrion Wiki (unban <steamid>)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/app/383120/discussions/0/405691491114943268/",
+      "title": "List of console / telnet commands for server? (in-game help output pasted)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.roxservers.com/knowledgebase.php?action=displayarticle&id=554&language=english",
+      "title": "Manage (admin) your server via telnet - RoxServers knowledgebase",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/CubeCoders/AMPTemplates/blob/main/empyriondedicated.yaml",
+      "title": "AMP template - dedicated.yaml ServerConfig with Tel_Enabled / Tel_Port 30004 / Tel_Pwd",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://empyrion.fandom.com/wiki/Dedicated_Server_Setup",
+      "title": "Dedicated Server Setup - Official Empyrion Wiki (telnet settings)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://legionhosting.net/kb/empyrion-galactic-survival/empyrion-admin-commands",
+      "title": "Empyrion Admin Commands - Legion Hosting knowledgebase (ban PlayerName 7d)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Transport is the dedicated server's telnet console, not Source RCON: a line-oriented plain-text session on Tel_Port (default 30004, enabled with Tel_Enabled: true and protected by Tel_Pwd in dedicated.yaml, section ServerConfig), which asks for the password on connect and answers with free-form text. The same strings work typed into the server's own console window. The Telnet Commands wiki page lists only telnet-specific helpers (gents, initadmin, instances, plys, remoteex, saveandexit, say, servers, stoppf); kick/ban/unban/list are confirmed as available in that same console by the 'help' output pasted in the Steam thread and by the RoxServers telnet article. Command text: kick <SteamID/PlayerName> <Opt:Message> (use 'all' to kick everyone), ban <steamid/PlayerName> <duration> with units h/d/m/y (Legion Hosting gives 'ban PlayerName 7d'), unban <steamid>. Duration is NOT optional on ban in the wiki's syntax, so {duration} must always be filled (use a long value such as 10y for a permanent ban); one Steam guide lists 'ban <playername/id>' with no duration, an older form - that is the only source disagreement on syntax found. The official wiki documents a Steam ID as unban's only parameter (one hosting KB writes 'unban [player|SteamID]', unconfirmed), which is why playerId is the Steam ID for all three moderation commands. The kick message is quoted with single quotes here because the only quoting Empyrion documents is say 'text with blanks'; whether kick strips those quotes is undocumented, so a kicked player may see them. Confidence is low for ONE reason: the exact column layout of plys ('Shows all players in the game') is not published in any source found - official wiki, the in-game help text pasted on Steam, and two hosting knowledge bases all describe it without an example - so playerParse.linePattern is a best-effort shape (Steam ID first, then name) and must be checked against a live server before the roster is trusted. If plys turns out to print the name before the id, swap the two groups; if it prints no Steam ID at all (it may print only the transient client id used by remoteex cl=<id>), kick and ban can still be issued with the player NAME, but unban will need the Steam ID. No motd command exists; the server blurb is Srv_Description in dedicated.yaml. Bans are stored server-side and are read back with the console's 'list' command ('Lists special players (e.g. admins or banned players)' - the exact subcommand word for bans is not documented in any source found) rather than in a plain-text file this schema can point at."
+}

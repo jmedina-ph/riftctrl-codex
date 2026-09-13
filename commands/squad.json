@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "slug": "squad",
+  "game": {
+    "displayName": "Squad Dedicated Server",
+    "appId": 403240,
+    "aliases": [
+      "Squad",
+      "SquadGame",
+      "Squad Server"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 21114,
+    "portSetting": "Port",
+    "enableSetting": null,
+    "passwordSetting": "Password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "76561198080109192",
+    "pattern": "7656119[0-9]{10}"
+  },
+  "commands": {
+    "info": "ShowServerInfo",
+    "listPlayers": "ListPlayers",
+    "kick": "AdminKick \"{playerId}\" {reason}",
+    "ban": "AdminBan \"{playerId}\" \"{duration}\" {reason}",
+    "say": "AdminBroadcast {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^ID: \\d+ \\| Online IDs: EOS: (?<accountId>[0-9a-f]{32})\\s+steam:\\s*(?<playerId>\\d{17}) \\| Name:\\s*(?<name>.+?) \\| Team ID:",
+    "skipLinePattern": "^-{3,}"
+  },
+  "banList": {
+    "paths": [
+      "SquadGame/ServerConfig/Bans.cfg"
+    ],
+    "lineIdPattern": "(\\d{17})\\s*:\\s*\\d+"
+  },
+  "sources": [
+    {
+      "url": "https://squad.fandom.com/wiki/Server_Administration",
+      "title": "Server Administration - Official Squad Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://squad.fandom.com/wiki/Server_Configuration",
+      "title": "Server Configuration - Official Squad Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/Team-Silver-Sphere/SquadJS/blob/master/squad-server/rcon.js",
+      "title": "SquadJS squad-server/rcon.js",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/Team-Silver-Sphere/SquadJS/blob/master/squad-server/index.js",
+      "title": "SquadJS squad-server/index.js (ShowServerInfo call site)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/ambroiseRabier/SquadTS/blob/main/src/rcon-squad/use-rcon-squad-execute.ts",
+      "title": "SquadTS use-rcon-squad-execute.ts",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/ambroiseRabier/SquadTS/blob/main/src/rcon-squad/use-rcon-squad-execute.test.ts",
+      "title": "SquadTS use-rcon-squad-execute.test.ts (real ListPlayers fixture)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/SquadSlovenia/squad-rcon-php",
+      "title": "squad-rcon-php (README command list)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/GameServerManagers/Game-Server-Configs/blob/master/Squad/Rcon.cfg",
+      "title": "LinuxGSM Game-Server-Configs: Squad Rcon.cfg",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://shockbyte.com/billing/knowledgebase/624/How-to-Ban-Players-on-your-Squad-Server.html",
+      "title": "How to Ban Players on your Squad Server (Shockbyte)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": "2026-09-12",
+  "notes": "Valve Source RCON. The stock SquadGame/ServerConfig/Rcon.cfg (verified against LinuxGSM Game-Server-Configs) carries IP=0.0.0.0, Port=21114, Password=, MaxConnections=5, ConnectionTimeout, SecondsBeforeTimeoutCheck and AuthenticationTimeout, with CLI overrides RCONIP=/RCONPORT=/RCONPASSWORD=/RCONMAXCONNECTIONS=. There is no separate enable flag - the file states 'Leaving this empty will keep RCON turned off', so passwordSetting doubles as enableSetting. Command provenance, checked file by file: AdminKick/AdminBan/AdminBroadcast/ListPlayers are on the official wiki (unquoted: 'AdminKick <NameOrSteamId> <KickReason>', 'AdminBan <NameOrSteamId> <BanLength> <BanReason>'); the quoted forms recorded here are verbatim from squad-rcon-php's README ('AdminKick \"<NameOrSteamId>\" <KickReason>', 'AdminBan \"<NameOrSteamId>\" \"<BanLength>\" <BanReason>') and from SquadTS use-rcon-squad-execute.ts (AdminKick \"${anyID}\" ${reason}, AdminBan \"${anyID}\" \"${banLength}\" ${message}). Note SquadJS's rcon.js contains neither AdminKick nor ShowServerInfo and leaves banLength unquoted ('AdminBan \"${anyID}\" ${banLength} ${message}'); ShowServerInfo is executed in SquadJS squad-server/index.js and in SquadTS showServerInfo(), and does NOT appear on the official wiki - two code sources only. Quoting of the ban length is cosmetic and accepted by the server either way. Ban length: 0 = permanent, 1m/1d/1M. ListPlayers output confirmed against a real fixture in SquadTS's test suite ('----- Active Players -----' header, then 'ID: 3 | Online IDs: EOS: <32 hex> steam: <steamid64> | Name: [FR] ComboAz | Team ID: 1 | Squad ID: N/A | Is Leader: False | Role: ...'); the linePattern was executed against that fixture and matches both active rows, captures name and Steam ID, and excludes the '----- Recently Disconnected Players [Max of 15] -----' rows, which carry 'Since Disconnect:' instead of 'Team ID:'. Kick and ban accept a player name, a Steam ID or an EOS ID (wiki writes <NameOrSteamId>; SquadJS and SquadTS call the argument anyID); Steam ID is recorded because Bans.cfg is keyed by SteamID64. AdminKickById/AdminBanById take the volatile per-match ID and are not used. CORRECTED: Bans.cfg lines are not always bare - the wiki's own example is 'John [SteamID 76561198000000000] Banned:76561198000000001:0 //Permanent ban for cheating', where the FIRST 17-digit number is the banning admin, not the banned player; the previous anchored pattern '^\\s*(\\d{17})\\s*:' failed to match that form entirely, and a naive unanchored 17-digit match would capture the admin. lineIdPattern now keys on the id immediately followed by the expiry timestamp (0 = permanent), which resolves both that form and the bare '<steamid64>:<timestamp> // comment' form Shockbyte documents. There is no live unban command - unbanning means editing Bans.cfg. No MOTD command; scheduled messages live in ServerMessages.cfg."
+}

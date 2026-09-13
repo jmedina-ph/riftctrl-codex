@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "slug": "astroneer-dedicated-server",
+  "game": {
+    "displayName": "ASTRONEER Dedicated Server",
+    "appId": 728470,
+    "aliases": [
+      "Astroneer Dedicated Server",
+      "Astroneer",
+      "ASTRONEER"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 1234,
+    "portSetting": "ConsolePort",
+    "enableSetting": null,
+    "passwordSetting": "ConsolePassword"
+  },
+  "playerId": {
+    "label": "Player GUID (opaque, copied from DSListPlayers)",
+    "example": "8A4F1C27D9E4B506",
+    "pattern": "[0-9A-Fa-f]{16,20}"
+  },
+  "commands": {
+    "info": "DSServerStatistics",
+    "listPlayers": "DSListPlayers",
+    "kick": "DSKickPlayerGuid {playerId}",
+    "ban": "DSSetPlayerCategoryForPlayerName \"{playerName}\" Blacklisted"
+  },
+  "playerParse": {
+    "mode": "json",
+    "rootPath": [
+      "playerInfo"
+    ],
+    "namePath": [
+      "playerName"
+    ],
+    "playerIdPath": [
+      "playerGuid"
+    ]
+  },
+  "banList": {
+    "paths": [
+      "Astro/Saved/Config/WindowsServer/AstroServerSettings.ini",
+      "Astro/Saved/Config/LinuxServer/AstroServerSettings.ini"
+    ],
+    "lineIdPattern": "PlayerCategory=Blacklisted[^\\r\\n]*?PlayerGuid=\"([0-9A-Fa-f]+)\""
+  },
+  "sources": [
+    {
+      "url": "https://github.com/ricky-davis/AstroLauncher/blob/master/cogs/AstroRCON.py",
+      "title": "AstroLauncher - AstroRCON.py (command text, password-first socket handshake, JSON replies)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/ricky-davis/AstroLauncher/blob/master/cogs/AstroWebServer.py",
+      "title": "AstroLauncher - AstroWebServer.py (ban = kick by guid then set category by name; unban = category Unlisted)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/konsti219/astro-starter/blob/main/rcon.ts",
+      "title": "astro-starter - rcon.ts (independent implementation of the same command set)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/Esinko/AstroneerRconClient",
+      "title": "AstroneerRconClient - protocol write-up and full command reference for server build 1.17.89.0",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/konsti219/astro-starter/blob/main/Server.ts",
+      "title": "astro-starter - Server.ts (AstroServerSettings.ini writer: ConsolePort, ConsolePassword, PlayerProperties line format)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://xgamingserver.com/docs/astroneer/server-settings",
+      "title": "How to Configure Your Astroneer Dedicated Server - ConsolePort default 1234 (TCP), do not expose publicly, ini file location",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://nodecraft.com/support/games/astroneer/general-settings-overview",
+      "title": "Astroneer Server Settings Overview - confirms the /Astro/Saved/Config/WindowsServer/AstroServerSettings.ini path; ConsolePassword appears in the file but is not documented",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://blog.astroneer.space/p/astroneer-dedicated-server-details/",
+      "title": "Astroneer Host Your Own Dedicated Server Set Up Details (System Era) - official setup post; documents no console, shows OwnerGuid=0",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Custom console protocol, not Source RCON. The server opens a plain TCP listener on ConsolePort (default 1234) only when ConsolePort and ConsolePassword are set in AstroServerSettings.ini, section [/Script/Astro.AstroServerSettings]; there is no separate enable flag. Handshake: connect, send the ConsolePassword followed by \\n, then send each command as plain ASCII terminated by \\n. Replies are JSON; several replies can arrive in one read, separated by \\r\\n. The listener accepts ONE client at a time and managers connect to 127.0.0.1 - it is not meant to be exposed publicly. DSListPlayers returns {\"playerInfo\":[{\"playerGuid\",\"playerCategory\",\"playerName\",\"inGame\",\"index\"}]} and lists KNOWN players, not connected ones; filter on inGame for a live roster. DSServerStatistics returns build, ownerName, serverName, playersInGame, playersKnownToGame, maxInGamePlayers, averageFPS, saveGameName and more. Identifier split: the game KICKS by GUID (DSKickPlayerGuid) but BANS by NAME - banning is a category change, DSSetPlayerCategoryForPlayerName \"<name>\" Blacklisted, with categories Unlisted, Whitelisted, Blacklisted, Admin, Pending, Owner. The guid-keyed variant DSSetPlayerCategoryGuid exists but AstroneerRconClient records it as non-functional (bugged), which is why every manager bans by name. Both fields come from the same DSListPlayers row, so {playerId} and {playerName} resolve together. AstroLauncher bans by kicking on the GUID first (only if the player is inGame) and then setting the name to Blacklisted; a ban alone does not remove a connected player. Unban is the same command with Unlisted instead of Blacklisted, but it keys on the player NAME and the schema only allows {playerId} in unban, so no unban command and no banList.liveUnban is recorded - rewrite the PlayerProperties line, or send DSSetPlayerCategoryForPlayerName \"<name>\" Unlisted by hand. Bans persist as PlayerProperties=(PlayerFirstJoinName=\"...\",PlayerCategory=Blacklisted,PlayerGuid=\"...\",PlayerRecentJoinName=\"...\") lines in AstroServerSettings.ini; lineIdPattern assumes that field order (as written by astro-starter and matched by AstroLauncher) and will miss a line where PlayerGuid precedes PlayerCategory. Do not edit the ini while the server is running - it rewrites the file on shutdown and discards changes. No broadcast/say and no MOTD command exists. IDENTIFIER FORMAT IS NOT DOCUMENTED: an earlier draft of this file asserted that playerGuid is the player's SteamID64 and used 76561198000000000 as the example; no source supports that. The only source that describes the format at all (AstroneerRconClient) calls the guid an opaque 64-bit value derived by MurmurHash from unknown inputs, stable per player; System Era's own post shows only the placeholder OwnerGuid=0, and no page found gives a concrete guid. Treat the guid as opaque and ALWAYS copy it verbatim from a DSListPlayers row - never construct one from a Steam profile lookup. The example here is illustrative only; the pattern is deliberately permissive enough to match either a 16-char hex rendering or a 17-20 digit decimal one. Source disagreement on quoting: AstroLauncher wraps the player name in double quotes (escaping inner quotes) for DSSetPlayerCategoryForPlayerName while astro-starter sends it bare; the quoted form is recorded because names contain spaces and AstroneerRconClient's reference states that an argument containing a space must be quoted. Players who have not authenticated show an empty guid and can only be acted on by name. AstroLauncher was archived in November 2025 and points at the fork github.com/JoeJoeTV/AstroLauncher; the command set is unchanged. AstroneerRconClient's table was written against server build 1.17.89.0 (Jan 2021) and warns it may be outdated. Nothing here has been run against a live server."
+}

@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "slug": "day-of-dragons",
+  "game": {
+    "displayName": "Day of Dragons - Dedicated Server",
+    "appId": 1088320,
+    "aliases": [
+      "Day of Dragons",
+      "dodrserver"
+    ]
+  },
+  "transport": "none",
+  "playerId": {
+    "label": "Steam ID",
+    "example": "76561198012345678",
+    "pattern": "7656119[0-9]{10}"
+  },
+  "banList": {
+    "paths": [
+      "Dragons/Saved/Config/WindowsServer/Game.ini",
+      "Dragons/Saved/Config/LinuxServer/Game.ini"
+    ],
+    "lineIdPattern": "sServerBan(?:List|ned)=([0-9]{17})"
+  },
+  "sources": [
+    {
+      "url": "https://steamcommunity.com/app/1088090/discussions/1/4737210531942775567/",
+      "title": "Custom Server Configuration - Day of Dragons (developer post: Game.ini admins/ban list, in-game /admin panel)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamdb.info/app/1088320/",
+      "title": "Day of Dragons - Dedicated Server (App 1088320) - SteamDB",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://nodecraft.com/support/games/day-of-dragons/banning-players-from-your-server",
+      "title": "Banning Players From Your Server - Day of Dragons - Nodecraft (sServerBanList in Game.ini, restart required)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://nodecraft.com/support/games/day-of-dragons/day-of-dragons-server-commands",
+      "title": "Day of Dragons Server Commands - Nodecraft (in-game chat commands only)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://pingperfect.com/index.php/knowledgebase/465/Day-of-Dragons--White-list-or-Blacklist-Steam-IDs.html",
+      "title": "Day of Dragons | White-list or Blacklist Steam IDs - Pingperfect (sServerBanList, sServerJoinList)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://survivalservers.com/wiki/index.php?title=Day_of_Dragons_Server_Admin_Commands_Usage",
+      "title": "Day of Dragons Server Admin Commands Usage - Survival Servers wiki (/boot, /ban (PID), /unban (PID) from the in-game admin panel)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.g-portal.com/wiki/en/day-of-dragons/",
+      "title": "Day of Dragons - all server settings and info - GPORTAL Wiki (settings and in-game chat commands, no RCON)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://linuxgsm.com/servers/dodrserver/",
+      "title": "Day of Dragons Linux Game Server - LinuxGSM (appid 1088320, tmux console only, no rcon settings)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1928782082",
+      "title": "How to host your own Day of Dragons private server - Steam guide (Game.ini at Dragons/Saved/Config/WindowsServer/)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "No command channel exists: the Unreal Engine dedicated server ships no RCON, no admin REST API and no documented server-console command set. Moderation happens two ways, neither of which a remote manager can drive. (1) Config file: Steam64 IDs listed one per line in Game.ini under the game-instance class header keep players out, and the server must be stopped and restarted to load a change (Nodecraft, Pingperfect, Steam hosting guide). Sources disagree on the key name - the developer's own 2019-era Custom Server Configuration post uses sServerBanned= (with sServerFriends=/bUseFriendsList= for the whitelist, under a [/game/_dev/runtime/classes/dragonsgs.dragonsgs_c] header), while every current source uses sServerBanList= (with sServerJoinList=/bServerUseJoinList= under [/game/dev/libraries/classes/runtime/dragonsgameinstance.dragonsgameinstance_c]); the names appear to have been renamed between versions, so lineIdPattern accepts either. (2) In-game admin panel: a player whose Steam64 ID is in sServerAdmins types /admin in the client, then chat commands such as /boot, /ban (PID) and /unban (PID) where PID is the transient in-game player id revealed by /showtags - these are typed by a logged-in admin in the game client, not sent to the server over any pipe, and /ban only holds until the next restart. /players likewise lists players in the client's chat window with no server-side equivalent. LinuxGSM exposes only a tmux attach as its \"console\" and defines no rcon or telnet settings for this game. Checked the 1.0.0 (UE5) patch notes for an added admin interface and found none. appId is the separate dedicated-server tool app 1088320; the game itself is 1088090. Host-level network blocking remains the only remote kick/ban path."
+}

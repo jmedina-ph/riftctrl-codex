@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "slug": "vein",
+  "game": {
+    "displayName": "VEIN Dedicated Server",
+    "appId": 2131400,
+    "aliases": [
+      "VEIN",
+      "Vein",
+      "VEIN Server"
+    ]
+  },
+  "transport": "none",
+  "playerId": {
+    "label": "Steam ID",
+    "example": "76561198012345678",
+    "pattern": "7656119[0-9]{10}"
+  },
+  "sources": [
+    {
+      "url": "https://vein.wiki.gg/wiki/Vein_Dedicated_Server_Setup",
+      "title": "Vein Dedicated Server Setup - Official Vein Wiki (SteamCMD app_update 2131400; TCP 7777 RCON optional; Console Commands \"To be determined\")",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/1857950/discussions/0/603023872658256238/",
+      "title": "RCON Support :: VEIN General Discussions (21 Aug 2025: \"RCOM support is on the road map, very soon I believe\")",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.nexusmods.com/vein/mods/101",
+      "title": "Vein Server Manager (states the dedicated server has no working RCON and disables remote kick/ban)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/CubeCoders/AMPTemplates/issues/1021",
+      "title": "Vein Dedicated Server Template Attempt (CubeCoders/AMPTemplates #1021) - App_AdminMethod STDIO, App_ExitString \"stop\"",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wabbanode.com/help/vein/how-to-kick-and-ban-players-on-your-vein-server",
+      "title": "How to Kick and Ban Players on Your VEIN Server (admin panel Players/Bans tabs, Kick/Ban/Unban)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wabbanode.com/help/vein/how-to-add-admins-to-your-vein-server",
+      "title": "How to Add Admins to Your VEIN Server (AdminSteamID= per line, SuperAdminSteamIDs=, no section header given)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wabbanode.com/help/vein/all-vein-server-console-commands",
+      "title": "All VEIN Server Console Commands (openadminmenu, god, fly, ghost, heal, slomo)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.gamehostbros.com/guides/games/vein/adding-admins",
+      "title": "Adding Admins - VEIN (AdminSteamIDs=/SuperAdminSteamIDs= under [/Script/Vein.VeinGameSession])",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.gamehostbros.com/guides/games/vein/ban-players",
+      "title": "How To Ban Players On Your VEIN Server (BannedPlayers=/BannedReasons= under [/Script/Vein.VeinGameStateBase])",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": "2026-09-13",
+  "notes": "As of September 2026 the VEIN dedicated server exposes no usable command channel, so no command text is recorded. Moderation happens inside the game: an admin whose SteamID64 is listed in Saved/Config/LinuxServer/Game.ini presses the backslash key to open the admin panel and uses its Players tab (Kick / Ban) and Bans tab, which lists banned players by SteamID and offers Unban. The two hosting guides disagree on the admin key itself: Game Host Bros gives AdminSteamIDs= and SuperAdminSteamIDs= under a [/Script/Vein.VeinGameSession] section, while Wabbanode gives AdminSteamID= (a new line per admin) plus a comma-separated SuperAdminSteamIDs= and shows no section header; the official wiki's setup page documents no config keys at all, so the exact spelling is unconfirmed. The console commands circulated for VEIN (openadminmenu, god, fly, ghost, heal, slomo) are typed by an admin at the in-game console on the client, not sent down a server command channel, so they are not usable by a server manager. RCON: the official wiki lists TCP 7777 as \"RCON for remote console server access (optional)\" and its Console Commands section says only \"To be determined\"; an official-looking poster answered in the Steam \"RCON Support\" thread on 21 Aug 2025 that \"RCOM support is on the road map, very soon I believe\", and the Vein Server Manager tool still states \"The game developers have not yet fully implemented the RCON protocol in the dedicated server executable\" and disables its own remote kick/ban for that reason. Disagreement: a community AMP template attempt (CubeCoders/AMPTemplates issue 1021, never shipped as an official template) sets \"App_AdminMethod\":\"STDIO\" with \"App_ExitString\":\"stop\"; even if the process does read stdin, no kick/ban/list/say command text is published by anyone, so nothing is recorded here rather than guessed. One hosting guide (Game Host Bros) claims bans persist as BannedPlayers=<SteamID64> (with optional BannedReasons=) under a [/Script/Vein.VeinGameStateBase] section of the same Game.ini; no second source confirms that section name, so no banList is recorded. appId 2131400 is the dedicated-server tool app (confirmed by the wiki's SteamCMD line); the game itself is app 1857950. Revisit when a build ships working RCON."
+}

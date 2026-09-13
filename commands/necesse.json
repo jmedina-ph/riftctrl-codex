@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "slug": "necesse",
+  "game": {
+    "displayName": "Necesse Dedicated Server",
+    "appId": 1169370,
+    "aliases": [
+      "Necesse",
+      "Necesse Server"
+    ]
+  },
+  "transport": "stdin",
+  "stdin": {
+    "note": "Commands are written to the standard input of the dedicated server process (Server.jar, started by StartServer.bat / StartServer.sh). The server prints \"Type help for list of commands.\" when it is ready to accept them. Necesse ships no RCON listener and no admin HTTP API, so control panels pipe their web console straight to this stdin. Run 'help' for the built-in command list."
+  },
+  "playerId": {
+    "label": "Username",
+    "example": "Aldric",
+    "pattern": "[A-Za-z0-9_][A-Za-z0-9_ .'-]{0,31}"
+  },
+  "commands": {
+    "listPlayers": "/players",
+    "kick": "/kick {playerId} {reason}",
+    "ban": "/ban {playerId}",
+    "unban": "/unban {playerId}",
+    "say": "/say {message}",
+    "motd": "/motd {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^(?:\\[[^\\]]*\\]\\s*)?(?:[-*]\\s*)?(?<playerId>(?<name>[A-Za-z0-9_][A-Za-z0-9_ .'-]{0,31}))\\s*$",
+    "skipLinePattern": "^\\s*$|^(?:[Oo]nline\\s+[Pp]layers|[Pp]layers\\s+[Oo]nline)\\b|^[Nn]o players\\b|^Unknown command"
+  },
+  "sources": [
+    {
+      "url": "https://necessewiki.com/Multiplayer",
+      "title": "Multiplayer - Necesse Wiki (command table: /kick <player> [<message/reason>], /ban <authentication/name>, /unban <authentication/name>, /players, /playernames, /say <message>, /motd <clear/get/message>)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.ghostcap.com/guides/games/necesse/console-commands",
+      "title": "How to Use Necesse Server Console Commands - GHOSTCAP (reproduces the same slash-prefixed table verbatim: /kick [player] [message/reason], /ban [authentication/name], /unban, /players, /say [message], /motd [clear/get/message])",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://nodecraft.com/support/games/necesse/how-to-become-an-admin-of-your-necesse-server",
+      "title": "How to Become an Admin of Your Necesse Server - Nodecraft (shows only '/permissions set [user name] [permissions group]' typed in the panel Console and refers readers to the Necesse Wiki; does NOT itself list kick/ban/unban/players/say/motd)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/pelican-eggs/games-steamcmd/main/necesse/egg-necesse.json",
+      "title": "Pelican egg for Necesse (stdin console: java -jar Server.jar -localdir -nogui -Dterminal.jline=false; stop command \"stop\"; startup done string \"Type help for list of commands.\"; no RCON anywhere in the egg)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamdb.info/app/1169370/info/",
+      "title": "Necesse Dedicated Server (App 1169370) - SteamDB",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Transport is the server process console; there is no RCON and no REST admin API in Necesse - the Pelican egg confirms it drives the server over stdin (bare \"stop\" for graceful shutdown, done string \"Type help for list of commands.\") and mentions no RCON at all. SOURCE STRENGTH, STATED PRECISELY: the command syntax comes from the Necesse Wiki Multiplayer table - /kick <player> [<message/reason>], /ban <authentication/name>, /unban <authentication/name>, /players, /playernames, /say <message>, /motd <clear/get/message> - and GHOSTCAP reproduces that same table verbatim, which is an echo of the wiki rather than an independent confirmation. Nodecraft does NOT publish this command set: it documents only '/permissions set [user name] [permissions group]' typed in the panel Console and links to the wiki, so it corroborates the slash-prefixed-in-panel-console convention and nothing more. Treat the wiki as effectively the single source for the command names. DISAGREEMENT ON THE LEADING SLASH: the wiki and the host guides show the slash form, but the Pelican egg sends the bare word \"stop\" and the server's own ready line reads \"Type help for list of commands.\" (no slash), so the console parser very likely accepts both and the slash appears optional. Recorded with the slash because that is the documented form; if a command is rejected, retry without it. MODERATION IDENTIFIER: /kick takes a player name; /ban and /unban take either a name or the player's \"authentication\" (Necesse's own account id, a long integer), so the name is the only identifier that works for all three and is what is recorded here. Names containing spaces are a known risk: no source documents quoting, so a multi-word name may need to be entered differently. /ban takes no reason and no duration argument, so no {reason}/{duration} is sent; {reason} on /kick is optional in the documented syntax, so an empty reason leaves a harmless trailing space. No info/status command exists; /players is the roster command but NO source documents its output format, so playerParse is a best-effort one-name-per-line rule and must be corrected on first verification - skipLinePattern deliberately anchors its header clauses (\"Online players\" / \"Players online\" / \"No players\" / \"Unknown command\") instead of matching the substring \"online\" anywhere, which would have silently dropped a legitimate player named e.g. Onlinehero. Ban storage location on disk is undocumented, so no banList is recorded; /unban is the live path. Confidence is low because the command names rest on one primary source plus an echo, the slash form is contradicted by the egg, and the /players output format is unverified."
+}

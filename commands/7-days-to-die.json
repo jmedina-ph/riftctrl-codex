@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "slug": "7-days-to-die",
+  "game": {
+    "displayName": "7 Days to Die Dedicated Server",
+    "appId": 294420,
+    "aliases": [
+      "7 Days to Die",
+      "7DTD",
+      "7D2D",
+      "SDTD"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 8081,
+    "portSetting": "TelnetPort",
+    "enableSetting": "TelnetEnabled",
+    "passwordSetting": "TelnetPassword"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "76561198012345678",
+    "pattern": "7656119[0-9]{10}"
+  },
+  "commands": {
+    "info": "version",
+    "listPlayers": "listplayers",
+    "kick": "kick {playerId} \"{reason}\"",
+    "ban": "ban add {playerId} {duration} minutes \"{reason}\"",
+    "unban": "ban remove {playerId}",
+    "say": "say \"{message}\""
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^\\s*\\d+\\.\\s+id=\\d+,\\s*(?<name>.+?),\\s*pos=\\(.*?(?:steamid|pltfmid)=(?:Steam_)?(?<playerId>[0-9]{17})(?:,\\s*crossid=(?<accountId>EOS_[0-9a-fA-F]+))?",
+    "skipLinePattern": "^Total of \\d+"
+  },
+  "banList": {
+    "paths": [
+      "Saves/serveradmin.xml",
+      "serveradmin.xml"
+    ],
+    "lineIdPattern": "(?:userid|steamID)=\"(?:Steam_)?([0-9]{17})\"",
+    "liveUnban": "ban remove {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://7daystodie.fandom.com/wiki/Command_Console",
+      "title": "Command Console - 7 Days to Die Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://7daystodie.wiki.gg/wiki/Command_Console",
+      "title": "Command Console - 7 Days to Die Wiki (wiki.gg)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://7dtd.illy.bz/wiki/Console%20Commands",
+      "title": "Console Commands - Alloc's 7 Days to Die server fixes",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://7daystodie.fandom.com/wiki/Server",
+      "title": "Server (serverconfig.xml) - 7 Days to Die Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/gorcon/telnet",
+      "title": "gorcon/telnet - TELNET implementation for 7 Days to Die",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://r-pufky.github.io/docs/game/seven_days_to_die/serveradmin/",
+      "title": "serveradmin.xml reference",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Remote admin is a line-based telnet console on TelnetPort (default 8081), NOT Valve Source RCON: connect, send the TelnetPassword as the first line, then one command per line. Hence rcon.flavour \"custom\". Transport is the solid part: serverconfig.xml documents TelnetEnabled/TelnetPort 8081/TelnetPassword, and the gorcon/telnet Go client dials 127.0.0.1:8081 with the password supplied at connect. serverconfig.xml also exposes a web control panel (ControlPanelEnabled, default false; ControlPanelPort 8080); Alloc's Server Fixes adds a separate HTTP/web API used by CSMM/Botman - neither is modelled here. Confidence lowered to low on re-review: the two wiki sources are NOT independent - 7daystodie.wiki.gg is a community fork of the 7daystodie.fandom.com wiki and carries the same wording and the same examples (\"kick 171 bye\", \"ban 171 10 hours griefing\"). listplayers, kick, say and version are each corroborated by one genuinely independent source (Alloc's 7dtd.illy.bz), but the \"ban add\" / \"ban remove\" subcommand form rests on that single wiki lineage alone: Alloc's page documents plain \"ban <playername> <duration> <unit>\" with no add/remove subcommands and warns its list is typically outdated, and 7d2d.net documents \"ban add <id|name> <minutes> [reason]\" with no unit word. Every source that shows a duration does make the unit mandatory (minutes|hours|days|weeks|months|years), so the template hard-codes \"minutes\" and {duration} is a plain number. No source opened documents quoting rules - every wiki example is unquoted (kick 171 bye) - so the double quotes around {reason} and {message} are an unverified escaping convention, retained because multi-word values would otherwise split into extra arguments. kick/ban accept a player name, an entity id (from lpi) or a platform id; the entity id is the most reliable for names with spaces but is not stable across sessions, so playerId is recorded as the SteamID64. On V1.0+ (EOS crossplay) console and non-Steam players have only an EOS id (EOS_<32 hex>), which the same commands accept in place of the Steam ID - playerId.pattern does not cover that form, and whether V1.0+ wants the bare 17 digits or the \"Steam_<id>\" spelling was not confirmed. listplayers output field names changed in A21/V1.0 from steamid= to pltfmid=Steam_<id> plus crossid=EOS_<id>; playerParse.linePattern accepts both spellings but no source quotes a real lp line, so the pattern is inferred and has not been run against a live server. No motd command exists - the server description is the ServerDescription setting in serverconfig.xml. Bans written by \"ban add\" land in serveradmin.xml (AdminFileName, default serveradmin.xml, path relative to the save game folder, so outside the install root on a default install) as <blacklisted platform=\"\" userid=\"\" name=\"\" unbandate=\"\" reason=\"\" /> entries; that element and its attribute names are confirmed by the r-pufky reference, older builds used a steamID attribute, and lineIdPattern accepts either."
+}

@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "slug": "day-of-defeat-source",
+  "game": {
+    "displayName": "Day of Defeat: Source Dedicated Server",
+    "appId": 232290,
+    "aliases": [
+      "Day of Defeat: Source",
+      "DoD:S",
+      "DoDS",
+      "dod"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 27015,
+    "portSetting": "hostport",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:1:6172590",
+    "pattern": "STEAM_[0-9]:[01]:[0-9]+"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kickid {playerId} {reason}",
+    "ban": "banid {duration} {playerId}",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*\\d+\\s+(?:\\d+\\s+)?\"(?<name>[^\"]*)\"\\s+(?<playerId>STEAM_[0-9]:[01]:[0-9]+)",
+    "skipLinePattern": "^#\\s*userid\\s+name"
+  },
+  "banList": {
+    "paths": [
+      "dod/cfg/banned_user.cfg",
+      "dod/banned_user.cfg"
+    ],
+    "lineIdPattern": "banid\\s+[0-9.]+\\s+(STEAM_[0-9]:[01]:[0-9]+)",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://steamdb.info/app/232290/",
+      "title": "Day of Defeat: Source Dedicated Server (App 232290) - SteamDB",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/alliedmodders/sourcemod/master/core/logic/smn_banning.cpp",
+      "title": "SourceMod core/logic/smn_banning.cpp (BanIdentity/RemoveBan issue banid, addip, removeid, writeid)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/alliedmodders/sourcemod/master/core/PlayerManager.cpp",
+      "title": "SourceMod core/PlayerManager.cpp (CPlayer::Kick issues \"kickid <userid> <reason>\")",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://forums.srcds.com/viewtopic/12641",
+      "title": "SRCDS forums: kick <player> with reason? - kickid <userid | uniqueid> {message}",
+      "kind": "forum",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://wiki.teamfortress.com/wiki/List_of_useful_console_commands",
+      "title": "List of useful console commands - Official TF2 Wiki (banid <minutes> <steamid>, kick <name>, status)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://zap-hosting.com/guides/docs/dods-rcon/",
+      "title": "Day of Defeat: Source: RCON - ZAP-Hosting Docs",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://xgamingserver.com/docs/day-of-defeat-source/server-config",
+      "title": "How to Configure Your Day of Defeat: Source Server - XGamingServer Docs",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://forums.srcds.com/viewtopic/10704",
+      "title": "SRCDS forums: banned_user.cfg / banned_ip.cfg line format (banid <time> <id>)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://kb.firedaemon.com/support/solutions/articles/4000086944-day-of-defeat-source",
+      "title": "Run Day of Defeat: Source Server as a Windows Service (app 232290, -game dod, -port 27015)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Stock Source-engine SRCDS: Valve Source RCON on the same TCP/UDP port as the game (27015 by default, set with -port or the hostport cvar), enabled implicitly by setting rcon_password in dod/cfg/server.cfg - there is no separate enable or rcon-port setting. Commands are the engine's, not DoD:S-specific. banid takes MINUTES first, then the id, and 0 minutes means permanent (TF2 wiki, ZAP, SourceMod's BanIdentity which sends \"banid %d %s\"); it adds the id to the in-memory ban list but does NOT disconnect an already-connected player - send kickid as well - and does NOT survive a restart until writeid is run, which rewrites banned_user.cfg. Likewise removeid unbans live but needs writeid to persist; SourceMod pairs each with writeid for exactly this reason. kickid accepts either the ephemeral userid from status or the Steam ID (uniqueid), and the reason is the rest of the line with no quotes needed (SRCDS forum thread 12641); plain kick takes a NAME instead, which is why this file moderates by Steam ID. say broadcasts to everyone as \"Console: <message>\". No motd command exists - the MOTD is the dod/motd.txt file plus the motdfile cvar - so motd is omitted. status output prints the Steam ID in STEAM_x:y:z form; older builds render the universe digit as 0 (STEAM_0:1:...) and newer ones as 1 (STEAM_1:0:...), so both playerId.pattern and the parse pattern accept either and the engine normalises them. Ban-file location: config lives in dod/cfg/, and writeid is documented as writing banned_user.cfg without a stated folder, so dod/cfg/banned_user.cfg is listed first with the mod-root dod/banned_user.cfg as the fallback; bans only load at boot if server.cfg execs banned_user.cfg. IP bans use the parallel addip/removeip/writeip and dod/cfg/banned_ip.cfg, not recorded here because the id type differs."
+}

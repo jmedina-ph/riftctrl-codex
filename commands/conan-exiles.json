@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "slug": "conan-exiles",
+  "game": {
+    "displayName": "Conan Exiles Dedicated Server",
+    "appId": 443030,
+    "aliases": [
+      "Conan Exiles",
+      "CE",
+      "ConanSandbox"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 25575,
+    "portSetting": "RconPort",
+    "enableSetting": "RconEnabled",
+    "passwordSetting": "RconPassword"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "76561198012345678",
+    "pattern": "7656119[0-9]{10}"
+  },
+  "commands": {
+    "listPlayers": "listplayers",
+    "kick": "kickplayer platformid {playerId} {reason}",
+    "ban": "banplayer platformid {playerId} {reason}",
+    "unban": "unbanplayer {playerId}",
+    "say": "broadcast {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^\\s*\\d+\\s*\\|\\s*(?<name>[^|]+?)\\s*\\|(?:[^|]*\\|){2}\\s*(?<playerId>7656119[0-9]{10})\\s*\\|",
+    "skipLinePattern": "^\\s*Idx\\s*\\|"
+  },
+  "sources": [
+    {
+      "url": "https://conanexiles.fandom.com/wiki/Rcon",
+      "title": "Rcon - Official Conan Exiles Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://pingperfect.com/knowledgebase/743/Conan-Exiles--RCon-Configuration-plus-RCon-Commands.html",
+      "title": "Conan Exiles | RCon Configuration + RCon Commands",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://help.bisecthosting.com/hc/en-us/articles/40805207014427-RCON-Commands-for-Conan-Exiles",
+      "title": "RCON Commands for Conan Exiles - BisectHosting",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://xgamingserver.com/docs/conan-exiles/rcon-setup",
+      "title": "How to Set Up RCON on Your Conan Exiles Server",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.gameserverkings.com/knowledge-base/conan-exiles/how-to-add-admins-and-commands/",
+      "title": "Conan Exiles Admin Commands: Console, Purge & RCON List",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Standard Source RCON over TCP; works with mcrcon. Enabled in ConanSandbox/Saved/Config/WindowsServer/Game.ini under [RconPlugin] with RconEnabled=1, RconPassword=, RconPort=25575, RconMaxKarma=60 (wiki, gameserverkings and xgamingserver agree on section and port). Funcom has never published an official RCON command reference - the list here is the server's own 'help' output as transcribed by Pingperfect and BisectHosting, which agree verbatim: 'kickplayer (index|name|userid|platformid|player) <identification> <message>', 'banplayer (index|name|userid|platformid|player) <identification> <message>', 'unbanplayer <userid|platformid>', 'listplayers', 'listbans', 'broadcast <message>'. The selector keyword is mandatory: 'platformid' selects the Steam64 id, 'userid' the FuncomID. DISAGREEMENT: HostHavoc documents 'kickplayer <steamid>' / 'banplayer <steamid>' and supercraft.host documents 'kickplayer <name>' / 'banplayer <name>', both without the selector keyword; those look like the pre-crossplay (pre-Age of Sorcery) syntax and are believed outdated. banplayer takes no duration - Conan Exiles bans are permanent until unbanplayer. No server-status command was confirmed, so 'info' is omitted rather than guessed; there is no MOTD command (ServerMessageOfTheDay is a ServerSettings.ini value). playerParse is the weakest part of this file: the listplayers response is a pipe-delimited table whose header is reported as 'Idx | Char name | Player name | User ID | Platform ID | Platform Name', but no source quotes real output, so the column positions are inferred - confidence is 'low' for that reason plus the kick/ban syntax disagreement above."
+}

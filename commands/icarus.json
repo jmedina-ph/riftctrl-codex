@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "slug": "icarus",
+  "game": {
+    "displayName": "Icarus Dedicated Server",
+    "appId": 2089300,
+    "aliases": [
+      "Icarus",
+      "ICARUS",
+      "Icarus Server"
+    ]
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "76561198012345678",
+    "pattern": "7656119[0-9]{10}"
+  },
+  "banList": {
+    "paths": [
+      "Icarus/Saved/PlayerBanList.txt",
+      "Saved/PlayerBanList.txt"
+    ],
+    "lineIdPattern": "\"AccountJson\"\\s*:\\s*\"Steam:([0-9]{17})\""
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://github.com/RocketWerkz/IcarusDedicatedServer/wiki/Console---RCON-Commands",
+      "title": "Console / RCON Commands - RocketWerkz/IcarusDedicatedServer Wiki",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/RocketWerkz/IcarusDedicatedServer/wiki/Server-Config-&-Launch-Parameters",
+      "title": "Server Config & Launch Parameters - RocketWerkz/IcarusDedicatedServer Wiki",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/RocketWerkz/IcarusDedicatedServer/wiki/Server-Setup",
+      "title": "Server Setup - RocketWerkz/IcarusDedicatedServer Wiki",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://icarus.wiki.gg/wiki/Dedicated_Servers",
+      "title": "Dedicated Servers - ICARUS Wiki (wiki.gg)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://icarus.fandom.com/wiki/Dedicated_Server",
+      "title": "Dedicated Server - Icarus Wiki (Fandom)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://help.bisecthosting.com/hc/en-us/articles/40146864135323-How-to-Kick-or-Ban-Players-on-an-ICARUS-Server",
+      "title": "How to Kick or Ban Players on an ICARUS Server - BisectHosting",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.gameserverkings.com/knowledge-base/icarus/icarus-console-commands/",
+      "title": "Icarus Console Commands: What Actually Works - GameServerKings",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://pingperfect.com/knowledgebase/1135/Icarus--Admin-or-RCon-Commands.html",
+      "title": "Icarus | Admin / RCon Commands - Pingperfect",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/app/1149460/discussions/0/691999715068289431/",
+      "title": "RCON Clarification (it doesnt exist) :: Icarus General Discussions",
+      "kind": "forum",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": "2026-09-12",
+  "notes": "No server-side command channel. Icarus' admin commands exist, but the only documented way to send them is the IN-GAME CHAT of a connected admin client: RocketWerkz' own dedicated-server wiki page (titled 'Console / RCON Commands', which is where the confusion comes from) says 'To use an RCON command, type / or \\ then the command into the in game chat.' The command set is AdminLogin [Password], KickPlayer [SteamId or PlayerName] [Reason (optional)], BanPlayer [SteamId or PlayerName] [Reason (optional)], UnbanPlayer [SteamId or PlayerName], ReturnToLobby, ReturnToLobbyWhenEmpty and AdminSay [Message]; there is no list-players command at all, and no server-info command. Nothing is recorded under commands because a server manager has no pipe to put that text down: the server exposes only the game port and the Steam query port ('The default ports are 17777 and 27015 respectively', per the official Server Setup page), no RCON port, and -Log 'causes the server to open a log window while running', which no source describes as accepting typed input. The official config page calls AdminPassword the 'Password required for using admin RCON commands' and adds that an empty value means 'just using the RCON /AdminLogin will give admin privilege's to a player' - i.e. it is the credential for the in-game /AdminLogin, not a listener password; Icarus/Saved/AdminWhitelist.txt (one SteamID per line, per the wiki.gg page) pre-grants admin. Bans are file-based and survive restarts: Icarus/Saved/PlayerBanList.txt holds JSON entries with AccountId, AccountJson (of the form Steam:<SteamID64>), BanReason and PlayerNameDuringBan, so unbanning offline is an edit of that file plus a restart; the lineIdPattern here pulls the SteamID64 out of the AccountJson line because that field's Steam:<id> shape is the one actually published, whereas both wiki pages show AccountId only as a redacted placeholder and tell the reader to substitute a Steam ID into it without stating its exact format. Source disagreement: Pingperfect files the same list under 'Admin / RCon Commands' and hosts commonly allocate an RCON port for Icarus, implying a remote console that does not exist - though Pingperfect gives no socket or password connection steps, only the command list. BisectHosting states kick/ban/unban are typed in in-game chat after an admin login, GameServerKings says explicitly 'Icarus does not implement an RCON listener. The commands are chat-only', and a long-standing Steam General Discussions thread titled 'RCON Clarification (it doesnt exist)' independently tells players 'there is no RCON' and that none of these actions 'can be done remotely'. Confidence high: the developer's own wiki plus two independent knowledge bases and a community thread agree on the chat-only channel, and no source documents a working RCON connection. Treat the -Log window as untested rather than proven inert."
+}

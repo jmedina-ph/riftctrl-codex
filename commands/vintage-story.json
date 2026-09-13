@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "slug": "vintage-story",
+  "game": {
+    "displayName": "Vintage Story Server",
+    "appId": null,
+    "aliases": [
+      "Vintage Story",
+      "VintagestoryServer",
+      "VS"
+    ]
+  },
+  "transport": "stdin",
+  "stdin": {
+    "note": "Commands are typed into the console of the running VintagestoryServer process, so the server must be started with stdin attached (screen, tmux, docker run -i, or a panel console that pipes to it). Commands keep the leading slash: the developer wiki shows the server console itself taking '/op playername', and every host doc checked (Shockbyte, WinterNode, BisectHosting, XGamingServer, Game Host Bros) also writes them slashed."
+  },
+  "playerId": {
+    "label": "Username",
+    "example": "Sven",
+    "pattern": "[A-Za-z0-9_]{1,64}"
+  },
+  "commands": {
+    "info": "/stats",
+    "listPlayers": "/list clients",
+    "kick": "/kick {playerId} {reason}",
+    "ban": "/ban {playerId} {reason}",
+    "unban": "/unban {playerId}",
+    "say": "/announce {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^\\s*(?:[\\d.:\\s]*\\[[^\\]]+\\]\\s*)?(?:\\[\\d+\\]\\s*)?(?<playerId>(?<name>[A-Za-z0-9_]{1,64}))\\s*$",
+    "skipLinePattern": "[Cc]lients|[Pp]layers|^\\s*$"
+  },
+  "sources": [
+    {
+      "url": "https://wiki.vintagestory.at/List_of_server_commands",
+      "title": "List of server commands - Vintage Story Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://wiki.vintagestory.at/Setting_up_a_Multiplayer_Server",
+      "title": "Setting up a Multiplayer Server - Vintage Story Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://wiki.vintagestory.at/Server_Config",
+      "title": "Server Config - Vintage Story Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://shockbyte.com/billing/knowledgebase/1083/How-to-KickorBan-Players-on-your-Vintage-Story-Server.html",
+      "title": "How to Kick/Ban Players on your Vintage Story Server - Shockbyte",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://winternode.com/help/games/vintage-story/administration/common-vintage-story-commands",
+      "title": "Vintage Story Server Commands List - WinterNode",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.bisecthosting.com/blog/vintage-story-commands-server-client-command-cheats",
+      "title": "Vintage Story Commands Guide - BisectHosting",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://xgamingserver.com/docs/vintage-story/command-list",
+      "title": "Vintage Story Server Admin Commands - XGamingServer",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.gamehostbros.com/guides/games/vintage-story/console-commands",
+      "title": "How to Use Console Commands on Your Vintage Story Server - Game Host Bros",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Vintage Story moderates by player NAME, not by the internal player UID, so playerId is the username and the same token fills kick, ban and unban. Command set is from the developer-run wiki (/list clients, /kick [playername] [reason], /ban [playername] [reason], /unban [playername], /announce [message], /stats); Shockbyte, WinterNode, XGamingServer and Game Host Bros independently repeat kick/ban/unban and WinterNode and BisectHosting also repeat /list clients, which is the basis for high confidence. Weaker within that: /announce and /stats are echoed only by BisectHosting, whose wording is copied verbatim from the wiki, so those two effectively rest on the wiki alone. Leading slash is NOT in dispute - the wiki's multiplayer-setup page has the server console taking '/op playername' and all five host docs checked (Shockbyte, WinterNode, BisectHosting, XGamingServer, Game Host Bros) write the commands slashed, so send them slashed. One disagreement is recorded rather than followed: ban duration - the wiki, WinterNode, Shockbyte and BisectHosting all give /ban [playername] [reason] with no time argument, while Game Host Bros shows '/ban Steve 7d Griefing' and another hosting template (supercraft.host, not cited here) gives '/ban Griefer Stealing 168' (hours); the duration claims contradict each other and the developer wiki, so no {duration} token is used and bans are permanent until /unban. There is no documented MOTD command: the welcome text is the WelcomeMessage key in serverconfig.json and the runtime /serverconfig command's documented options (maxclients, password, allowpvp, tickrate, ...) do not include it, so motd is omitted. WARNING: playerParse is best-effort - no source publishes the actual output of /list clients, so the line pattern is deliberately permissive (it strips a leading timestamp/[Server ...] prefix and an optional [n] index) and must be corrected at first live verification. Vintage Story is not sold on Steam, so appId is null."
+}

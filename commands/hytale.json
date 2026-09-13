@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "slug": "hytale",
+  "game": {
+    "displayName": "Hytale Server",
+    "appId": null,
+    "aliases": [
+      "Hytale",
+      "Hytale Dedicated Server",
+      "HytaleServer"
+    ]
+  },
+  "transport": "stdin",
+  "stdin": {
+    "note": "Commands are typed into the console of the java -jar HytaleServer.jar process (stdin/stdout). The official Hytale Server Manual writes console commands with a leading slash (for example /auth login device, /update status), while Nodecraft and Shockbyte print console commands without the slash and Shockbyte says the slash is required only in in-game chat; the slash form is used here because the publisher's own console examples use it. The server listens for players on UDP 5520 (QUIC), not TCP; there is no RCON port and no remote admin API. Run /help on the running build to get that build's authoritative command list."
+  },
+  "playerId": {
+    "label": "Username",
+    "example": "Steve",
+    "pattern": "[A-Za-z0-9_]{3,16}"
+  },
+  "commands": {
+    "listPlayers": "/who",
+    "kick": "/kick {playerId}",
+    "ban": "/ban {playerId}",
+    "unban": "/unban {playerId}",
+    "say": "/say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "(?<name>[^()\\r\\n]+?)\\s*\\((?<playerId>[A-Za-z0-9_]{3,16})\\)"
+  },
+  "sources": [
+    {
+      "url": "https://support.hytale.com/hc/en-us/articles/45326769420827-Hytale-Server-Manual",
+      "title": "Hytale Server Manual - Hypixel Studios",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.hytalecommands.com/who",
+      "title": "Hytale /who Command - Syntax & Parameters",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.hytalecommands.com/ban",
+      "title": "Hytale /ban Command - Syntax & Parameters",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://game8.co/games/Hytale/archives/574734",
+      "title": "Hytale Console Commands List - Game8",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.ouiheberg.com/en/documentation/article/how-to-ban-a-player-on-hytale",
+      "title": "How to ban a player on Hytale - ouiheberg documentation",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://eastgate.host/essential-hytale-server-admin-commands/",
+      "title": "5 Essential Hytale Server Commands Every Admin Needs",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://nodecraft.com/support/games/hytale/setup/how-to-kick-ban-and-unban-players-on-your-hytale-server",
+      "title": "How to Kick, Ban and Unban Players on Your Hytale Server - Nodecraft",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://shockbyte.com/help/knowledgebase/articles/how-to-kick-ban-and-unban-players-from-your-hytale-server",
+      "title": "How To Kick, Ban and Unban Players From Your Hytale Server - Shockbyte",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://berrybyte.net/wiki/games/hytale/admin-commands",
+      "title": "Hytale admin and server commands - berrybyte Wiki",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://zap-hosting.com/guides/docs/hytale-commands/",
+      "title": "Hytale: Commands List - ZAP-Hosting Docs",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://xgamingserver.com/blog/hytale-server-configuration-file-structure-and-settings-guide/",
+      "title": "Hytale Server Configuration: File Structure and Settings Guide",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Hytale is in Early Access; the server is a Java jar (HytaleServer.jar) with config.json (server configuration), permissions.json (permission configuration), whitelist.json (whitelisted players) and bans.json (banned players) in the install root, all four confirmed by the official Server Manual. Hypixel Studios publishes that manual but it documents only /auth (/auth login device) and /update (check, download, download --force, apply --confirm, cancel, status, patchline, setup) console commands and never prints a moderation command reference, which is why this file is 'low' despite many agreeing secondary pages. NO RCON AND NO ADMIN REST API: the manual states players connect with QUIC over UDP on port 5520 (not TCP) and lists API endpoints only as 'Under Consideration', so stdin is the only pipe. DISAGREEMENT ON LIST PLAYERS: hytalecommands.com (a command index that reproduces the server's own command metadata and message keys) and Game8 both give '/who - List who is on the server', while ZAP-Hosting's guide gives '/list'; /who is used here because the hytalecommands entry carries the command's internal message keys (playerWithDisplayName = '{displayName} ({username})', plus an error string for its --real argument) that /list has nowhere, and playerParse is built on that documented row format. No alias for /who is documented, so if /who errors try /list. BAN REASON NOT CONFIRMED (corrected on review): ouiheberg and East Gate - both hosting pages - show '/ban <username> --reason <reason>' (ouiheberg also gives the permission node hytale.accesscontrolmodule.command.ban), but hytalecommands lists ban's parameters as the positional pair '[reason] [username]' with no flag at all, Game8 shows only '/ban (username) [--options]', and Nodecraft shows a bare 'ban <username>' while Shockbyte shows 'ban <playername> [reason]' positional. The only form every source agrees on is the bare username, so ban ships as '/ban {playerId}' and the {reason} placeholder is unused; check /help on the live build before adding a reason argument in either shape. No ban duration is documented anywhere, so {duration} is not used either. DISAGREEMENT ON THE SLASH: the official manual and berrybyte write every command with a leading slash for console and chat alike, while Nodecraft and Shockbyte print console commands without one and Shockbyte says the slash is required only in in-game chat. Berrybyte states plainly that 'Official notes do not publish a stable kick, ban, or unban signature', that Early Access patches 'add, rename, and re-permission commands', and that /help is canonical over any published table - treat every string here as build-sensitive. Kick and ban target the USERNAME, not a UUID: Nodecraft and Shockbyte say so explicitly and hytalecommands gives /kick's success message as 'Kicked {username}!'. permissions.json addresses players by UUID, but moderation commands do not. The username character pattern here is inferred, not published. bans.json is confirmed by the official manual to hold the ban list in the server root, but no source shows its field names, so no banList block is recorded rather than guess a regex. /notify (notification to all players across all worlds) exists alongside /say; /tps and /ping exist but no general server info command was confirmed, so 'info' is omitted, as is 'motd'."
+}

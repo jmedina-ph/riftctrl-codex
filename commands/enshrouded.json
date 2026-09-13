@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "slug": "enshrouded",
+  "game": {
+    "displayName": "Enshrouded Dedicated Server",
+    "appId": 2278520,
+    "aliases": [
+      "Enshrouded",
+      "Enshrouded Server",
+      "enshrouded_server"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://enshrouded.zendesk.com/hc/en-us/articles/16055441447709-Dedicated-Server-Configuration",
+      "title": "Dedicated Server Configuration - Enshrouded official support",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://enshrouded.zendesk.com/hc/en-us/articles/19191581489309-Server-Roles-Configuration",
+      "title": "Server Roles Configuration - Enshrouded official support",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://enshrouded.zendesk.com/hc/en-us/articles/16056312924957-Dedicated-Server-FAQ",
+      "title": "Dedicated Server FAQ - Enshrouded official support",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://enshrouded.featureupvote.com/suggestions/523356/common-dedicated-server-management-functions",
+      "title": "Common Dedicated Server Management Functions (445 votes, open, no dev reply)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.gameserverkings.com/knowledge-base/enshrouded/how-to-add-admins-and-commands/",
+      "title": "Enshrouded Admin Commands, Roles and Server Settings",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "No command channel exists. Keen Games' own dedicated-server docs cover only enshrouded_server.json (name, saveDirectory, logDirectory, ip, queryPort default 15637, slotCount, voice/text chat, gameSettingsPreset, userGroups) and document no console, no RCON, no HTTP/REST admin API and no query/command port beyond the game's own query port; the server process window accepts no typed input, so there is no usable stdin console either. Moderation exists only as an in-client permission: the official Server Roles Configuration article gives the dedicated-server Admin group \"canKickBan\": true, i.e. a player who joined with the admin password can kick/ban from the in-game UI, which is not reachable from outside the game client. That article also still says \"We will work on better admin tools and rights management in the near future\", and the 445-vote feature request for kick/ban/whitelist/RCON was still open with no developer reply as of its last comment (Aug 2025). DISAGREEMENT: hosting-blog pages invent a chat-command set for this game - supercraft.host/wiki/enshrouded/admin_commands publishes \"/kick [player]\", \"/ban [player]\", \"/unban [player]\" and \"/serverstatus\" as if typed in chat; none of these appear in any Keen Games source and they are rejected here. The gameserverkings knowledge base agrees with the negative finding, stating outright that \"/kick, /give or /tp ... do not exist in Enshrouded\" and that \"Keen Games ships no console for either the client or the dedicated server, the server window accepts no input\". appId is the Enshrouded Dedicated Server tool (2278520), not the game (1203620). Players do appear in the server log by Steam ID, which is the only external identifier a host-level floor could key on."
+}

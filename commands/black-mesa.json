@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "slug": "black-mesa",
+  "game": {
+    "displayName": "Black Mesa Dedicated Server",
+    "appId": 346680,
+    "aliases": [
+      "Black Mesa",
+      "Black Mesa: Source",
+      "BMS",
+      "bms",
+      "srcds bms"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 27015,
+    "portSetting": "-port",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:1:12345678",
+    "pattern": "(?:STEAM_[0-9]:[01]:[0-9]+|\\[U:1:[0-9]+\\])"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kickid {playerId} {reason}",
+    "ban": "banid {duration} {playerId}",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*(?:[0-9]+\\s+)?(?<accountId>[0-9]+)\\s+\"(?<name>[^\"]*)\"\\s+(?<playerId>STEAM_[0-9]:[01]:[0-9]+|\\[U:1:[0-9]+\\])",
+    "skipLinePattern": "^(?:#\\s*userid\\b|hostname\\s*:|version\\s*:|udp/ip\\s*:|map\\s*:|players\\s*:|edicts\\s*:|tags\\s*:|account\\s*:|os\\s*:|type\\s*:|sourcetv\\s*:)"
+  },
+  "banList": {
+    "paths": [
+      "bms/cfg/banned_user.cfg",
+      "cfg/banned_user.cfg"
+    ],
+    "lineIdPattern": "(STEAM_[0-9]:[01]:[0-9]+|\\[U:1:[0-9]+\\])",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/GameServerManagers/Game-Server-Configs/blob/master/BlackMesa/cvars/full_cvar_list.txt",
+      "title": "LinuxGSM Game-Server-Configs - Black Mesa full cvar/command dump (status, kick, kickid, banid, banip, listid, listip, removeid, removeip, writeid, writeip, say, motdfile, rcon_password, hostport 27015)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/CubeCoders/AMPTemplates/main/black-mesa.kvp",
+      "title": "CubeCoders AMP black-mesa.kvp - srcds -game bms -console -usercon -port ..., AdminMethod=SourceRCON, app 346680, config bms/cfg/server.cfg",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/CubeCoders/AMPTemplates/main/black-mesaports.json",
+      "title": "CubeCoders AMP black-mesaports.json - 27015 'Game and RCON Port'",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://legionhosting.net/kb/black-mesa/black-mesa-admin-commands",
+      "title": "Black Mesa Admin Commands - Legion Hosting (rcon status, kick <userid>, kick \"<name>\", banid <minutes> <userid> with 0 = permanent, removeid <steamid>, writeid to banned_user.cfg, say)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=3495150160",
+      "title": "How to Create a Dedicated Server for Black Mesa (Deathmatch & Co-op) - Steam guide (server.cfg with rcon_password/hostname/sv_password, port 27015, status, kick, banid)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Console_Command_List",
+      "title": "Console Command List - Valve Developer Community (kick 'by slot, userid or name', banid 'Add a user ID to the ban list', removeid, say)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://legionhosting.net/kb/sourcecoop/sourcecoop-black-mesa-co-op-admin-and-commands-guide",
+      "title": "SourceCoop (Black Mesa Co-op) Admin and Commands Guide - Legion Hosting (Black Mesa admin identity written as STEAM_0:1:12345678 in bms/addons/sourcemod/configs/admins_simple.ini)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamdb.info/app/346680/info/",
+      "title": "SteamDB app 346680 - 'Black Mesa Dedicated Server' (tool); the game itself is app 362890",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Black Mesa is srcds with the game directory 'bms', so this is Valve Source RCON over TCP on the game port - 27015 by default (the hostport cvar reads 27015; the port is moved with the -port launch argument). There is no separate RCON port and no enable cvar: putting rcon_password in bms/cfg/server.cfg is what turns RCON on. AMP's template additionally passes -usercon on the srcds command line, which is the usual belt-and-braces for Source servers, so try it if RCON refuses connections. Only vanilla engine commands are recorded - no SourceMod assumed - and each was checked against the server's own cvar/command dump published in LinuxGSM's Game-Server-Configs repo, which lists status ('Display map and connection status'), kick ('Kick a player by name'), kickid ('Kick a player by userid or uniqueid, with a message'), banid, banip, listid, listip, removeid, removeip, writeid ('Writes a list of permanently-banned user IDs to banned_user.cfg'), writeip, say and the motdfile cvar. banid takes MINUTES FIRST and then the identifier, 0 meaning permanent. IMPORTANT: banid and removeid change only the in-memory list - send writeid afterwards or the ban is lost at the next map change; writeid is not folded into the templates because a command here must be a single line. kickid accepts either the numeric userid (captured here as accountId) or the uniqueid, plus a trailing message, which is why {reason} is included; the plain kick command takes a name instead ('kick \"{playerName}\"'). UNRESOLVED, and worth verifying before trusting unban: no source retrieved shows real Black Mesa status output, so the exact rendering of the uniqueid is unconfirmed. Source engines print either the Steam2 form (STEAM_0:1:12345678) or the Steam3 form ([U:1:25000001]) depending on how new the Steamworks SDK behind the build is, and both are accepted by the pattern and the ban-file pattern here; the practical rule is to pass back the string status printed rather than converting it. Sources also disagree on the ban argument: the Steam dedicated-server guide writes 'banid 0 steamid64', a form vanilla Source banid is not documented to parse, while Legion Hosting writes 'banid <minutes> <userid>'; a SourceCoop admin guide for Black Mesa writes admins as STEAM_0:1:12345678. Steam ID rather than userid was chosen for playerId because removeid and bms/cfg/banned_user.cfg are Steam-ID keyed, so a userid would make unban and ban-file reconciliation impossible - the userid is still captured as accountId for callers that prefer 'kickid <userid>'. say broadcasts to everyone and appears prefixed with 'Console:'. There is no MOTD command - the MOTD is the file named by the motdfile cvar (and motdfile_text for clients with HTML MOTDs disabled) - so motd is omitted. The dedicated server is Steam app 346680, 'Black Mesa Dedicated Server'; the game itself is app 362890."
+}

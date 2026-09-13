@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "slug": "xonotic",
+  "game": {
+    "displayName": "Xonotic",
+    "appId": null,
+    "aliases": [
+      "Xonotic Dedicated Server",
+      "xonotic-dedicated",
+      "DarkPlaces"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 26000,
+    "portSetting": "port",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Player number",
+    "example": "3",
+    "pattern": "[0-9]{1,3}"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status 1",
+    "kick": "kick # {playerId} {reason}",
+    "ban": "sv_cmd kickban {playerId} {duration} {reason}",
+    "say": "say {message}",
+    "motd": "sv_motd \"{message}\""
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^(?:\\^[0-9])?(?<accountId>\\S+)\\s+.*?#(?<playerId>[0-9]+)\\s+(?:\\^7)?(?<name>.+)$",
+    "skipLinePattern": "^(?:host|version|protocol|map|timing|players):|^\\^2IP"
+  },
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/xonotic/darkplaces/div0-stable/host_cmd.c",
+      "title": "xonotic/darkplaces host_cmd.c (status, kick, say command implementations)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/xonotic/darkplaces/div0-stable/netconn.c",
+      "title": "xonotic/darkplaces netconn.c (rcon_password, rcon_secure, port cvar default 26000)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/xonotic/xonotic-data.pk3dir/master/qcsrc/server/command/banning.qc",
+      "title": "Xonotic QuakeC server/command/banning.qc (sv_cmd ban/banlist/kickban/unban usage)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://xonotic.org/doxygen/qcsrc/banning_8qc.html",
+      "title": "Xonotic QuakeC: server/command/banning.qc File Reference (xonotic.org doxygen)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/xonotic/xonotic/blob/master/server/server.cfg",
+      "title": "Xonotic official example server.cfg (rcon_password, port 26000, sv_motd, rcon_restricted_commands)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/xonotic/xonotic-data.pk3dir/master/commands.cfg",
+      "title": "Xonotic commands.cfg (bare aliases kick, kickban, banlist, unban; default rcon_restricted_commands)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://xonotic.fandom.com/wiki/Game_Server_Configuration",
+      "title": "Game Server Configuration - Xonotic Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Xonotic runs on the DarkPlaces engine, so rcon is Quake/DarkPlaces rcon, NOT Valve Source RCON: a connectionless UDP packet (\\xff\\xff\\xff\\xffrcon <password> <command>) sent to the server's ordinary game port, cvar \"port\", default 26000. There is no separate rcon port and no enable switch - rcon is off while rcon_password is empty and on once it is set (see server.cfg: \"Empty means rcon is disabled\"). rcon_secure 1/2 adds challenge/HMAC and requires synced clocks; rcon_restricted_password + rcon_restricted_commands give a limited admin account whose shipped default already includes kick, kickban, status and \"sv_cmd unban *\". The same command text works typed straight into the dedicated server's own stdin console.\nPLAYER ID: Xonotic moderates by the per-session client/entity number shown as #N by status (kick help: \"kick a player off the server by number or name\"; sv_cmd kickban help: \"<client> is the entity number or name of the player\"). Names are accepted too but are colour-coded and space-bearing, so the number is what this file targets. The number is only stable for the current connection - always re-run listPlayers immediately before acting.\nKICK SYNTAX IS A TRAP: the engine's Host_Kick_f only treats a number as a number when \"#\" is a SEPARATE token (it compares Cmd_Argv(1) to \"#\" and reads the number from Cmd_Argv(2)), so \"kick # 3 reason\" works and \"kick #3 reason\" falls through to a name lookup for the literal string \"#3\" and hits nobody. The QuakeC side (GetIndexedEntity) is the opposite and accepts \"#3\", \"# 3\" or a bare \"3\"; the bare number is used here for kickban because it is valid in both readings.\nBAN: sv_cmd kickban <client> [<bantime>] [<masksize>] [<reason>] - bantime in seconds (g_ban_default_bantime if omitted), masksize 1-4 is the IP mask width (g_ban_default_masksize if omitted). The argument parser (GET_BAN_ARG) consumes the next token as masksize only if it parses as a non-zero number, so a reason beginning with a digit will be silently eaten as the mask width; insert an explicit masksize (e.g. sv_cmd kickban 3 3600 4 reason) if reasons may start with numbers. sv_cmd ban <address> also exists but takes an IP or IP range, not a player, so it is not recorded as the ban command. A bare \"kickban\" alias exists via commands.cfg; the sv_cmd form is used here because it does not depend on the alias file being loaded.\nUNBAN IS DELIBERATELY OMITTED: sv_cmd unban <banid> takes the ban-list INDEX printed by sv_cmd banlist, not a player identifier, so filling it with {playerId} would delete an unrelated ban. Unban by hand: run \"sv_cmd banlist\", then \"sv_cmd unban <index>\". Bans are held in the g_banned_list cvar (optionally synced via g_ban_sync_uri), not in a ban file under the install root, so no banList is recorded.\nLIST: plain \"status\" prints two lines per player (name line then an indented address line); \"status 1\" is the extended one-line-per-player layout used here - format \"%s%-47s %2i %4i %2i:%02i:%02i %4i  #%-3u ^7%s\" = colour code, address, %pl, ping, time, frags, #number, name. accountId captures the address:port (botclient for bots, or \"hidden\" when sv_status_privacy hides it from clients - rcon replies are unaffected). \"sv_cmd teamstatus\" is an alternative that adds team information.\nMOTD is the sv_motd cvar, shown on connect; literal \\n in the value becomes a line break. say broadcasts from the console as <hostname> (or sv_adminnick when set). Xonotic is not distributed on Steam, so appId is null."
+}

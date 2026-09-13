@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "slug": "action-source",
+  "game": {
+    "displayName": "Action: Source Dedicated Server",
+    "appId": 985050,
+    "aliases": [
+      "Action: Source",
+      "Action Source",
+      "ahl2",
+      "AHL2",
+      "Action Half-Life 2"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 27015,
+    "portSetting": "hostport",
+    "enableSetting": "-usercon",
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:1:12345678",
+    "pattern": "STEAM_[0-5]:[01]:[0-9]+|\\[U:1:[0-9]+\\]"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kickid {playerId} {reason}",
+    "ban": "banid {duration} {playerId} kick",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*(?<accountId>[0-9]+)\\s+\"(?<name>.*)\"\\s+(?<playerId>STEAM_[0-5]:[01]:[0-9]+|\\[U:1:[0-9]+\\])",
+    "skipLinePattern": "^(?:hostname|version|udp/ip|steamid|account|map|players|edicts|tags|#\\s*userid)"
+  },
+  "banList": {
+    "paths": [
+      "ahl2/cfg/banned_user.cfg",
+      "ahl2/banned_user.cfg"
+    ],
+    "lineIdPattern": "^banid\\s+\\S+\\s+(STEAM_[0-5]:[01]:[0-9]+|\\[U:1:[0-9]+\\])",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://action-source.net/help.html",
+      "title": "Action: Source - Help / Dedicated server setup",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Console_Command_List",
+      "title": "Console Command List - Valve Developer Community",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.jodyhatton.com/files/sourcededicatedserverconsolecommands.htm",
+      "title": "Source Dedicated Server Console Commands (cvarlist dump)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://forums.srcds.com/viewtopic/12641",
+      "title": "[Resolved] kick <player> with reason? - srcds.com forums",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.teamfortress.tv/38999/how-can-i-set-ban-length-for-tf2-dedicated-server",
+      "title": "How can I set ban length for tf2 dedicated server?",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/985050/",
+      "title": "Action: Source Dedicated Server - SteamDB",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Action: Source is a standalone free Source-engine mod; its dedicated server is plain srcds. The developer's own help page gives the install (steamcmd +app_update 985050) and the start line \"./srcds_run -usercon -game ahl2 +ip <ip> +map act_island +maxplayers 20 +exec server.cfg\", and documents rcon_password in server.cfg - so the command channel is stock Valve Source RCON on the game port (hostport, default 27015); -usercon is a launch argument, not a cvar. Commands here are engine-level Source commands, not mod-specific: status lists players and is also the server status readout (there is no separate playerlist command). kickid takes a userid OR a Steam ID plus a reason, and the reason must NOT be quoted - srcds.com forum reports quoting the message breaks it (example given: kickid STEAM_0:1:223 Please do not swear). banid is \"banid <minutes> <userid|uniqueid> {kick}\" with 0 minutes = permanent; banid has no reason argument natively (a reason on ban requires SourceMod or Mani Admin Plugin), so {reason} is deliberately absent from the ban template. Bans made with banid live only in memory until writeid is run, which rewrites ahl2/cfg/banned_user.cfg; removeid unbans live and writeid must be run again to persist that. There is no motd command - Source serves motd.txt from the game folder - so motd is omitted. Uncertainty: the exact uniqueid format printed by status on this specific SDK-2013-derived build was not observed, so playerId.pattern and playerParse accept both the legacy STEAM_0:1:x form and the modern [U:1:x] form; banid and kickid accept either."
+}

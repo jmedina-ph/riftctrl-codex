@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "slug": "ballistic-overkill",
+  "game": {
+    "displayName": "Ballistic Overkill Dedicated Server",
+    "appId": 416880,
+    "aliases": [
+      "Ballistic Overkill",
+      "BO",
+      "BODS",
+      "boserver"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://steamcommunity.com/app/296300/discussions/1/135508662495143639/",
+      "title": "[TUTORIAL] Dedicated Server ( Windows | Linux ) - Aquiris (imnotjay)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/296300/discussions/1/360671583798033285/",
+      "title": "TUTORIAL: Dedicated Server Windows (2016) - config.txt field list",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://tuxdb.com/game/1612&gamenews=1",
+      "title": "Ballistic Overkill Steam patch notes mirror - 1.4.1, 27 Sep 2017: \"Fixed admin commands not working. If you're in a server you own/host, type ./help to see all commands.\"",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/master/lgsm/config-default/config-lgsm/boserver/_default.cfg",
+      "title": "LinuxGSM boserver _default.cfg - appid 416880, unity3d, querytype protocol-valve, no rcon settings",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://linuxgsm.com/servers/boserver/",
+      "title": "LinuxGSM - Ballistic Overkill Linux Game Server",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/296300/discussions/1/412448158143304845/",
+      "title": "Admin tools / commands for dedicated servers?! - developer reply on webadmin tooling",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/416880/",
+      "title": "SteamDB - Ballistic Overkill Dedicated Server (AppID 416880, type Tool)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "No command channel a server manager can reach. BODS (SteamCMD app 416880, Unity, started as BODS.exe / ./BODS.x86_64 -batchmode -nographics -dedicated -configfile=config.txt) exposes no RCON, no admin HTTP API, and no documented stdin command parser; config.txt holds only ServerName, ServerPort, QueryPort, MaxPlayers, MaxSpectators, MaxPing, GameMap, GameMode, MatchTime, Password, BannerURL, ClickURL, Autobalance, DedicatedBroadcast and OwnerId - there is no RCON enable/port/password setting. LinuxGSM's boserver config carries no rcon fields either and queries the server with the Valve A2S protocol only (QueryPort default 27016), which is read-only. The game's only moderation path is in-game CHAT commands typed by the player whose SteamID64 is set as config.txt OwnerId while connected to the server as a client: ./help, ./list (numbers every player in the match), ./kick <number>, ./blacklist <number> (permanent ban on that server) and ./prioritylist <number>. Patch 1.4.1 (27 Sep 2017) confirms the form: \"Fixed admin commands not working. If you're in a server you own/host, type ./help to see all commands.\" They are deliberately NOT recorded as commands here for two reasons: they are client-side chat input with no server-side pipe to send them down, and they address players by their transient position in the ./list output rather than by any stable identifier, so a stored template could not be filled in safely. For the same reason no playerId is recorded. A 2017 developer reply to a request for webadmin kick/ban tooling said only \"we do want to elaborate more the dedicated servers tools in the future\"; nothing shipped. No hosting provider page found claims RCON for this game. Context: official servers were shut down 2020-01-31 and the game was delisted from Steam 2023-02-13, though the dedicated-server tool is still downloadable anonymously and community servers still run."
+}

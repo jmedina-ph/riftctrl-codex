@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "slug": "risk-of-rain-2",
+  "game": {
+    "displayName": "Risk of Rain 2 Dedicated Server",
+    "appId": 1180760,
+    "aliases": [
+      "Risk of Rain 2",
+      "RoR2",
+      "RoR2DS",
+      "Risk of Rain 2 Dedicated Server"
+    ]
+  },
+  "transport": "stdin",
+  "stdin": {
+    "note": "The dedicated server is driven from its own console window. It prints \"Press Enter to chat\" once ready, and CubeCoders' AMP template for this game sets App.AdminMethod=STDIO, i.e. admin input is written to the server process's standard input. There is no RCON, no REST/admin API and no remote console of any kind. The same console command vocabulary is also executed at boot from Risk of Rain 2_Data/Config/server.cfg, where statements are semicolon-terminated (sv_hostname \"...\"; sv_maxplayers 4;)."
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "76561198000000000",
+    "pattern": "7656119[0-9]{10}"
+  },
+  "commands": {
+    "kick": "kick_steam {playerId}",
+    "ban": "ban_steam {playerId}",
+    "say": "say \"{message}\""
+  },
+  "sources": [
+    {
+      "url": "https://riskofrain2.wiki.gg/wiki/Developer_Console",
+      "title": "Developer Console - Risk of Rain 2 Wiki (wiki.gg)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://riskofrain2.fandom.com/wiki/Developer_Console",
+      "title": "Developer Console - Risk of Rain 2 Wiki (Fandom)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.gamepur.com/guides/risk-rain-2-full-list-console-commands",
+      "title": "Risk of Rain 2 Console Commands - Full List",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/632360/discussions/0/4907188445920743058/",
+      "title": "Where is the kick option? - Steam Discussions",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/CubeCoders/AMPTemplates/blob/main/risk-of-rain-2.kvp",
+      "title": "CubeCoders AMP template risk-of-rain-2.kvp",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1938378081",
+      "title": "Risk of Rain 2 Dedicated Server for Windows (Steam guide)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://thunderstore.io/package/Harb/R2DSEssentials/",
+      "title": "R2DSEssentials by Harb (dedicated-server mod)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Commands: kick_steam <steamid64> and ban_steam <steamid64> both carry the SenderMustBeServer flag, and say carries ExecuteOnServer, per the Risk of Rain 2 wiki command table; wiki.gg and Fandom copies are forks of one wiki and count as ONE source, so independent agreement comes from Gamepur's command list and a Steam discussion where the host workflow is quoted as kick_steam \"steam ID\". No listPlayers: the base game exposes no roster command. steam_lobby_print_members exists but reads the Steam LOBBY, which a dedicated server does not use for joins, so it is deliberately not recorded as listPlayers; AMP instead scrapes joins/leaves out of the log (NetworkManagerSystem.AddPlayerInternal / 'connection <id> has been disconnected'). No unban command exists in the vanilla command table, and no ban-list file location is published, so unban and banList are omitted rather than guessed. RISK, the reason for confidence low: the vanilla server console prompt reads 'Press Enter to chat', and the community dedicated-server mod R2DSEssentials advertises an 'Interactible Server Console to execute commands directly from the console window' as a feature it ADDS - so it is possible that stdin on an unmodded server only sends chat and does not execute console commands. Nothing published settles this; it needs live verification before these three commands are trusted. Hopoo/Gearbox stopped updating the dedicated server app around 26 May 2022 (per the avivace/ror2-server Docker project), so the command set is unlikely to move. Hosting-panel pages for this game (Nitrado, Psychz, IONOS) document setup only and contain no moderation commands."
+}

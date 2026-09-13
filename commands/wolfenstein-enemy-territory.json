@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "slug": "wolfenstein-enemy-territory",
+  "game": {
+    "displayName": "Wolfenstein: Enemy Territory",
+    "appId": null,
+    "aliases": [
+      "W:ET",
+      "ET",
+      "Enemy Territory",
+      "Wolfenstein Enemy Territory",
+      "Wolfenstein: Enemy Territory Dedicated Server",
+      "ET: Legacy",
+      "etlegacy"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 27960,
+    "portSetting": "net_port",
+    "enableSetting": null,
+    "passwordSetting": "rconPassword"
+  },
+  "playerId": {
+    "label": "Client number",
+    "example": "3",
+    "pattern": "[0-9]{1,2}"
+  },
+  "commands": {
+    "info": "serverinfo",
+    "listPlayers": "status",
+    "kick": "clientkick {playerId}",
+    "ban": "clientkick {playerId} {duration}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^\\s*(?<playerId>\\d+)\\s+-?\\d+\\s+(?:\\d+|CNCT|ZMBI)\\s+(?<name>.+?)\\s+\\d+\\s+(?<accountId>\\S+?)(?::\\d+)?\\s+\\d+\\s+\\d+\\s*$",
+    "skipLinePattern": "^(?:map:|num\\s+score|-{3})"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/id-Software/Enemy-Territory/blob/master/src/game/g_svcmds.c",
+      "title": "id Software Enemy Territory source - g_svcmds.c (kick, clientkick, ban, addip, removeip, listip)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/id-Software/Enemy-Territory/blob/master/src/server/sv_ccmds.c",
+      "title": "id Software Enemy Territory source - sv_ccmds.c (status, serverinfo, say; banUser/banClient only under AUTHORIZE_SUPPORT)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/id-Software/Enemy-Territory/blob/master/src/server/sv_main.c",
+      "title": "id Software Enemy Territory source - sv_main.c (SVC_RemoteCommand: connectionless \"rcon <password> <command>\" packet, sv_rconPassword)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/etlegacy/etlegacy/blob/master/src/game/g_svcmds.c",
+      "title": "ET: Legacy source - console command table (kick and clientkick both mapped to Svcmd_Kick_f, ban, addip, removeip)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wolffiles.de/etmanual/en/Tech%20Help/Information/Server%20Setup.htm",
+      "title": "Enemy Territory manual - Server Setup & Advanced Commands (status, kick, rconpassword, net_port 27960)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wolffiles.de/filebase/ET/Stuff/ET-Serverguide.pdf",
+      "title": "Advanced Wolfenstein: Enemy Territory Server Setup Guide (rconpassword, g_banIPs, net_port 27960)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://legionhosting.net/kb/wolfenstein-enemy-territory/wolfenstein-enemy-territory-admin-commands",
+      "title": "Legion Hosting KB - W:ET admin commands (contains unsupported banClient/unban/banlist claims)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": "2026-09-13",
+  "notes": "Transport is the id Tech 3 connectionless rcon (an out-of-band UDP packet \"rcon <password> <command>\" to the game port, handled by SVC_RemoteCommand in sv_main.c), NOT Source RCON; it is turned on simply by setting the rconPassword cvar (Cvar_Get(\"rconPassword\", \"\", CVAR_TEMP)), and the port is the game port (net_port, PORT_SERVER 27960). listPlayers uses the engine's status, whose first column is the client slot number that clientkick takes; SV_Status_f prints num/score/ping-or-CNCT-or-ZMBI/name/lastmsg/address:port/qport/rate, which is what the regex reads. kick: vanilla and ET: Legacy both accept \"kick <player name> [timeout]\" and \"clientkick <client number> [timeout]\" (in id's engine both are commented out of SV_AddOperatorCommands and moved to the qagame module's ConsoleCommand; ET: Legacy maps both names to the same Svcmd_Kick_f \"to keep compatibility\"). The slot-number form is recorded because status yields the slot directly and names carry ^x colour codes. Careful: with no timeout argument the timeout defaults to 300, and the game module then drops the client AND temp-bans their address for that many seconds (USE_ENGINE_BANLIST is qtrue), so \"clientkick <num> 0\" is a pure kick with no ban. ban is recorded as \"clientkick {playerId} {duration}\" (duration in seconds) because it targets the slot number reliably on both vanilla 2.60b and ET: Legacy; it is an engine temp ban held in memory and lost when the server restarts. The permanent alternative is the game module's own \"ban\" command (G_PlayerBan), which adds the player's IP to the g_banIPs filter: on vanilla 2.60b it resolves the target with G_refClientnumForName (colour-stripped name only, usage string \"ban <clientname>\"), while ET: Legacy's version uses G_ClientNumberFromString and so also accepts a client number - \"ban {playerId}\" is therefore correct on ET: Legacy but silently misses on vanilla, hence it is not the recorded form. IP bans are managed with \"addip <ip-mask>\", \"removeip <ip-mask>\" and \"listip\" (the list is persisted in the g_banIPs cvar, not in a ban file), so no unban is recorded: removeip needs an IP mask rather than a player id, and ET: Legacy's engine adds \"cleartempbans\" which clears the entire temp list. No MOTD command exists; vanilla shows the server_motd0..server_motd5 cvars on the connect screen, set with e.g. \"set server_motd0 <text>\". Console say is registered only on dedicated servers and broadcasts as a centre-print prefixed \"server: \". Disagreement: Legion Hosting's knowledge base lists \"banClient <id>\", \"unban <id>\" and \"banlist\"; banClient (and banUser) exist in id's engine only inside the dead #ifdef AUTHORIZE_SUPPORT block (they needed id's auth server), and unban/banlist exist in neither id's source nor ET: Legacy's - treat those three as wrong. Server mods (ETPub, NoQuarter, ETPro, silEnT) add their own shrubbot !kick/!ban commands on top of this; the values here are the stock console/rcon set."
+}

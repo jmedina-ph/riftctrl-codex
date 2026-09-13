@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "slug": "fistful-of-frags",
+  "game": {
+    "displayName": "Fistful of Frags Dedicated Server",
+    "appId": 295230,
+    "aliases": [
+      "Fistful of Frags",
+      "FoF",
+      "fofserver"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 27015,
+    "portSetting": null,
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_1:0:12345678",
+    "pattern": "(?:STEAM_[0-9]:[01]:[0-9]+|\\[U:1:[0-9]+\\])"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kickid {playerId} {reason}",
+    "ban": "banid {duration} {playerId}",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*\\d+\\s+(?:\\d+\\s+)?\"(?<name>.*?)\"\\s+(?<playerId>STEAM_[0-9]:[01]:[0-9]+|\\[U:1:[0-9]+\\])",
+    "skipLinePattern": "^(?:hostname|version|udp/ip|steamid|account|map|players|edicts|#\\s*userid)"
+  },
+  "banList": {
+    "paths": [
+      "fof/cfg/banned_user.cfg"
+    ],
+    "lineIdPattern": "^banid\\s+\\S+\\s+\"?([^\"\\s]+)",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://steamcommunity.com/app/265630/discussions/6/540741131558075967/",
+      "title": "Config file examples :: Fistful of Frags Server Administration",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/GameServerManagers/Game-Server-Configs/blob/master/FistfulofFrags/server.cfg",
+      "title": "Game-Server-Configs/FistfulofFrags/server.cfg",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=189354886",
+      "title": "Complete HL2DM Console Commands/CVARs LIST (Source SDK 2013 engine baseline)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://wiki.teamfortress.com/wiki/List_of_useful_console_commands",
+      "title": "List of useful console commands - Official TF2 Wiki (Source engine kick/banid syntax)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://totalcsgo.com/commands/kickid",
+      "title": "kickid / removeid / banid command syntax - TotalCSGO",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Console_Command_List",
+      "title": "Console Command List - Valve Developer Community",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://linuxgsm.com/servers/fofserver/",
+      "title": "Fistful of Frags Linux Game Server - LinuxGSM",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamdb.info/app/295230/",
+      "title": "Fistful of Frags Dedicated Server - AppID 295230 (Tool, parent 265630)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://legionhosting.net/kb/fistful-of-frags/fistful-of-frags-admin-commands?language=english",
+      "title": "Fistful of Frags Admin Commands - Legion Hosting",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Stock Source engine (Source SDK Base 2013 Multiplayer) server; RCON is the Valve Source protocol on the game port, so there is no separate RCON port setting - only rcon_password in fof/cfg/server.cfg. Confirmed by two independent configs: the developer-posted server.cfg in the game's own Server Administration thread and the LinuxGSM Game-Server-Configs FoF server.cfg; both set only rcon_password, both exec banned_user.cfg and banned_ip.cfg, both call writeid/writeip, and neither contains any port directive. Commands are engine-level, not FoF-specific. kickid takes a userid OR uniqueid plus a free-text message ('Kick a player by userid or uniqueid, with a message' in the SDK 2013 HL2DM command list; totalcsgo documents the same argument order as 'kickid <User ID> <Message>'), while plain kick takes a NAME (SDK 2013 list: 'Kick a player by name'; TF2 wiki: 'kick <name>'), so the two are not interchangeable - Legion Hosting's FoF page documents 'rcon kick <userid>', which is wrong for this engine and would silently miss, so kickid is recorded instead. Valve's own Console_Command_List page is NOT evidence for that distinction and must not be cited for it: it has no kickid entry at all and describes kick as 'Kick a player by slot, userid or name' (GoldSrc-era wording); it is retained here only for banid, removeid and say. banid's first argument is minutes with 0 = permanent and it accepts a Steam ID (TF2 wiki: 'banid <minutes> <steamid>', '0 minutes is a permanent ban'; totalcsgo: 'banid <Minutes> <User ID>', 'use the value 0 to permanently ban'; Legion Hosting echoes the same order). Bans and unbans are in-memory only: run writeid after any banid or removeid, or the change is lost on restart - which is why the developer's server.cfg execs the banned_*.cfg files and calls writeid/writeip. It is commonly reported that banid does not disconnect an already-connected player, so a full ban is banid then kickid; that specific behaviour was NOT verified against any source opened here. IP bans use addip/removeip against banned_ip.cfg and are not modelled. The Steam ID printed by 'status' is STEAM_x:y:z on older Source builds and [U:1:n] on newer ones; playerId.pattern accepts both (the alternation is wrapped in a non-capturing group so a consumer that anchors it does not silently loosen the match) and playerParse.linePattern accepts both plus the optional second numeric column some builds print. SourceMod/Metamod are commonly installed on FoF servers and add sm_kick/sm_ban, but those are addons and are deliberately not recorded as the stock interface. Not verified against a live server."
+}

@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "slug": "openttd",
+  "game": {
+    "displayName": "OpenTTD",
+    "appId": 1536610,
+    "aliases": [
+      "OpenTTD Dedicated Server",
+      "Open Transport Tycoon Deluxe",
+      "openttd"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 3977,
+    "portSetting": "server_admin_port",
+    "enableSetting": null,
+    "passwordSetting": "admin_password"
+  },
+  "playerId": {
+    "label": "Client ID",
+    "example": "3",
+    "pattern": "[0-9]{1,5}"
+  },
+  "commands": {
+    "info": "server_info",
+    "listPlayers": "clients",
+    "kick": "kick {playerId} \"{reason}\"",
+    "ban": "ban {playerId} \"{reason}\"",
+    "say": "say \"{message}\""
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "Client #(?<playerId>\\d+)\\s+name: '(?<name>.*)'\\s+company: \\S+\\s+IP: (?<accountId>\\S+)",
+    "skipLinePattern": "^\\s*$"
+  },
+  "banList": {
+    "paths": [
+      "private.cfg",
+      "openttd.cfg",
+      ".openttd/private.cfg",
+      ".openttd/openttd.cfg"
+    ],
+    "lineIdPattern": "^\\s*([0-9A-Fa-f.:]+)\\s*$"
+  },
+  "sources": [
+    {
+      "url": "https://wiki.openttd.org/en/Manual/Console",
+      "title": "OpenTTD Manual - Console",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.openttd.org/en/Manual/Dedicated%20server",
+      "title": "OpenTTD Manual - Dedicated server",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/OpenTTD/OpenTTD/blob/master/src/console_cmds.cpp",
+      "title": "OpenTTD src/console_cmds.cpp (command registration and usage strings)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/OpenTTD/OpenTTD/blob/master/src/network/network_server.cpp",
+      "title": "OpenTTD src/network/network_server.cpp (NetworkPrintClients output format)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/OpenTTD/OpenTTD/blob/master/src/network/core/tcp_admin.h",
+      "title": "OpenTTD src/network/core/tcp_admin.h (admin protocol packet types)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/OpenTTD/OpenTTD/blob/master/src/network/core/config.h",
+      "title": "OpenTTD network core config.h (NETWORK_ADMIN_PORT = 3977)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/OpenTTD/OpenTTD/blob/master/src/table/settings/network_settings.ini",
+      "title": "OpenTTD network settings table (server_admin_port)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/OpenTTD/OpenTTD/blob/master/src/table/settings/network_secrets_settings.ini",
+      "title": "OpenTTD network secrets settings (admin_password, rcon_password)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Command text is identical on every OpenTTD channel; only the pipe differs. Three pipes exist: (1) the admin port, OpenTTD's own binary admin protocol on server_admin_port (default 3977, NETWORK_ADMIN_PORT in src/network/core/config.h). The port listens whenever server_admin_port is non-zero, but a connection can only authenticate when network.admin_password is non-empty in secrets.cfg (or the admin presents a key listed in network.admin_authorized_keys). The admin remote-console packet (PacketAdminType::AdminRemoteConsoleCommand in current master; the pre-rename enum was ADMIN_PACKET_ADMIN_RCON) carries the console command text verbatim, and console output comes back as ServerRemoteConsoleCommand lines followed by ServerRemoteConsoleCommandEnd. This is recorded as rcon/custom because it is the only remote channel an external manager can drive. It is NOT Source RCON. (2) The dedicated server (-D) reads the same commands from stdin, which is what the wiki documents and what screen/dtach-based panels use; -f detaches with no console. (3) In-game 'rcon <password> \"<command>\"' from a connected game client uses network.rcon_password over the game port (server_port, default 3979) and needs a full game client, so it is not usable here. Identifier: kick and ban take '<ip | client-id> [<reason>]'; client-id is the numeric id printed by 'clients' and is what the in-game help points at (the kick/ban help lines say: For client-id's, see the command clients), so playerId is the client id. ConKickOrBan dispatches on the argument containing '.' or ':' - anything matching that is treated as an IP and kicks/bans every client on that address, so do not feed an IP into {playerId}. Bans are IP-based and permanent - there is no duration argument. unban is deliberately omitted: its syntax is 'unban <ip | banlist-index>', and ConUnBan falls back to reading a non-matching argument as a 1-based banlist index, so a client id would silently unban the wrong entry. Use 'banlist' and then 'unban <ip>' by hand. The ban list is persisted as a bare-value [bans] group in the private config (private.cfg since the PrivateSecrets config version; older builds kept it in openttd.cfg); banList.paths are best-effort because the config directory depends on -c and the OS personal dir, and lineIdPattern can also match bare addresses in the neighbouring [servers] and [server_bind_addresses] groups, which settings.cpp writes to the same private file. No motd command exists; 'say \"<msg>\"' is the only broadcast. 'info' is registered via IConsole::AliasRegister(\"info\", \"server_info\"); the canonical name is used here. 'status' also lists connected clients but with a different layout - 'clients' is the roster, printed by NetworkPrintClients as: Client #1  name: 'Player'  company: 1  IP: 192.168.1.5 (on a client console the IP column is absent, but the dedicated server always prints it; the server pseudo-client shows IP: server). Reason arguments are passed as a quoted argv token and are rejected at 255 characters or more, so the usable cap is 254; the console tokenizer emits an empty token for \"\", so an empty {reason} is accepted and passed through as an empty reason."
+}

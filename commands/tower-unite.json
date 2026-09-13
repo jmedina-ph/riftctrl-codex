@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "slug": "tower-unite",
+  "game": {
+    "displayName": "Tower Unite Dedicated Server",
+    "appId": 439660,
+    "aliases": [
+      "Tower Unite",
+      "TU",
+      "Dedicated Condo",
+      "Tower Unite Condo Server"
+    ]
+  },
+  "transport": "none",
+  "playerId": {
+    "label": "Steam ID",
+    "example": "76561198000000000",
+    "pattern": "7656119[0-9]{10}"
+  },
+  "banList": {
+    "paths": [
+      "Tower/Saved/Config/WindowsServer/TowerBans.ini",
+      "Tower/Saved/Config/LinuxServer/TowerBans.ini"
+    ],
+    "lineIdPattern": "SteamID=([0-9]{15,17})"
+  },
+  "sources": [
+    {
+      "url": "https://www.towerunite.com/guides/condo_dedicated_windows.html",
+      "title": "Hosting Dedicated Windows - Tower Unite Guides",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.towerunite.com/guides/condo_dedicated_linux.html",
+      "title": "Hosting Dedicated Linux - Tower Unite Guides",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://towerunite.wiki.gg/wiki/Player_Permissions_(Condo)",
+      "title": "Player Permissions (Condo) - Tower Unite Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=649574877",
+      "title": "Guide :: Server Administration - Tower Unite",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/CubeCoders/AMPTemplates/issues/230",
+      "title": "Tower Unite Game Request for AMP (CubeCoders/AMPTemplates #230)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://legionhosting.net/kb/tower-unite/tower-unite-admin-commands",
+      "title": "Tower Unite Admin Commands - Legion Hosting KB (contradicted)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "No command channel exists. PixelTail's own Windows and Linux dedicated-condo guides document no RCON, no admin API and no server console: admins are declared with AdminSteamID under [Administration] in Tower/Saved/Config/<Platform>Server/TowerServer.ini, and they kick, ban and set per-player permissions from the in-game condo scoreboard (Settings > Player Permissions, which lists 'Kick Players' and 'Ban Players' as permissions - see the official wiki). There is no documented way to list players, broadcast or kick from outside the game client. Bans persist in TowerBans.ini beside TowerServer.ini, as lines 'SteamID=<64-bit id>,0' under a [Bans] section; the guides say the file can be edited by hand, but do not say whether a running server re-reads it, so assume a restart. Disagreement: Legion Hosting's knowledgebase publishes a kick/ban/unban/mute/players/say/status command list for Tower Unite with no primary source; nothing from PixelTail, the official wiki or the Steam 'Server Administration' guide mentions any such command, and it fits the generic fabricated hosting-blog pattern - treat it as wrong. A 2019 AMP template request (CubeCoders/AMPTemplates#230) speculates 'Supports RCON/Console input? I think yes' but links a setup thread that mentions neither, so it is not evidence. appId 439660 is the separate 'Tower Unite Dedicated Server' Steam app; the game itself is 394690."
+}

@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "slug": "half-life-2-deathmatch",
+  "game": {
+    "displayName": "Half-Life 2: Deathmatch Dedicated Server",
+    "appId": 232370,
+    "aliases": [
+      "Half-Life 2: Deathmatch",
+      "Half-Life 2 Deathmatch",
+      "HL2DM",
+      "HL2:DM",
+      "hl2mp"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 27015,
+    "portSetting": "-port",
+    "enableSetting": "rcon_password",
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:1:12345678",
+    "pattern": "STEAM_[0-9]:[01]:[0-9]+"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kickid {playerId} {reason}",
+    "ban": "banid {duration} {playerId} kick",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*(?<accountId>\\d+)\\s+(?:\\d+\\s+)?\"(?<name>.*)\"\\s+(?<playerId>STEAM_[0-9]:[01]:[0-9]+)",
+    "skipLinePattern": "^(hostname|version|udp/ip|os|type|map|players|edicts|tags|#end|#\\s*userid)"
+  },
+  "banList": {
+    "paths": [
+      "hl2mp/cfg/banned_user.cfg",
+      "cfg/banned_user.cfg"
+    ],
+    "lineIdPattern": "banid\\s+[0-9.]+\\s+(STEAM_[0-9]:[01]:[0-9]+)",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=189354886",
+      "title": "Complete HL2DM Console Commands/CVARs LIST",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Console_Command_List",
+      "title": "Console Command List - Valve Developer Community",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Console_Command_List/W",
+      "title": "Console Command List/W (writeid, writeip) - Valve Developer Community",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/alliedmodders/sourcemod/master/core/PlayerManager.cpp",
+      "title": "SourceMod core/PlayerManager.cpp - builds \"kickid %d %s\"",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/app/222880/discussions/2/364042703853182968/",
+      "title": "Permanent bans on a Source server - engine usage string for banid",
+      "kind": "forum",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/GameConnect/SourceBans/issues/2",
+      "title": "SourceBans issue #2 - banned_user.cfg line format",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/koraktor/steam-condenser/issues/94",
+      "title": "steam-condenser issue #94 - raw Source srcds status output",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamdb.info/app/232370/",
+      "title": "Half-Life 2: Deathmatch Dedicated Server - AppID 232370",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/n0xii/hl2dm-ds",
+      "title": "n0xii/hl2dm-ds - HL2:DM dedicated server guide (app 232370, -game hl2mp)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://linuxgsm.com/servers/hl2dmserver/",
+      "title": "LinuxGSM - Half-Life 2: Deathmatch server (appid 232370)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Stock Source-engine (srcds) admin set; no mod or plugin required. RCON is TCP on the same port as the game's UDP port (default 27015, set with -port on srcds_run); it is enabled purely by setting rcon_password in hl2mp/cfg/server.cfg. status serves as both info and roster: it prints 'hostname:/version:/udp/ip:/map:/players:' header lines then one '# userid [slot] \"name\" STEAM_x:y:z ...' line per player, so playerParse is regex, not csv (names contain spaces and quotes). kickid takes a userid or a Steam ID plus a message ('Kick a player by userid or uniqueid, with a message'); plain kick takes only a name in HL2DM, so kickid with the Steam ID is used here because the same identifier also works for banid and removeid. The engine's own usage string is 'banid < minutes > < userid | uniqueid > { kick }' - {duration} is MINUTES and 0 means permanent, and the trailing literal kick is what actually ejects a still-connected player. banid has no reason argument, so ban carries no {reason}. Bans are in memory only until writeid is run, which rewrites hl2mp/cfg/banned_user.cfg (writeip does the same for banned_ip.cfg); conventional server.cfg carries 'exec banned_user.cfg' and 'writeid'. removeid unbans live but likewise needs writeid to persist. Ban-file lines look like 'banid 0 STEAM_0:1:123456'; older engines write the minutes as a float (banid 0.000000 ...), hence the [0-9.]+ in lineIdPattern. Steam IDs appear as STEAM_0:... on some builds and STEAM_1:... on others, so the pattern accepts either universe digit. No motd command exists: the MOTD is the file named by the motdfile cvar (hl2mp/motd.txt, plus motdfile_text for clients with HTML MOTDs disabled), so motd is omitted rather than guessed. banip/addip cover IP bans and are deliberately not mapped here because playerId is a Steam ID. Hosting-company pages for this game mostly list SourceMod's sm_kick/sm_ban instead; those need SourceMod installed and are not stock, so they are not recorded as the commands."
+}

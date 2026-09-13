@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "slug": "call-of-duty-world-at-war",
+  "game": {
+    "displayName": "Call of Duty: World at War",
+    "appId": 10090,
+    "aliases": [
+      "Call of Duty: World at War Dedicated Server",
+      "CoD:WaW",
+      "CoDWaW",
+      "CoD5",
+      "World at War"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 28960,
+    "portSetting": "net_port",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Client number",
+    "example": "3",
+    "pattern": "\\d{1,2}"
+  },
+  "commands": {
+    "info": "serverinfo",
+    "listPlayers": "status",
+    "kick": "clientkick {playerId}",
+    "ban": "banclient {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^\\s*(?<playerId>\\d+)\\s+-?\\d+\\s+\\d+\\s+(?<accountId>\\d+)\\s+(?<name>.*?)\\s+\\d+\\s+(?:\\d{1,3}\\.){3}\\d{1,3}:?-?\\d{1,5}\\s+-?\\d{1,5}\\s+\\d+$",
+    "skipLinePattern": "^\\s*(?:map:|num\\s+score|-{3,})"
+  },
+  "sources": [
+    {
+      "url": "https://wiki.zeroy.com/index.php/Call_of_Duty:_Rcon_Commands",
+      "title": "Call of Duty: Rcon Commands - COD Modding & Mapping Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://wiki.zeroy.com/index.php/Call_of_Duty_5:_Getting_Server_Running",
+      "title": "Call of Duty 5: Getting Server Running - COD Modding & Mapping Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://wiki.zeroy.com/index.php?title=Call_of_Duty_5:_Beta_Server_Config",
+      "title": "Call of Duty 5: Beta Server Config - COD Modding & Mapping Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BigBrotherBot/big-brother-bot/master/b3/parsers/cod5.py",
+      "title": "BigBrotherBot b3/parsers/cod5.py (Cod5Parser command table)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BigBrotherBot/big-brother-bot/master/b3/parsers/cod.py",
+      "title": "BigBrotherBot b3/parsers/cod.py (status line regex, command table)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.gamesclan.net/billing/index.php/knowledgebase/34/Call-of-Duty--World-at-War-Rcon-Commands.html",
+      "title": "Call of Duty: World at War Rcon Commands - Gamesclan knowledgebase",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/MirzaLeka/COD4-Scripting/blob/main/rcon-commands.md",
+      "title": "COD4-Scripting: rcon-commands.md",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://tacodewolff.nl/legacy/call-of-duty/rcon-commands/",
+      "title": "Call of Duty RCON commands",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "idTech3-derived (IW/Treyarch) engine: RCON is the Quake3 connectionless UDP form, a single datagram of 0xFF 0xFF 0xFF 0xFF followed by 'rcon <password> <command>' sent to the game port - NOT the Valve Source RCON wire protocol, hence flavour 'custom'. There is no separate RCON port or enable switch: the server listens on net_port (default 28960) and RCON is live as soon as rcon_password is set in server.cfg. Command text here is what goes after the password; typed from a game client it is prefixed '/rcon '. Commands are case-insensitive (hosting docs write 'banClient', B3 writes 'banclient'); lowercase chosen to match the B3 cod5 parser. Moderation identifier is the client slot number from 'status' (column 'num'), which is what clientkick and banclient take; BigBrotherBot's Cod5Parser uses exactly 'clientkick %(cid)s' and 'banclient %(cid)s'. Name-based variants exist ('kick <name>', 'banuser <name>', 'onlykick <name>') but need the exact name including colour codes and are unreliable, so they are not recorded. Stock CoD5 clientkick/banclient take no reason or duration argument (B3's q3a base class passes a reason but the CoD parser deliberately overrides it away), so no {reason}/{duration} tokens. unban is deliberately omitted: the only live unban is 'unbanuser <exact player name>', which cannot be expressed with a client-number playerId. banclient writes the player's numeric GUID to a ban.txt created in the main or fs_game directory (documented for CoD4 patch 1.4; the same engine lineage, but the path and line format were not confirmed for World at War specifically, so no banList block is recorded rather than guessing one). No message-of-the-day command was found in any source, so motd is omitted. 'status' output starts with a 'map: <name>' line, a column header and a dashed rule - skipLinePattern drops all three; the linePattern is the B3 CodParser._regPlayer expression rewritten with named groups, with accountId mapped to the numeric CoD GUID column. Sources agree on every recorded command; the only inconsistency between them is casing."
+}

@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "slug": "counter-strike-global-offensive",
+  "game": {
+    "displayName": "Counter-Strike Global Offensive - Dedicated Server",
+    "appId": 740,
+    "aliases": [
+      "CS:GO",
+      "CSGO",
+      "Counter-Strike: Global Offensive",
+      "csgo",
+      "Counter-Strike: Global Offensive Dedicated Server",
+      "Counter-Strike 2 Dedicated Server"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 27015,
+    "portSetting": null,
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_1:0:222132123",
+    "pattern": "STEAM_[0-5]:[01]:[0-9]+"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kick \"{playerName}\"",
+    "ban": "banid {duration} {playerId};writeid",
+    "unban": "removeid {playerId};writeid",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*(?<accountId>\\d+)\\s+\\d+\\s+\"(?<name>.*)\"\\s+(?<playerId>STEAM_[0-5]:[01]:[0-9]+)\\s",
+    "skipLinePattern": "^#\\s*userid\\s+name|^#end"
+  },
+  "banList": {
+    "paths": [
+      "csgo/cfg/banned_user.cfg",
+      "cfg/banned_user.cfg"
+    ],
+    "lineIdPattern": "banid\\s+[0-9.]+\\s+(STEAM_[0-5]:[01]:[0-9]+)",
+    "liveUnban": "removeid {playerId};writeid"
+  },
+  "sources": [
+    {
+      "url": "https://wiki.teamfortress.com/wiki/List_of_useful_console_commands",
+      "title": "Official TF2 Wiki - 'kick <name> - Kicks a player from the game'; 'banid <minutes> <steamid> - Bans a player's Steam ID for the specified number of minutes. 0 minutes is a permanent ban'; 'status - Display map and connection status'",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Console_Command_List",
+      "title": "Valve Developer Community console command list - kick 'Kick a player by slot, userid or name'; banid 'Add a user ID to the ban list'; removeid 'Remove a user ID from the ban list'; kickid not listed",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/alliedmodders/sourcemod/blob/master/core/PlayerManager.cpp",
+      "title": "SourceMod core PlayerManager.cpp line ~2478 - builds 'kickid %d %s' with the NUMERIC userid",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/mitchellhuang/SRCDS.py/blob/master/SRCDS.py",
+      "title": "SRCDS.py - sends 'banid <minutes> <steamid>' then 'writeid', 'removeid <steamid>' then 'writeid', 'say <text>', 'status' over Source TCP RCON",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/aimrao/csgo_rank_finder",
+      "title": "csgo_rank_finder README - real CS:GO status captures: header '# userid name uniqueid connected ping loss state rate [adr]', human row '#  2 1 \"Arion\" STEAM_1:0:222132123 00:09 9 0 active 196608 loopback', bot row '# 3 \"Marvin\" BOT active 128', terminator '#end'",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://totalcsgo.com/commands/kickid",
+      "title": "TotalCSGO - 'kickid <User ID> <Message>'; documents kickid as taking the numeric user id only",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://wiki.facepunch.com/gmod/game.KickID",
+      "title": "Garry's Mod wiki game.KickID - Lua helper documented as accepting 'UserID, SteamID or SteamID64'; page does NOT state it maps 1:1 to the kickid console command",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/koraktor/steam-condenser/issues/94",
+      "title": "steam-condenser issue #94 - Source-engine (Left 4 Dead 2, not CS:GO) status output pasted over RCON; secondary corroboration only",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/pushrax/node-rcon/blob/master/README.md",
+      "title": "node-rcon - protocol table: 'Any Source game | TCP | N/A' (no challenge step), Source games listed as CS:S, CS:GO, TF2",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamdb.info/app/740/",
+      "title": "SteamDB app 740 - 'Counter-Strike Global Offensive - Dedicated Server' (Tool)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Source-engine server: RCON is Valve's Source TCP protocol on the game port (default 27015), enabled purely by setting a non-empty rcon_password - no separate RCON port, no enable cvar. status is both info and roster. The roster shape is taken from real captures in the csgo_rank_finder README: header '# userid name uniqueid connected ping loss state rate [adr]', human rows carrying TWO numbers before the quoted name ('#  2 1 \"Arion\" STEAM_1:0:222132123 ...'), where the FIRST is the userid (large, non-sequential across a 16-player sample) and the second is the slot; bot rows carry only ONE number and the literal BOT instead of a Steam ID, so linePattern skips them, and the block ends with '#end'. KICK IDENTIFIER - CORRECTED: an earlier draft of this file used 'kickid {playerId} {reason}', i.e. kickid against a STEAM_ id, on the strength of the Garry's Mod Lua wrapper game.KickID. That is not supported: SourceMod core builds 'kickid %d %s' with the numeric userid, TotalCSGO documents 'kickid <User ID> <Message>', and Valve's own command list does not list kickid at all while documenting kick as taking a slot, userid or name. kick is therefore written against {playerName}, which the official TF2 wiki and Valve's command list both document. The userid is captured as accountId, so a runtime that prefers the robust numeric form can issue 'kickid <accountId> <reason>' instead; kicking by name is fragile when two players share a name. banid takes MINUTES FIRST then the Steam ID, 0 = permanent (official TF2 wiki and SRCDS.py agree); it does not necessarily disconnect a connected player, so pair it with kick, and it does not survive a restart alone, so writeid is chained to flush csgo/cfg/banned_user.cfg. There is no motd command - the MOTD is csgo/motd.txt (motd_text.txt for the text version). WHY CONFIDENCE IS LOW: (1) on 2023-09-27 Valve replaced CS:GO with Counter-Strike 2, so app 730 and dedicated-server app 740 now deliver CS2 and CS:GO survives only as a legacy depot - a live app-740 install today is a CS2 server, and nothing in this file has been checked against CS2, whose status output and identifier formatting may differ; (2) 'say' and the 'writeid' chaining each rest on a single cited source (SRCDS.py); (3) the kick identifier was in genuine dispute and was resolved by documentation, not by observation. Everything here is research, not verification - verifiedAt is null."
+}

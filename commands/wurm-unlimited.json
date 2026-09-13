@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "slug": "wurm-unlimited",
+  "game": {
+    "displayName": "Wurm Unlimited Dedicated Server",
+    "appId": 402370,
+    "aliases": [
+      "Wurm Unlimited",
+      "WU",
+      "WurmServerLauncher"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://www.wurmpedia.com/index.php/Server_administration_(Wurm_Unlimited)",
+      "title": "Server administration (Wurm Unlimited) - Wurmpedia",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=539179002",
+      "title": "Steam Community Guide: Wurm Unlimited GM Commands",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/CubeCoders/AMPTemplates/blob/main/wurm-unlimited.kvp",
+      "title": "CubeCoders AMP template: wurm-unlimited.kvp",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/Mthec/Wurm-Unlimited-Server-Launcher/wiki/Server-Console-Menu",
+      "title": "Server Console Menu - Mthec/Wurm-Unlimited-Server-Launcher wiki",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/ago1024/WurmServerModLauncher",
+      "title": "ago1024/WurmServerModLauncher (server mod launcher and bundled mod set)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamdb.info/app/402370/",
+      "title": "Wurm Unlimited Dedicated Server - AppID 402370 - SteamDB",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "No remote command channel. The stock dedicated server (WurmServerLauncher, Steam app 402370, a Tool-type app distinct from the game app 366220) is administered through a Java Swing GUI whose tabs are Select Game Database, Local Server, Server Neighbors, Server Travel and Players; the Players tab is where an operator moves a player, sets power level, or bans. Wurmpedia describes the ADMINPWD setting as \"adminpwd=<password> Unlocks the admin commands from within the game\" - i.e. the # commands (#kick <playername>, #ban <playername> <days> <reason>, #pardon <playername>, #who, #broadcast, #announce, #showbans, syntax per the Steam GM Commands guide) are typed into chat by a logged-in character holding GM power, not sent to the server process. They are therefore not reachable from a server manager and are deliberately NOT recorded as commands here. No RCON listener, no admin HTTP/REST API, and no documented stdin command set; Wurmpedia's headless recipe is just \"./WurmServerLauncher start=<ServerFolder>\", which launches the server without the GUI and adds no console vocabulary. RMI IS NOT ADMIN: the launcher takes rmiport= and rmiregport= and Wurmpedia discusses Java RMI, but that is server-to-server login/travel federation between Wurm servers, not a moderation interface a manager can drive. DISAGREEMENT: the CubeCoders AMP template sets App.AdminMethod=STDIO and App.HasWriteableConsole=True, which implies a writable stdin, but the same template also uses App.ExitMethod=OS_CLOSE and leaves Console.UserActions={} empty - i.e. AMP itself defines no kick/ban/say console action for this game - and no Wurm-side console command vocabulary is documented anywhere; Mthec's third-party launcher adds its own text \"Server Console Menu\" (help/menu/list/up/select/shutdown), which the stock launcher does not have, and ago1024's standard server mod set (Announcer, BagOfHolding, CreatureAgeMod, CropMod, HarvestHelper, InbreedWarning, ServerPacks, SpellMod) ships no RCON or remote-admin mod. Confidence is low because this is a negative claim: several independent sources are consistent with \"no command channel\", but none states outright that RCON is absent. No plain-text ban file is documented (bans live in the server's SQLite databases), so no banList is recorded."
+}

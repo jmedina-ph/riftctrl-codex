@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "slug": "chivalry-medieval-warfare",
+  "game": {
+    "displayName": "Chivalry: Medieval Warfare Dedicated Server",
+    "appId": 220070,
+    "aliases": [
+      "Chivalry: Medieval Warfare",
+      "Chivalry",
+      "CMW",
+      "chivalry_ded_server",
+      "Chivalry: Deadliest Warrior"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": null,
+    "portSetting": null,
+    "enableSetting": null,
+    "passwordSetting": null
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "76561197960947380",
+    "pattern": "7656119\\d{10}"
+  },
+  "banList": {
+    "paths": [
+      "UDKGame/Config/PCServer-UDKGame.ini",
+      "UDKGame/Config/UDKGame.ini"
+    ],
+    "lineIdPattern": "BannedIDs=\\(Uid=\\((A=-?\\d+,B=-?\\d+)\\)\\)"
+  },
+  "sources": [
+    {
+      "url": "https://tornbannerjira.atlassian.net/wiki/spaces/CHIVCOM/pages/9175118/RCon+Protocol",
+      "title": "RCon Protocol - Chivalry Public Documentation (Torn Banner)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://tornbannerjira.atlassian.net/wiki/spaces/CHIVCOM/pages/622689/Administrator+commands",
+      "title": "Administrator commands - Chivalry Public Documentation (Torn Banner)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://tornbannerjira.atlassian.net/wiki/spaces/CHIVCOM/pages/622693/Detailed+Configuration",
+      "title": "Detailed Configuration - Chivalry Public Documentation (Torn Banner)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://chivalry.wiki.gg/wiki/Chivalry_Medieval_Warefare_Dedicated_Server",
+      "title": "Chivalry Medieval Warefare Dedicated Server - Official Chivalry Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/app/219640/discussions/0/828923952091422197/",
+      "title": "Server Operator Commands - Chivalry: Medieval Warfare discussions",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamdb.info/app/220070/",
+      "title": "Chivalry: Medieval Warfare Dedicated Server - AppID 220070",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "No commands key on purpose: Chivalry's remote channel is a BINARY RCon protocol with no text command line at all, so there is no string a manager could type and nothing honest to put in commands. Torn Banner's own 'RCon Protocol' page defines every message as [Short messageType][Int dataSize][bytes data], strings as [Int length][UTF-8]; the handshake is server SERVER_CONNECT(0) with a challenge string, client PASSWORD(2) with the 40-char hex SHA-1 of password+challenge, server SERVER_CONNECT_SUCCESS(1). Client-to-server message types are SAY_ALL(6) message, SAY_ALL_BIG(7) message, SAY(8) steamId+message, CHANGE_MAP(11), ROTATE_MAP(12), KICK_PLAYER(17) steamId+reason, TEMP_BAN_PLAYER(18) steamId+reason+seconds, BAN_PLAYER(19) steamId+reason, UNBAN_PLAYER(20) steamId. So the four operations exist - broadcast is SAY_ALL(6), kick is 17, ban is 19 (18 for a timed ban), unban is 20 - as message ids, not as text. There is NO list-players request: the roster has to be accumulated from the server-to-client events PLAYER_CONNECT(4) steamId+name and PLAYER_DISCONNECT(5) steamId, plus NAME_CHANGED(14), TEAM_CHANGED(13), PING(22); that is why no listPlayers and no playerParse are recorded. Every player is addressed by an 8-byte Steam ID, which is what playerId describes. SOURCE DISAGREEMENT: the same official documentation set contradicts itself - the Server Operators' Guide / dedicated-server wiki page still says 'Currently we do not have any reasonable amount of rcon support. Server administration is best done as a player inside the server', while the RCon Protocol page fully specifies the protocol above (RCon was added after that sentence was written and the sentence was never updated). Nothing reachable - the official pages, the wiki, the Steam threads, the surviving third-party clients (ChivAdmin, fisadev/chivalry-server-tools) - documents the RCon listen port or the ini keys that enable it and hold its password, so defaultPort, portSetting, enableSetting and passwordSetting are left null rather than guessed; the Torn Banner forum thread that carried that detail now redirects to a Discord invite. The other admin route is in-game only: an admin player types adminlogin <password> then adminkick, adminkickban, AdminChangeTeam, adminchangemap, AdminRestartMap, AdminCancelVote (case-insensitive except the password) from inside the server - those go through the game client, not through any remote pipe, and there is no in-game unban command. adminkickban and permanent bans persist as BannedIDs entries in [Engine.AccessControl] of PCServer-UDKGame.ini, e.g. BannedIDs=(Uid=(A=681652,B=17825793)); the id is the SteamID64 split into signed 32-bit halves (steamId64 = B * 2^32 + A, so that example is 76561197960947380), which is why lineIdPattern captures the whole A/B pair rather than a plain 17-digit id, and why no liveUnban template is given. Confidence is low: the protocol rests on a single page, its port and enabling settings are unknown, and an equally official page denies rcon exists."
+}

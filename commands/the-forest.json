@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "slug": "the-forest",
+  "game": {
+    "displayName": "The Forest Dedicated Server",
+    "appId": 556450,
+    "aliases": [
+      "The Forest",
+      "TheForestDedicatedServer",
+      "TheForestDedicatedServer.exe"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://github.com/dahlo/the_forest_dedicated_server/blob/master/config.cfg",
+      "title": "Complete The Forest dedicated server config.cfg (shipped template)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2912566995",
+      "title": "Steam guide - The Forest Dedicated Server With SteamCmd",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://gist.github.com/haugli92/f7a3defe860295ebdb13c13083e33643",
+      "title": "Pterodactyl egg for The Forest (stop command is ^C)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://nodecraft.com/support/games/the-forest/how-to-kick-ban-players-in-your-the-forest-server",
+      "title": "Nodecraft - How to Kick/Ban players in your The Forest server",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wabbanode.com/help/the-forest/all-the-forest-server-admin-commands",
+      "title": "Wabbanode - All The Forest Server Admin Commands",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": "2026-09-13",
+  "notes": "Basis for \"none\": the shipped dedicated-server config (serverName, serverPassword, serverSteamAccount, serverPasswordAdmin, serverIP, serverSteamPort, serverGamePort, serverQueryPort, serverPlayers, enableVAC, serverAutoSaveInterval, difficulty, initType, slot, showLogs, serverContact, veganMode, vegetarianMode, resetHolesMode, treeRegrowMode, allowBuildingDestruction, allowEnemiesCreativeMode, allowCheats, realisticPlayerDamage, saveFolderPath, targetFpsIdle, targetFpsActive) contains no RCON, telnet, web-API or console-port setting of any kind, and setup guides for the server describe no way to send it a command after launch. serverPasswordAdmin does NOT open a remote channel - it grants admin status to an in-game CLIENT that connects with that password. Moderation is then done from inside the game by that admin: the Tab player list gains Kick/Ban buttons, and chat accepts /kick, /ban and /unban followed by a player's Steam ID. Those are client-side chat commands, not server-console input, so a server manager has no pipe to write them to; they are recorded here as the reason for \"none\" rather than as commands. Naming to be aware of: several hosting knowledge bases (Nodecraft, Wabbanode, Shockbyte and similar) file /kick, /ban, /unban, /save and /shutdown under headings like \"server admin commands\", which can be misread as implying a console; their body text does not claim one (Nodecraft: connect as admin, press Tab for the Kick/Ban buttons or press Enter and type /kick followed by the Steam ID; Wabbanode: \"Press Enter to open the chat. Type the command with a / prefix\"), and they agree with each other only because they all describe the same in-game admin. Corroborating detail: the community Pterodactyl egg stops the server with ^C (SIGINT) rather than a console command, and the ModAPI mod \"[DS] Ban List\" exists specifically to add a ban list and unban buttons for dedicated servers. The query port (default 27016) answers Steam A2S for name/player count but accepts no commands. Confidence is low, not high, because this is a negative finding: Endnight's own dedicated-server documentation could not be retrieved (the official wiki refused fetching), so the strongest evidence is the complete config template plus agreeing community setup guides. Not to be confused with Sons of the Forest (app 2465200), a different server with its own admin surface."
+}

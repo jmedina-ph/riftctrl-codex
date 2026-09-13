@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "slug": "team-fortress-2",
+  "game": {
+    "displayName": "Team Fortress 2 Dedicated Server",
+    "appId": 232250,
+    "aliases": [
+      "TF2",
+      "Team Fortress 2",
+      "tf",
+      "srcds tf"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 27015,
+    "portSetting": "-port",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "[U:1:356612105]",
+    "pattern": "(?:\\[U:[0-9]+:[0-9]+\\]|STEAM_[0-9]:[0-9]:[0-9]+)"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kickid {playerId} {reason}",
+    "ban": "banid {duration} {playerId} kick",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*(?<userid>[0-9]+)\\s+\"(?<name>.*)\"\\s+(?<playerId>\\[U:[0-9]+:[0-9]+\\]|STEAM_[0-9]:[0-9]:[0-9]+)",
+    "skipLinePattern": "^(hostname|version|udp/ip|steamid|account|map|tags|players|edicts|sourcetv|#\\s*userid)"
+  },
+  "banList": {
+    "paths": [
+      "tf/cfg/banned_user.cfg",
+      "cfg/banned_user.cfg"
+    ],
+    "lineIdPattern": "^banid\\s+\\S+\\s+(\\S+)",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://wiki.teamfortress.com/wiki/List_of_useful_console_commands",
+      "title": "List of useful console commands - Official TF2 Wiki",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Console_Command_List",
+      "title": "Console Command List - Valve Developer Community",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Source_Dedicated_Server",
+      "title": "Source Dedicated Server - Valve Developer Community (port 27015 carries game traffic and RCON, set with -port)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://docs.rgl.gg/guides/servers/mgmt101/",
+      "title": "TF2 Server Management 101 - RGL.gg Docs",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://pkg.go.dev/github.com/leighmacdonald/rcon?readme=expanded",
+      "title": "leighmacdonald/rcon - sample TF2 status output",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/222880/discussions/2/364042703853182968/",
+      "title": "Source engine banid usage string: banid < minutes > < userid | uniqueid > { kick }",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.gameserverkings.com/knowledge-base/team-fortress-2/admin-commands/",
+      "title": "Team Fortress 2 Admin Commands: RCON & SourceMod List",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/222880/discussions/2/558746745646693565/",
+      "title": "banned_user.cfg and banned_ip.cfg file format",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": "2026-09-13",
+  "notes": "Stock Source-engine admin commands over Valve Source RCON; no plugin required. RCON is not a separate listener - it is TCP on the server's game port (default 27015, set with -port), and it is enabled simply by setting rcon_password in server.cfg, so there is no separate enable setting; the Valve Developer Community's Source Dedicated Server page states that 27015 TCP/UDP carries 'game transmission, pings and RCON'. DURATION IS IN MINUTES, and 0 means permanent: the engine usage string is 'banid < minutes > < userid | uniqueid > { kick }', so {duration} must be rendered as an integer number of minutes. The trailing literal 'kick' is what disconnects an already-connected player - banid on its own only adds the id to the in-memory ban list. BANS ARE NOT PERSISTENT until 'writeid' is run: it flushes the in-memory list to cfg/banned_user.cfg, and that file is only re-applied on boot if server.cfg contains 'exec banned_user.cfg'. The same applies after 'removeid' - run 'writeid' again or the unban is lost at restart. RIFT//CTRL should send writeid as a follow-up to ban and unban; it is not folded into the command strings here because the schema holds one command per field. banned_user.cfg lines look like 'banid 0 STEAM_1:0:38510000' or 'banid 0 [U:1:77020000]', hence the lineIdPattern taking the third whitespace token. PLAYER ID: status prints Steam3 ids, e.g. '#   1039 \"BigDickMoe\"        [U:1:356612105]     51:17      100    0 active 11.22.33.44:27005', and banid accepts that bracketed form as well as legacy STEAM_0:x:y, so the pattern accepts either. The status userid column is captured as 'userid' - it is the transient per-connection userid (1039 in the sample above), NOT the Steam3 account number (356612105), and it is captured because kickid also accepts a bare userid, which is the safer target for a player whose name contains quotes or spaces. KICKID CAVEAT: kickid is the only command in this file that appears on neither official page - the official TF2 wiki documents only 'kick <name>', and the Valve Developer Community command list carries kick, banid, removeid and say but not kickid. It is attested by RGL ('kickid \"[id]\"') and by GameServerKings ('kickid <userid> \"<reason>\"'), and GameServerKings describes it as userid-only; kickid accepting a bracketed Steam3 uniqueid therefore follows the engine's documented 'userid | uniqueid' convention (as seen in the banid usage string) rather than any source that states it outright. If a kick by Steam3 id is ever rejected at runtime, fall back to the captured userid. SOURCE DISAGREEMENT: RGL's guide also writes 'ban \"[playername]\"', which is not a stock Source console command (SourceMod's sm_ban is the likely intent) and was not used here. GameServerKings claims banid takes 'the STEAM_0:1:12345678 form status prints', but status in fact prints the Steam3 bracketed form, so that page is wrong on the detail and the dual-form pattern covers both. A Steam discussion reports 'uniqueid \"[U\" not found' when a bracketed id was passed through in-game chat rather than the console; sending it over RCON as a single unquoted token avoids that tokenizer split. MOTD: TF2 has no motd console command - the message of the day is the file tf/motd.txt (plus tf/motd_text.txt for the text-only version) and is read at map load, so no motd key is published. 'say' from RCON broadcasts to all players prefixed with 'Console: '."
+}

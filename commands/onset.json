@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "slug": "onset",
+  "game": {
+    "displayName": "Onset Dedicated Server",
+    "appId": 1204170,
+    "aliases": [
+      "Onset",
+      "OnsetServer"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://dev.playonset.com/wiki/server_config",
+      "title": "server_config - Onset Developer Wiki (full option list: no rcon, no admin API, no web panel setting; query port = port-1, file port = port-2)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://dev.playonset.com/wiki/DedicatedServer",
+      "title": "DedicatedServer - Onset Developer Wiki (start_linux.sh, server_config.json, UDP 7777 game / UDP 7776 query / TCP 7775 HTTP file downloads, --help, --version)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://dev.playonset.com/wiki/OnConsoleInput",
+      "title": "OnConsoleInput - Onset Developer Wiki (Server & Client, v1.2.1; 'Called when a new input in the console happened'; example implements quit/exit via ServerExit)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://dev.playonset.com/wiki/KickPlayer",
+      "title": "KickPlayer - Onset Developer Wiki (serverside Lua KickPlayer(player, reason), v1.0 - the only documented way to disconnect a player)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://dev.playonset.com/wiki/AddCommand",
+      "title": "AddCommand - Onset Developer Wiki (AddCommand(CommandName, LuaFunction) registers an in-game /chat command from a script, not a server console command)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://forum.playonset.com/forum/main-forum/game-changelogs/2394-onset-1-2-2",
+      "title": "Onset 1.2.2 changelog - Onset Forums ('A new event named OnConsoleInput is called when a new input was confirmed with the ENTER key'; 'The console can be disabled with the command line switch --noinput')",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://forum.playonset.com/forum/onset/suggestions/967-console-support-for-command",
+      "title": "Console support for command - Onset Forums (2019-12-13: request for server console commands to restart packages; staff answer is to script it in-game with StartPackage/StopPackage instead)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://dev.playonset.com/wiki/Special:AllPages",
+      "title": "Special:AllPages - Onset Developer Wiki (no Console, Command, Admin, Ban, Kick, RCON or Query command-reference page exists)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://linuxgsm.com/servers/onsetserver/",
+      "title": "Onset Linux Game Server - LinuxGSM (appid 1204170; documents console access but no RCON and no admin commands)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamdb.info/app/1204170/",
+      "title": "Onset Dedicated Server - AppID 1204170 - SteamDB (type Tool; parent game Onset, AppID 1105810)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": "2026-09-12",
+  "notes": "NO COMMANDS ARE RECORDED BECAUSE ONSET SHIPS NONE, AND transport IS 'none' FOR THE SAME REASON. Onset (Blue Mountains GmbH) is an Unreal-Engine multiplayer sandbox whose entire gameplay layer is Lua packages; the dedicated server (Steam app 1204170, a Tool; the game itself is 1105810) has no RCON, no REST/admin API and no built-in console command set. The complete official server_config option list was re-read on review and covers servername, servername_short, gamemode, website_url, ipaddress, port, password, timeout, iplimit, vac, masterlist, plugins, packages, dotnet_server_version, discord_client_id, connect_screen_url, connect_screen_show_cursor, sandbox, dev_whitelist, dev_whitelist_steamid, voice, voice_sample_rate, voice_spatialization and pools - there is no rcon, admin, adminlist or webapi key anywhere in it. Ports are UDP 7777 (game), UDP 7776 (server query, documented as 'port - 1') and TCP 7775 (HTTP server, file downloads, 'port - 2'); the query port answers a read-only server-browser query, not a command channel, and 7775 only serves downloadable client content. THE ONE THING THAT IS WRITABLE, AND WHY IT IS STILL 'none': the server binary (start_linux.sh on Linux) keeps an interactive console on its own stdout/stdin, and a line confirmed with ENTER raises the SERVERSIDE Lua event OnConsoleInput(input) - added in v1.2.1, described on the wiki as 'Called when a new input in the console happened', and stated in the 1.2.2 changelog as 'A new event named OnConsoleInput is called when a new input was confirmed with the ENTER key'; the same changelog documents '--noinput' to disable console input entirely, and LinuxGSM reaches that console through tmux (./onsetserver console, detach with CTRL+b d). So the pipe accepts bytes. But the server parses no keyword of its own and dispatches the line only to Lua, which is why the developers' own OnConsoleInput example has to implement 'quit'/'exit' itself via ServerExit() - even stopping the server is not a built-in console keyword - and why a 2019-12-13 forum request for console commands to restart packages was answered by staff with 'do it as an in-game command with StartPackage/StopPackage'. Because there is no command text to record, this file is classified 'none' rather than 'stdin': an earlier draft used 'stdin', which is factually true about the pipe but would tell a consumer to open a channel it can send nothing meaningful over, and the schema reserves the commands-less shape for 'none'. Nothing operational changes either way. PRACTICAL CONSEQUENCE: out of the box there is no text at all that lists players, kicks, bans or broadcasts - writing 'kick <name>' to this console does nothing. Moderation exists only through Lua from inside a package: KickPlayer(player, reason) (serverside, v1.0, 'Kicks (disconnect) a player with a reason, colors are not supported') disconnects someone, AddPlayerChat / AddPlayerChatAll / AddPlayerChatRange send chat, and there is no documented ban function at all, so bans are conventionally implemented by a package storing Steam IDs or IPs (GetPlayerSteamId/GetPlayerIP) and calling KickPlayer on connect. AddCommand(CommandName, LuaFunction) registers an in-game '/' CHAT command, not a server console command. For a manager that means the operator must install an admin package first, and the command text then depends entirely on which package they chose - it is not a property of the game and cannot be recorded here; drop to the host-level floor for kick and ban. No playerId block is recorded because the game exposes no moderation identifier through any channel a manager can reach (Lua's GetPlayerSteamId is the Steam ID, but it is only reachable from inside a package). Confidence is LOW on purpose: the affirmative facts (console reads input, no RCON, no admin API, no ban function) each rest on the developers' own wiki plus their own forum, which is one publisher rather than two independent sources, and the central claim - that no built-in console keyword exists - is established by the absence of any documentation (the wiki's full page index has no Console, Command, Admin, Ban, Kick, RCON or Query command-reference page) plus the developers' own workaround examples, not by a source that states it outright. Onset's last documented release line is 1.3.x; no changelog through 1.3.0 adds server console commands, RCON, admin roles or a ban system (1.3.0 only extends OnConsoleInput to the CLIENT console). Re-check this file if a future version adds a server admin facility."
+}

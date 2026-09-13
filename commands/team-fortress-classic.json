@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "slug": "team-fortress-classic",
+  "game": {
+    "displayName": "Team Fortress Classic",
+    "appId": 20,
+    "aliases": [
+      "TFC",
+      "Team Fortress Classic Dedicated Server",
+      "tfcserver",
+      "hlds -game tfc",
+      "Half-Life Dedicated Server (tfc)"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 27015,
+    "portSetting": "port",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:1:12345678",
+    "pattern": "(?:STEAM|VALVE)_[0-9]+:[01]:[0-9]+"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "users",
+    "kick": "kick #{playerId} {reason}",
+    "ban": "banid {duration} {playerId} kick",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^\\s*(?<accountId>[0-9]+)\\s*:\\s*(?<playerId>\\S+)\\s*:\\s*(?<name>.*\\S)",
+    "skipLinePattern": "^(userid\\s|-{3,}|[0-9]+ users)"
+  },
+  "banList": {
+    "paths": [
+      "tfc/banned.cfg",
+      "banned.cfg"
+    ],
+    "lineIdPattern": "^banid\\s+\\S+\\s+((?:STEAM|VALVE)_[0-9]+:[01]:[0-9]+)",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/dreamstalker/rehlds/blob/master/rehlds/engine/sv_main.cpp",
+      "title": "ReHLDS engine source - SV_BanId_f, Host_Kick_f, SV_RemoveId_f, SV_WriteId_f, SV_Users_f usage strings",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/dreamstalker/rehlds/blob/master/rehlds/engine/host_cmd.cpp",
+      "title": "ReHLDS engine source - console command registration (status, say, kick)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.gamerconfig.eu/commands/half-life/",
+      "title": "Half-Life console command list (kick, banid, removeid, writeid, listid, users, status, say)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://hl.loess.ru/?txt=goldsrc_cmds",
+      "title": "GoldSrc console commands explained",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://hlds101.com/rcon.htm",
+      "title": "HLDS 101 - RCON (rcon_password, rcon users, rcon say)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://linuxgsm.com/servers/tfcserver/",
+      "title": "LinuxGSM tfcserver - Team Fortress Classic dedicated server, Steam appid 90",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://kb.firedaemon.com/support/solutions/articles/4000087029-team-fortress-classic",
+      "title": "Run Team Fortress Classic Server as a Windows Service (hlds.exe -game tfc -port 27015)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "TFC ships no admin commands of its own; everything here is the GoldSrc/HLDS engine console reached over RCON. GoldSrc RCON is NOT Valve Source RCON (TCP): it is a connectionless UDP exchange on the game port - send a 'challenge rcon' packet, then 'rcon <challenge> \"<password>\" <command>' - hence flavour custom. Verified in ReHLDS sv_main.cpp: the connectionless dispatcher routes \"challenge\" to SVC_ServiceChallenge(), and SV_Rcon_Validate() reads the challenge from Cmd_Argv(1) and the password from Cmd_Argv(2). RCON is live as soon as rcon_password is non-empty (SV_Rcon_Validate returns NOSETPASSWORD when strlen(rcon_password)==0); there is no enable setting and no separate port, it rides the game port (cvar 'port', defined in net_ws.cpp as cvar_t defport = {\"port\",\"27015\"}, set with -port). CRITICAL: do not quote Steam IDs. The engine tokenizer splits on ':', and kick/banid/removeid reassemble the id from the separate tokens - verified: SV_BanId_f rebuilds it as Cmd_Argv(2)\":\"Cmd_Argv(4)\":\"Cmd_Argv(6) and accepts Cmd_Argc() up to 8, SV_RemoveId_f accepts Cmd_Argc()==6 and rebuilds from Cmd_Argv(1)/(3)/(5), Host_Kick_f rebuilds from p/Cmd_Argv(argsStartNum+1)/Cmd_Argv(argsStartNum+3). A quoted \"STEAM_0:1:12345678\" arrives as one token and is mangled. banid usage is 'banid <minutes> <uniqueid or #userid> { kick }' - 0 minutes is permanent and the trailing literal 'kick' also drops the player. banid takes no reason argument. banid only holds the ban in memory: run 'writeid' afterwards to persist it to banned.cfg (cvar bannedcfgfile) in the tfc mod directory. VERIFIED CAVEAT on persistence: SV_WriteId_f writes ONLY permanent entries - it skips every filter whose banTime != 0 and emits lines of the form 'banid 0.0 <uniqueid>' - so a ban issued with a non-zero {duration} is never written to banned.cfg and is lost on restart. Use {duration} 0 for anything that must survive a restart, or re-apply timed bans from your own store. Note also that removeid's '#' form is a ban-list SLOT number (1-based, as printed by 'listid'), NOT a userid - unlike the '#' in kick and banid, which is a userid; the STEAM_/VALVE_ form recorded here avoids that ambiguity entirely. IP bans are a separate list (addip/removeip/writeip -> listip.cfg). DISAGREEMENT: gamerconfig.eu describes kick as taking a userid, and the commonly published forms are 'kick \"<name>\"' and 'kick #<userid>'; the ReHLDS source for Host_Kick_f (defined in sv_main.cpp, registered in host_cmd.cpp) shows the '#' branch also accepts a STEAM_/VALVE_ unique id, matching on SV_GetClientIDString, which is the form recorded here so that one identifier serves kick, ban and unban. The trailing [reason] is honoured on both the vanilla and REHLDS_FIXES paths (the ifdef only adds escape-sequence replacement), and the kick usage banner prints '[reason]' only under REHLDS_FIXES. If a kick appears to succeed but hits nobody, fall back to 'kick #<userid>' using the userid column from 'users'. 'status' is the human info dump but is column-aligned and awkward to parse; 'users' prints a 'userid : uniqueid : name' header, a '------ : ---------: ----' rule, rows formatted '%6i : %s : %s', and an 'N users' footer, and is what playerParse targets (playerParse captures the transient userid as accountId and the persistent Steam ID as playerId). No MOTD command exists - GoldSrc serves motd.txt from the mod directory. appId is 20 (Team Fortress Classic itself, confirmed on SteamDB); the server binary comes from Steam app 90, Half-Life Dedicated Server (confirmed by LinuxGSM), run as 'hlds -game tfc', but 90 is shared by every GoldSrc mod and so is worthless as a match key. LAN or non-Steam clients report STEAM_ID_LAN / HLTV instead of a numeric id and cannot be banned by unique id. Sourcing caveat: ReHLDS is a reverse-engineered, behaviour-compatible reimplementation of Valve's closed-source HLDS rather than Valve's own code; the independent community command lists agree with it on every command recorded here."
+}

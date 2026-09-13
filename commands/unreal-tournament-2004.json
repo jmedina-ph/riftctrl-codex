@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "slug": "unreal-tournament-2004",
+  "game": {
+    "displayName": "Unreal Tournament 2004 Dedicated Server",
+    "appId": 13230,
+    "aliases": [
+      "Unreal Tournament 2004",
+      "Unreal Tournament 2004: Editor's Choice Edition",
+      "UT2004",
+      "UT2k4",
+      "ut2k4server"
+    ]
+  },
+  "transport": "none",
+  "playerId": {
+    "label": "Username",
+    "example": "Malcolm",
+    "pattern": "[^\\r\\n\"]{1,20}"
+  },
+  "banList": {
+    "paths": [
+      "System/UT2004.ini"
+    ],
+    "lineIdPattern": "^(?:BannedIDs=|IPPolicies=DENY;)(.+)$"
+  },
+  "sources": [
+    {
+      "url": "https://wiki.unrealadmin.org/Server_Setup_(UT2004)",
+      "title": "Server Setup (UT2004) - UnrealAdminWiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.beyondunreal.com/UE2:Console_Commands_(UT2004)",
+      "title": "UE2:Console Commands (UT2004) - Unreal Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://beyondunrealwiki.github.io/pages/console-commands-admin-cons.html",
+      "title": "UnrealWiki: Console Commands/Admin Console Commands",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://tweakguides.pcgamingwiki.com/UT2004_12.html",
+      "title": "TweakGuides.com - Unreal Tournament 2004 Tweak Guide (Console Commands)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "http://ericdives.com/UT2004-UnCodex/engine/adminbase.html",
+      "title": "UT2004 UnrealScript - Engine.AdminBase",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "http://ericdives.com/UT2004-UnCodex/engine/accesscontrol.html",
+      "title": "UT2004 UnrealScript - Engine.AccessControl",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://beyondunrealwiki.github.io/pages/accesscontrol.html",
+      "title": "UnrealWiki: AccessControl",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://selfhosted-gaming.arne.beer/ut2004/",
+      "title": "Self-hosted Gaming | Unreal Tournament 2004",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.adamzwakk.com/guides/ut2004-server/",
+      "title": "Starting a UT2004 Server on Ubuntu 20.04 in 2021",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/master/lgsm/config-default/config-lgsm/ut2k4server/_default.cfg",
+      "title": "LinuxGSM ut2k4server default config",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://pingperfect.com/knowledgebase/458/Unreal-Tournament-2004-UT2004--Server-Configuration.html",
+      "title": "Unreal Tournament 2004 (UT2004) Server Configuration - Pingperfect",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "UT2004 (Unreal Engine 2.5, 2004) has no RCON, no telnet console and no admin HTTP/JSON API, and the ucc/ucc-bin dedicated server process takes no typed commands on stdin - LinuxGSM's ut2k4server profile stops it with stopmode=2 (CTRL+c) rather than by sending a quit command, which is what a server with a console prompt would use. So there is no pipe to send text down, hence transport 'none' and no commands. Exactly two admin surfaces are documented, and neither is drivable as a command channel. (1) WebAdmin: an HTML panel served by the engine's own web server, turned on with bEnabled=True under [UWeb.WebServer] in System/UT2004.ini (Applications[0]=xWebAdmin.UTServerAdmin at path /ServerAdmin, ListenPort=80 by default, commonly moved to 8075/8080), logged into with AdminName/AdminPassword from [Engine.AccessControl] or with accounts from xadmin.ini when AccessControlClass=XAdmin.AccessControlIni. Its kick and ban are page buttons tied to per-session player handles, with no documented endpoints, so it is deliberately not modelled as 'rest'. (2) The in-game client console: an admin types 'AdminLogin <password>' (XAdmin accounts need 'AdminLogin <username> <password>') and then prefixes each command with ADMIN, e.g. 'ADMIN KICK <playername>'. The commands themselves do exist server-side - Engine.AdminBase declares exec functions PlayerList(), Kick(string Cmd, string Extra), KickBan(string S), RestartMap(), NextMap(), Switch(string URL), and Engine.GameInfo declares AdminSay(string Msg) - but reaching them requires an authenticated game client, and PlayerList writes to the server log rather than returning a response, so none of it is usable as a transport. playerId is 'Username' because that is genuinely what moderation targets here: AccessControl.KickBan(S) finds the first player whose name matches the string and removes them; UT2004 exposes no stable per-player id to admins (the CD-key hash is never shown, and names are not unique or reserved), which is exactly why kick and ban are unreliable on this game even by hand. Bans persist in the server's ini (System/UT2004.ini, or whatever file was passed as ini=<file>) under [Engine.AccessControl]: with bBanByID=True - which is what real server configs ship - each ban is a 'BannedIDs=<CD key hash>' line, and with bBanByID=False it is an IP policy line instead. Disagreement worth knowing: the general UE2 wiki writes IP policies comma-separated ('DENY,1.2.3.4'), while UT2004's own Engine.AccessControl defaultproperties and a real UT2004 server ini both show the semicolon form (IPPolicies=\"ACCEPT;*\"), so the lineIdPattern here accepts BannedIDs lines and semicolon DENY lines; the exact spelling of a CD-key-hash ban line is not documented anywhere found and is the weakest claim in this file. Editing those lines needs a server restart to take effect; unbanning live is only possible through the WebAdmin UI. appId is the Steam id of the game (13230, 'Unreal Tournament 2004: Editor's Choice Edition', delisted in 2022-2023) because the dedicated server was an Epic download, never a Steam app - servers are installed from the ut2004-dedicatedserver archive, not via SteamCMD."
+}

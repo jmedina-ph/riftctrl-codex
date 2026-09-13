@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "slug": "pixark",
+  "game": {
+    "displayName": "PixARK Dedicated Server",
+    "appId": 824360,
+    "aliases": [
+      "PixARK",
+      "Pix ARK",
+      "PixArk"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 27020,
+    "portSetting": "RCONPort",
+    "enableSetting": "RCONEnabled",
+    "passwordSetting": "ServerAdminPassword"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "76561198012345678",
+    "pattern": "7656119[0-9]{10}"
+  },
+  "commands": {
+    "kick": "KickPlayer {playerId}",
+    "ban": "BanPlayer {playerId}",
+    "unban": "UnbanPlayer {playerId}",
+    "say": "Broadcast {message}",
+    "motd": "SetMessageOfTheDay {message}"
+  },
+  "sources": [
+    {
+      "url": "https://pixark.fandom.com/wiki/Console_commands",
+      "title": "Console commands - Official Pixark Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.survivalservers.com/wiki/PixARK_Admin_Commands",
+      "title": "PixARK Admin Commands - Survival Servers",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://legionhosting.net/kb/pixark/pixark-admin-commands?language=english",
+      "title": "PixARK Admin Commands - Legion Hosting",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.magicgameworld.com/pixark-server-admin-commands/",
+      "title": "PixARK Server Admin Commands - Magic Game World",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1347966783",
+      "title": "Guide to starting a PixARK Server",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/593600/discussions/0/1694918539667297837/",
+      "title": "Rcon :: PixARK General Discussions",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://arkascendedservermanager.com/common-rcon-commands/",
+      "title": "Common RCON Commands (Cheatsheet) - ARK Ascended Server Manager",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://ark.wiki.gg/wiki/Console_commands",
+      "title": "Console commands - ARK Official Community Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/824360/",
+      "title": "PixARK Dedicated Server - AppID 824360",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "PixARK is built on the ARK: Survival Evolved codebase and inherits its Source RCON implementation and admin command names. RCON is configured in ShooterGame/Saved/Config/WindowsServer/GameUserSettings.ini under [ServerSettings] (RCONEnabled=True, RCONPort=27020, ServerAdminPassword=...); edit the file under Saved/, not DefaultGameUserSettings.ini, which updates overwrite. Both the Steam 'Guide to starting a PixARK Server' and the PixARK Steam RCON discussion confirm those keys, the latter running a non-default RCONPort=27017. Confidence is LOW, for three reasons. (1) Source independence: magicgameworld.com reproduces the Survival Servers entries verbatim and Legion Hosting paraphrases the same set, so the hosting knowledge bases count as ONE source alongside the Pixark Fandom wiki. The wiki lists KickPlayer, UnbanPlayer, SetMessageOfTheDay and ServerChat by name but leaves their Syntax and Arguments fields blank; only 'banplayer <Steam64ID>' and 'broadcast <message>' are given with arguments there, so the Steam64 argument form for kick/unban/motd effectively has a single source. (2) Identifier conflict: the Pixark wiki describes ListPlayers as listing 'names and PlayerIDs', and the ARK wiki likewise says 'their ARK IDs' and documents KickPlayer <PlayerID> while giving BanPlayer/UnbanPlayer <SteamID>. The hosting cluster instead says listplayers shows Steam IDs and kickplayer takes a Steam64 ID. playerId stays the Steam ID because BanPlayer/UnbanPlayer unambiguously moderate by Steam64 in every source, but kick may require the in-game PlayerID on some builds - if KickPlayer silently no-ops with a Steam64 ID, obtain the PlayerID from ListPlayers and retry. (3) Send-form: every PixARK source writes these with the in-game console's 'cheat ' prefix (e.g. 'cheat listplayers'), and the rule that the prefix is dropped over RCON is corroborated for ARK only (ARK Ascended Server Manager: cheat commands 'typically run without the prefix' from RCON). The unprefixed strings recorded here are therefore inferred; if a command appears to no-op, retry it with a leading 'cheat '. Commands are case-insensitive. listPlayers and its playerParse were REMOVED: no PixARK source shows actual ListPlayers output, and the previously recorded line pattern ('0. PlayerName, 76561198000000000') and 'No Players Connected' empty marker were carried over from ARK, with the Steam64 anchor directly contradicted by the wiki's 'PlayerIDs' wording. Re-add only after observing real output from a running PixARK server. BanPlayer is permanent - PixARK has no timed ban, hence no {duration}. 'Broadcast' forces a large centre-screen message; 'ServerChat <message>' is the quieter chat-line alternative, and 'ServerChatTo \"<Steam64ID>\"' / 'ServerChatToPlayer \"<PlayerName>\"' target one player. Steam discussions report that some ARK admin commands (ShowMyAdminManager, SetCanAttackStructure, DestroyMyTarget) do not work in PixARK, so treat anything beyond the core four with suspicion. No PixARK-specific source documents the on-disk ban file, so banList is deliberately omitted; use UnbanPlayer instead. Some hosts expose RCON at game port + 2 rather than 27020 - that is a control-panel convention, not a game default."
+}

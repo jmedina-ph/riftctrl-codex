@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "slug": "killing-floor",
+  "game": {
+    "displayName": "Killing Floor Dedicated Server",
+    "appId": 215360,
+    "aliases": [
+      "Killing Floor",
+      "Killing Floor (2009)",
+      "Killing Floor 1",
+      "KF",
+      "KF1"
+    ]
+  },
+  "transport": "none",
+  "playerId": {
+    "label": "Steam ID",
+    "example": "76561198012345678",
+    "pattern": "7656119[0-9]{10}"
+  },
+  "banList": {
+    "paths": [
+      "System/KillingFloor.ini"
+    ],
+    "lineIdPattern": "BannedIDs=([0-9]{17})"
+  },
+  "sources": [
+    {
+      "url": "https://wiki.tripwireinteractive.com/index.php/Dedicated_Server_(KillingFloor)",
+      "title": "Dedicated Server (KillingFloor) - Tripwire Interactive Wiki",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://wiki.tripwireinteractive.com/index.php/Console_Commands_(Killing_Floor)",
+      "title": "Console Commands (Killing Floor) - Tripwire Interactive Wiki",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=3053854807",
+      "title": "Hosting A Killing Floor (2009) Dedicated Server in 2023",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://unrealarchive.org/wikis/unreal-wiki/Legacy:Console_Commands_(killing_floor).html",
+      "title": "Legacy:Console Commands (killing floor) - Unreal Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://wiki.unrealadmin.org/Server_Setup_(UT2004)",
+      "title": "Server Setup (UT2004) - UnrealAdminWiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://beyondunrealwiki.github.io/pages/accesscontrol.html",
+      "title": "UnrealWiki: AccessControl",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "http://ericdives.com/UT2004-UnCodex/engine/accesscontrol.html",
+      "title": "UT2004 UnrealScript - Engine.AccessControl",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/app/1250/discussions/0/2967267880891490463/",
+      "title": "2 KF1 players ruining my friend's experience :: Killing Floor General Discussions",
+      "kind": "forum",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Killing Floor (2009) runs on Unreal Engine 2.5 and has no RCON and no admin HTTP/JSON API, so there is no text-command pipe to send anything down - hence transport 'none' and no commands. Tripwire's own wiki documents exactly two admin surfaces: WebAdmin, an HTML panel on TCP 8075 (Applications[0]=xWebAdmin at path /ServerAdmin, turned on with bEnabled=True under [UWeb.WebServer] in System/KillingFloor.ini, admin credentials from [Engine.AccessControl] AdminPassword or xAdmin.ini), and the in-game client console, where an admin types 'AdminLogin <password>' and then 'Admin <command>'. Kick, KickBan and PlayerList do exist as server-side admin commands, but they are only reachable through that authenticated game client or the WebAdmin's buttons: WebAdmin is a form/session HTML UI with no documented endpoints and no basic/bearer auth, and PlayerList only writes to the server log rather than returning a response, so neither can be driven as a command transport. The dedicated server process (KFServer.exe on Windows, ucc-bin on Linux) prints a log but no source found documents a stdin command prompt. Bans persist in System/KillingFloor.ini under [Engine.AccessControl] as BannedIDs= entries with bBanByID=True, and a restart is needed for a hand edit to take effect. Confidence is low on that file format specifically: the UE2 Engine.AccessControl source and the BeyondUnreal wiki agree that BannedIDs is a globalconfig array<string> and that bBanByID switches ID bans on, but only a single community post documents the Killing-Floor-specific line spelling 'BannedIDs=<SteamID64> <PlayerName>'. The transport finding itself is supported by several independent sources. The dedicated server app id is split by platform - 215360 (Linux, recorded here) and 215350 (Win32) - and this is Killing Floor 1, not Killing Floor 2 (app 232090), which has a different WebAdmin."
+}

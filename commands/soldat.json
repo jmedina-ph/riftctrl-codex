@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "slug": "soldat",
+  "game": {
+    "displayName": "Soldat Dedicated Server",
+    "appId": 638500,
+    "aliases": [
+      "Soldat",
+      "OpenSoldat",
+      "OpenSoldat Dedicated Server",
+      "soldatserver"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 23073,
+    "portSetting": "net_port",
+    "enableSetting": null,
+    "passwordSetting": "sv_adminpassword"
+  },
+  "playerId": {
+    "label": "Player Number",
+    "example": "3",
+    "pattern": "[0-9]{1,2}"
+  },
+  "commands": {
+    "kick": "/kick \"{playerId}\"",
+    "ban": "/ban \"{playerId}\"",
+    "say": "/say \"{message}\""
+  },
+  "banList": {
+    "paths": [
+      "configs/banned.txt",
+      "configs/bannedhw.txt",
+      "banned.txt",
+      "bannedhw.txt"
+    ],
+    "lineIdPattern": "^([^:\\s]+):",
+    "liveUnban": "/unban {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://static.soldat.pl/man/manual-en.html",
+      "title": "Soldat Manual - server and admin commands",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://wiki.soldat.pl/index.php/In-game_Commands",
+      "title": "In-game Commands - Soldat Community Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://wiki.soldat.pl/index.php/Raw_commands",
+      "title": "Raw commands - Soldat Community Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://wiki.soldat.pl/index.php/Dedicated_Server",
+      "title": "Dedicated Server - Soldat Community Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://wiki.soldat.pl/index.php/Refreshx",
+      "title": "Refreshx - Soldat Community Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/opensoldat/opensoldat/master/server/ServerCommands.pas",
+      "title": "OpenSoldat server/ServerCommands.pas - command registrations and implementations",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/opensoldat/opensoldat/master/server/Rcon.pas",
+      "title": "OpenSoldat server/Rcon.pas - TCP admin server, password handshake, REFRESHX",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/opensoldat/opensoldat/master/server/BanSystem.pas",
+      "title": "OpenSoldat server/BanSystem.pas - banned.txt / bannedhw.txt format",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Not Source RCON. The admin channel is Soldat's own plain-text line protocol on a TCP listener bound to the same port number as the UDP game port (net_port, default 23073); the file-transfer port is net_port+10. Handshake (server/Rcon.pas): the server writes 'Soldat Admin Connection Established.', the client sends the admin password as the first LF-terminated line, and the server answers 'Welcome, you are in command of the server now.' Every later line must begin with '/' - ProcessCommands only forwards a line to the parser when its first character is '/', and strips that slash before parsing. The two exceptions are the raw, slashless commands SHUTDOWN and REFRESHX. Arguments are split on spaces by a TStringList with the default quote character, so a multi-word message or a name containing spaces MUST be quoted; hence the quotes in the templates above. A message containing a double quote will break the argument split. listPlayers is deliberately absent: the only roster the admin channel offers is REFRESHX, which replies with the header 'REFRESHX' plus a fixed-size binary struct (32 slots of name, hwid, team, kills, caps, deaths, ping, number, IP, x, y, then map and game state), and playerParse has no binary mode. Player numbers (1-32) come from that struct or from the in-game scoreboard. kick and ban target either the slot number or an exactly matching player name - the number is recorded as playerId because it is unambiguous, but the quoted template accepts a name too; @all, @humans, @bots, @alpha and similar group targets also work. /ban takes no reason and no duration: it always bans the player's IP and HWID for 30 days with the reason 'Banned by an admin'. /banip <ip> and /banhw <hwid> ban an identifier directly; /unban takes an IP or a HWID, never the slot number, which is why it is recorded as banList.liveUnban rather than commands.unban. /banlist prints the current bans. Ban files are configs/banned.txt (IP) and configs/bannedhw.txt (hardware/Steam account id) under the server's user directory, one 'id:seconds:reason' line each; the bare filenames are listed as fallbacks for older 1.6.x layouts. No info command exists - 'info' is registered player-only, and there is no server status command. No motd command; greetings are config files. Settings names are the current OpenSoldat cvars in server.cfg (sv_adminpassword, net_port, net_maxadminconnections, net_adminip); legacy Soldat 1.6.x wrote the same values into soldat.ini as Admin_Password and Port. enableSetting is null because there is no on/off switch: the admin listener is created only when sv_adminpassword is non-empty, and net_maxadminconnections caps concurrent admins. Source disagreement: the community wiki's In-game Commands page lists /tempban <minutes> <ip> and /mute//unmute, which do not exist in the current OpenSoldat command table (it registers /gmute and /ungmute and no tempban); the manual and the source agree on kick, ban, banip, unban, say, kicklast, banlast and unbanlast."
+}

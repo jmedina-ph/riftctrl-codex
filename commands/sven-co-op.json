@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "slug": "sven-co-op",
+  "game": {
+    "displayName": "Sven Co-op Dedicated Server",
+    "appId": 276060,
+    "aliases": [
+      "Sven Co-op",
+      "Sven Coop",
+      "SvenDS",
+      "SC"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 27015,
+    "portSetting": "-port",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:1:12345678",
+    "pattern": "STEAM_[0-9]:[01]:[0-9]+"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kicksteamid \"{playerId}\"",
+    "ban": "banid {duration} {playerId} kick",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*\\d+\\s+\"(?<name>.*)\"\\s+(?<accountId>\\d+)\\s+(?<playerId>STEAM_[0-9]:[01]:[0-9]+)",
+    "skipLinePattern": "^(hostname|version|tcp/ip|ipx|map|players|#\\s+name|\\d+ users)"
+  },
+  "banList": {
+    "paths": [
+      "svencoop/banned.cfg",
+      "banned.cfg"
+    ],
+    "lineIdPattern": "banid\\s+\\S+\\s+(STEAM_[0-9]:[01]:[0-9]+)",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://www.svencoop.com/manual/server-advanced.html",
+      "title": "Sven Co-op Manual - Running a server (advanced topics): kicksteamid \"Steam ID\", admins.txt",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://wiki.svencoop.com/Running_a_server/Configuration",
+      "title": "Sven Co-op Wiki - Server configuration: rcon_password, bannedcfgfile (banned Steam ID list), listipcfgfile (banned IP list)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://wiki.svencoop.com/Running_a_server/Starting_a_server",
+      "title": "Sven Co-op Wiki - Starting a server: -console required, -port 27015 default",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/dreamstalker/rehlds/blob/master/rehlds/engine/sv_main.cpp",
+      "title": "ReHLDS - GoldSrc engine: banid/removeid/writeid syntax, bannedcfgfile=banned.cfg, UDP challenge-rcon validation",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/dreamstalker/rehlds/blob/master/rehlds/engine/host_cmd.cpp",
+      "title": "ReHLDS - GoldSrc engine: status output format (#slot \"name\" userid uniqueid ...), Host_Say hostname prefix and length cap, kick",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://legionhosting.net/kb/sven-co-op/sven-co-op-admin-commands",
+      "title": "Sven Co-op Admin Commands (rcon status / kick <userid> / banid <minutes> <userid> / say)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.gamehostbros.com/guides/games/sven-co-op/console-commands",
+      "title": "Sven Co-op Console Commands List (notes changelevel, kick and status exist as one-shot console commands; gives no syntax)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Sven Co-op is standalone GoldSrc, so RCON is the GoldSrc/HLDS dialect, NOT Valve Source RCON: connectionless UDP on the game port (default 27015, set with the -port launch argument), challenge-response - send '\\xFF\\xFF\\xFF\\xFFchallenge rcon\\n', then '\\xFF\\xFF\\xFF\\xFFrcon <challenge> \"<password>\" <command>'; output returns as connectionless print packets. A Source RCON (TCP) client will not connect. RCON is enabled simply by setting rcon_password in server.cfg; blank disables it (SV_Rcon_Validate returns NOSETPASSWORD). The standalone server also has a real stdin console when started with -console, which takes the same command text. GoldSrc tokenises ':' as its own token, which is why the Steam ID must be QUOTED for Sven Co-op's own kicksteamid (\"You must surround the Steam ID with quotes\") and must be UNQUOTED for the engine's banid/removeid, which reassemble STEAM_x:y:z from separate arguments (banid builds it from Cmd_Argv(2)/(4)/(6); removeid accepts an argument count of 2 or 6) - do not 'fix' the quoting either way. kicksteamid takes no reason. The engine alternatives are kick \"{playerName}\" or kick # <userid> (the userid is captured as accountId from status). banid's first argument is MINUTES and must be a literal number, 0 for permanent - an EMPTY {duration} shifts the arguments and puts the Steam ID into the minutes slot; the trailing 'kick' drops the player immediately, and banid rejects more than 8 tokens, which 'banid 0 STEAM_x:y:z kick' exactly fills. A banid ban is in memory only: run writeid afterwards to persist it to banned.cfg (writeid writes permanent bans only, as 'banid 0.0 STEAM_x:y:z' lines, and semicolon chaining does NOT work over rcon because rcon executes a single command string rather than going through the command buffer). removeid unbans live; run writeid again to rewrite the file. IP bans are the separate addip/removeip/writeip commands writing listip.cfg. say is broadcast by the engine prefixed with the hostname cvar, as '<hostname> message' - NOT 'Console: <message>', which is the Source-engine form; surrounding quotes are stripped, and the message body is truncated near 63 characters inside a 128-byte buffer. There is no MOTD command - the MOTD is the file named by the motdfile cvar (motd.txt). status also serves as the info command. CONFIDENCE IS LOW DELIBERATELY. The exact command syntax, the status line layout (printf '#%2i %8s %i %s' -> '#<slot> \"<name>\" <userid> <uniqueid> <frags> <time> <ping> <loss> <adr>') and removeid/writeid all come from ReHLDS, a reimplementation of the HLDS engine Sven Co-op forked - no Sven Co-op source confirms them. kicksteamid and its quoting rest on the developer manual alone. The one hosting page that documents banning gives 'banid <minutes> <userid>', not the Steam-ID form recorded here, and the second hosting page gives no command syntax at all. Nothing here has been run against a live Sven Co-op server. Non-Steam entries (HLTV, STEAM_ID_LAN, loopback, BOT) appear in status but cannot be banned by Steam ID."
+}

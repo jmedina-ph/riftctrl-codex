@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "slug": "space-engineers",
+  "game": {
+    "displayName": "Space Engineers Dedicated Server",
+    "appId": 298740,
+    "aliases": [
+      "Space Engineers",
+      "SE",
+      "SpaceEngineers"
+    ]
+  },
+  "transport": "rest",
+  "rest": {
+    "defaultPort": 8080,
+    "basePath": "/vrageremote/v1",
+    "auth": {
+      "type": "header",
+      "name": "Authorization",
+      "credentialSetting": "RemoteSecurityKey"
+    }
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "76561198000000000",
+    "pattern": "[0-9]{9,20}"
+  },
+  "commands": {
+    "info": "GET /server",
+    "listPlayers": "GET /session/players",
+    "ban": "POST /admin/bannedPlayers/{playerId}",
+    "unban": "DELETE /admin/bannedPlayers/{playerId}",
+    "say": "POST /session/chat {message}"
+  },
+  "playerParse": {
+    "mode": "json",
+    "rootPath": [
+      "data",
+      "Players"
+    ],
+    "namePath": [
+      "DisplayName"
+    ],
+    "playerIdPath": [
+      "SteamID"
+    ]
+  },
+  "sources": [
+    {
+      "url": "https://www.spaceengineersgame.com/dedicated-servers/",
+      "title": "Dedicated Servers - Space Engineers (Keen Software House), Remote API section: HMACSHA1 over URL + nonce + date, Authorization 'nonce:hash'",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://keensoftwarehouse.github.io/SpaceEngineersModAPI/api/VRage.Game.ModAPI.IMyConfigDedicated.html",
+      "title": "IMyConfigDedicated - Space Engineers ModAPI (RemoteApiEnabled, RemoteApiIP, RemoteApiPort, RemoteSecurityKey, Administrators, Banned/Reserved hold 'SteamId and Xbox live ids')",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://spaceengineers.wiki.gg/wiki/Setting_up_a_Space_Engineers_Dedicated_Server",
+      "title": "Setting up a Space Engineers Dedicated Server - Space Engineers Wiki (appID 298740; Remote API host/port/security key; port 8080)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.medievalengineerswiki.com/index.php?title=Keen:Remote_Client",
+      "title": "Remote Client - Medieval Engineers Wiki (same VRage Remote API; /vrageremote/v1/, default port 8080)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://pypi.org/project/vrage-api/",
+      "title": "vrage_api 1.0.2 (BSpendlove) - src/vrage_api/vrage_api.py: api_endpoint '/vrageremote/v1', full method/endpoint map, HMAC build_headers; README shows data.Players[].SteamID/.DisplayName",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.npmjs.com/package/space-engineers",
+      "title": "space-engineers 1.5.4 (JemiloII) - lib/admin.js, lib/session.js, lib/server.js, lib/bridge.js (independent confirmation of bannedPlayers POST/DELETE, session/players, /server, session/chat POST body; kickPlayers spelling for kick)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/JamesBacon/serap",
+      "title": "serap - NodeJS module for the Space Engineers Remote API: /v1/session/players, /v1/session/chat, /v1/server, /v1/server/ping, /v1/admin/bannedPlayers, /v1/admin/kickedPlayers",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/thelande/space-engineers-exporter",
+      "title": "space-engineers-exporter - pkg/vrage_client/client.go: base_path '/vrageremote', GetHMAC msg 'url\\r\\nnonce\\r\\ndate\\r\\n', base64-decoded key, HMAC-SHA1",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://support.keenswh.com/spaceengineers/pc/topic/remote-api-improvements",
+      "title": "Remote API Improvements! - Keen Software House feedback (user feature request; references existing GET /v1/server and POST /v1/session/chat while asking for a per-player variant - supporting, not primary)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Space Engineers has no RCON and no text console on the dedicated server. Its only command channel is Keen's VRage Remote API, a JSON HTTP API served by the dedicated server itself. Enable it with RemoteApiEnabled, set RemoteApiPort (default 8080) and RemoteSecurityKey in SpaceEngineers-Dedicated.cfg or on the General tab of the dedicated-server GUI; all four names (RemoteApiEnabled, RemoteApiIP, RemoteApiPort, RemoteSecurityKey) are verified against Keen's own ModAPI reference for IMyConfigDedicated. A restart is required after changing them.\n\nAUTH IS NOT A PLAIN HEADER TOKEN, despite auth.type 'header'. Every request carries 'Date: <UTC RFC1123>' and 'Authorization: <nonce>:<base64 HMAC-SHA1>'. The nonce is a single-use random string; the signed message is the request path INCLUDING basePath and any query string, then the nonce, then the date, each followed by CRLF (path + \"\\r\\n\" + nonce + \"\\r\\n\" + date + \"\\r\\n\"), hashed with the base64-DECODED RemoteSecurityKey as the key. Verified in three independent implementations: vrage_api (Python, build_headers), space-engineers (Node, lib/bridge.js opts) and space-engineers-exporter (Go, GetHMAC), and described in prose on Keen's own dedicated-servers page. auth.name is the header the result goes in.\n\nCOMMAND ENCODING: this game is commanded by HTTP, not by console text, so each command is written as '<METHOD> <path>' with the path RELATIVE TO basePath. Prepend basePath to get the real request line, e.g. listPlayers is GET http://<host>:8080/vrageremote/v1/session/players. say is the one command with a body: POST /session/chat carries the message as the whole JSON request body, i.e. a bare JSON string (Content-Type: application/json, body \"hello everyone\") - the {message} token after the path is that body, not a path segment or query parameter. Verified in both clients: vrage_api send_chat_message posts json=message, and the Node client sends {body: message} to the same path.\n\nKICK IS NOT RECORDED. The two client codebases that implement a kick disagree and no primary source settles it: vrage_api sends POST /admin/kickedPlayers/{steamId} (DELETE to the same path to un-kick), while the Node client sends POST /admin/kickPlayers/{steamId} (no 'ed'). Only the GET listing /admin/kickedPlayers is agreed on, by vrage_api, the Node client and serap. POST /admin/kickedPlayers/{steamId} is the better candidate - it is REST-symmetric with bannedPlayers and promotedPlayers and with that GET listing - but it has a single source and one source contradicting it, so it fails the two-independent-sources bar and was removed rather than shipped as a silent 404. Probe both paths against a live server before adding a kick; until then ban/unban is the working moderation path.\n\nEverything that IS recorded - GET /server, GET /session/players, POST and DELETE /admin/bannedPlayers/{steamId}, POST /session/chat - is agreed by two or more independent codebases (vrage_api, the space-engineers npm client, serap's endpoint list). GET /server/ping also exists and is a useful liveness check.\n\nBan takes no reason and no duration: the API ban is permanent until DELETE /admin/bannedPlayers/{steamId}. There is no motd command; MessageOfTheDay is a config property on IMyConfigDedicated, not a runtime command. The API also exposes promote/demote (POST/DELETE /admin/promotedPlayers/{steamId}), grid/asteroid/planet/floatingObject deletion, PATCH on session entities to stop them, and DELETE /server to stop the server.\n\nplayerParse reads the envelope the API always returns: {\"data\": {\"Players\": [{\"SteamID\": 76561198000000000, \"DisplayName\": \"...\", \"FactionName\": \"...\", \"FactionTag\": \"...\", \"PromoteLevel\": 4, \"Ping\": 69}]}, \"meta\": {...}}; the vrage_api README iterates exactly players[\"data\"][\"Players\"] reading [\"SteamID\"] and [\"DisplayName\"]. SteamID is a JSON NUMBER, not a string, and it is a full 64-bit value - a client that parses it as a double will corrupt it, so read it as a big integer or as a raw string (the Node client pulls in json-bigint for precisely this reason).\n\nPLAYER ID CAVEAT: the field is called SteamID, but since crossplay (EOS/Xbox) a connected player is not necessarily a Steam user, and Keen's own ModAPI notes that the Banned and Reserved config lists hold 'SteamId and Xbox live ids' as ulong. The pattern here is therefore a bare 64-bit decimal rather than the 7656119 Steam prefix, so non-Steam players still match.\n\nNOT RECORDED: midspace's Admin Helper script mod adds in-game chat commands such as /kick and /ban, but that is a workshop mod and not part of the shipped server, so it is out of scope here."
+}

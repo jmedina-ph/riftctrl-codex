@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "slug": "abiotic-factor",
+  "game": {
+    "displayName": "Abiotic Factor Dedicated Server",
+    "appId": 2857200,
+    "aliases": [
+      "Abiotic Factor",
+      "AbioticFactor",
+      "AF"
+    ]
+  },
+  "transport": "none",
+  "playerId": {
+    "label": "Steam ID",
+    "example": "76561198053306820",
+    "pattern": "7656119[0-9]{10}"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/DFJacob/AbioticFactorDedicatedServer/wiki/Technical-%E2%80%90-Launch-Parameters",
+      "title": "Technical - Launch Parameters, official Abiotic Factor Dedicated Server wiki",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/DFJacob/AbioticFactorDedicatedServer/wiki/Guide-%E2%80%90-Quickstart",
+      "title": "Guide - Quickstart, official Abiotic Factor Dedicated Server wiki",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/app/427410/discussions/0/4357872216492474476/",
+      "title": "Dedicated Server Guide (developer post linking the official server wiki)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/CubeCoders/AMPTemplates/main/abiotic-factor.kvp",
+      "title": "CubeCoders AMP template for Abiotic Factor",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://xgamingserver.com/docs/abiotic-factor/player-moderation",
+      "title": "How to Kick & Ban Players on Your Abiotic Factor Server",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://nodecraft.com/support/games/abiotic-factor/how-to-kick-or-ban-players-from-your-abiotic-factor-server",
+      "title": "How to Kick or Ban Players from Your Abiotic Factor Server",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.bisecthosting.com/blog/abiotic-factor-console-commands-cheats-admin-commands-god-spawn-items",
+      "title": "Abiotic Factor Console Commands Guide",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "No command channel exists. The dedicated server ships no RCON, no telnet, no admin HTTP API, and no text console that accepts admin commands: the official server wiki's launch-parameter page lists only -AdminPassword, -ServerPassword, -AdminIniPath, -SandboxIniPath, ports and -log -newconsole (a log VIEWER window), and documents no command syntax at all. Moderation is GUI-only: an admin joins the server, presses ESC, opens the Admin / Player Management tab and clicks Kick, Ban, or Unban from the Banned Players list. Admins are granted by -AdminPassword= or by adding SteamID64 lines under [Moderators] in AbioticFactor/Saved/SaveGames/Server/Admin.ini (Steam accounts only - Xbox and PlayStation players must use the admin password). CubeCoders' AMP template corroborates indirectly: it sets AdminMethod=STDIO with no RCON block and tracks who is online by regex-matching \"<name> has entered/exited the facility\" chat lines out of stdout, which is what an integration does when the server has no listplayers command. The base game has no developer console either; the command lists circulating for Abiotic Factor (Summon, Teleport, Player List, Kill Player) require the UE4SS mod loader plus the Nexus \"Cheat Console Commands\" mod, and even that set contains no kick, ban or broadcast command. Disagreement: survivalconfigs.com publishes \"KickPlayer <name>\", \"BanPlayer <steamid>\" and \"SaveGame\" as in-game console commands; no official page, no other host and no mod list mentions them, and the same page marks RCON/Telnet as \"N/A (in-game console)\", so they are treated as fabricated and NOT recorded. No on-disk ban file is documented - the banned list is held server-side and is only reachable through the admin GUI - so no banList is recorded either. playerId is kept because SteamID64 is the identifier the server's own Admin.ini keys on, for host-level moderation. Re-check after any update that adds server-side admin tooling."
+}

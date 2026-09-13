@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "slug": "action-half-life",
+  "game": {
+    "displayName": "Action Half-Life",
+    "appId": 90,
+    "aliases": [
+      "AHL",
+      "Action Half-Life Dedicated Server",
+      "Action HL",
+      "action",
+      "Half-Life Dedicated Server (-game action)"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 27015,
+    "portSetting": "-port",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "User ID",
+    "example": "2",
+    "pattern": "[0-9]+"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kick #{playerId} \"{reason}\"",
+    "ban": "banid {duration} #{playerId} kick",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*\\d*\\s*\"(?<name>.*?)\"\\s+(?<playerId>\\d+)\\s+(?<accountId>\\S+)",
+    "skipLinePattern": "^#\\s+name\\s+userid"
+  },
+  "banList": {
+    "paths": [
+      "action/banned.cfg",
+      "banned.cfg",
+      "valve/banned.cfg"
+    ],
+    "lineIdPattern": "banid\\s+[0-9.]+\\s+(\\S+)",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://linuxgsm.com/servers/ahlserver/",
+      "title": "Action Half-Life Linux Game Server - LinuxGSM",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/master/lgsm/config-default/config-lgsm/ahlserver/_default.cfg",
+      "title": "LinuxGSM ahlserver _default.cfg (appid 90, -game action, port 27015)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/dreamstalker/rehlds/master/rehlds/engine/sv_main.cpp",
+      "title": "ReHLDS engine sv_main.cpp - SV_Kick_f, SV_BanId_f, SV_RemoveId_f, SV_WriteId_f usage strings and behaviour",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/alliedmodders/amxmodx/master/plugins/admincmd.sma",
+      "title": "AMX Mod X admincmd.sma - kick #userid with quoted reason, banid <minutes> <authid>;wait;writeid, removeid;writeid",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.gamerconfig.eu/commands/half-life/",
+      "title": "Console commands for Half-Life (status, users, kick, banid, removeid, writeid, listid, addip, say)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://counter-strike-boost.com/tutorials/rcon-commands-list",
+      "title": "Essential RCON commands for GoldSrc (kick #12, banid 30 #12, banid 0 STEAM_0:0:... kick, writeid)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://xgamingserver.com/configs/ahl",
+      "title": "Action Half-Life server.cfg (hostname, rcon_password)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Action_Half-Life",
+      "title": "Action Half-Life - Wikipedia",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Console_Command_List",
+      "title": "Console Command List - Valve Developer Community",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Action Half-Life is a GoldSrc mod for Half-Life (A-Team / Akimbo Team Productions, 1999); it has no Steam app of its own, so appId 90 is the shared Half-Life Dedicated Server (HLDS) app it runs on - LinuxGSM's ahlserver launches 'hlds ... -game action -port 27015'. Half-Life itself is appId 70. RCON is the GoldSrc remote console, a challenge/response protocol over the server's UDP game port - NOT the Valve Source RCON TCP protocol - hence flavour 'custom' (the schema offers only source|custom); a Source RCON client will not talk to it. It is enabled purely by setting rcon_password in action/server.cfg. Confidence is low because nothing AHL-specific documents these commands and the status line layout behind playerParse has not been observed on a running AHL server; the commands themselves are stock GoldSrc engine behaviour, checked against the engine's own command handlers in the ReHLDS source and corroborated by AMX Mod X's admincmd.sma and by Half-Life console command references. Engine usage strings: SV_Kick_f prints 'usage: kick < name > | < # userid > [reason]' and drops the client with the supplied message; SV_BanId_f prints 'Usage: banid <minutes> <uniqueid or #userid> { kick }' and 'Use 0 minutes for permanent'; SV_RemoveId_f prints 'Usage: removeid <uniqueid | #slotnumber>'. playerId is the per-session userid printed by status, not a Steam ID: kick takes only a name or a #userid, and banid resolves a leading '#' to the live client's network id, so the userid is the one identifier both accept. duration is in MINUTES, 0 = permanent. The trailing 'kick' argument is REQUIRED to disconnect: SV_BanId_f drops the client only when the last argument is literally 'kick', so a bare two-argument banid records the ban but leaves the player connected. gamerconfig.eu's claim that banid 'bans AND kicks' is wrong for the stock engine, which is why AMX Mod X kicks first and bans afterwards. A ban only survives a restart after 'writeid', which rewrites the bannedcfgfile cvar (default banned.cfg, in the mod directory) with lines of the form 'banid 0.0 <uniqueid>'; it skips any entry with a non-zero ban time, so TIMED BANS ARE NOT PERSISTED - only permanent ones. IP bans go to listip.cfg via addip/writeip. removeid is recorded as banList.liveUnban rather than commands.unban because it takes the uniqueid from the ban file (or a #slotnumber), not the session userid, and it too needs a following 'writeid'. The GoldSrc status header is '#      name userid uniqueid frag time ping loss adr' and player lines are '# <slot> <quoted name> <userid> <uniqueid> ...'; the parse pattern tolerates the leading slot number being absent, and uniqueid may read STEAM_ID_LAN, HLTV or VALVE_x:y:z on non-Steam clients, in which case banid by uniqueid is meaningless. Servers commonly also run AMX Mod X or Adminmod, which add amx_kick/amx_ban and amx_say - not recorded here because they are not part of the base mod."
+}

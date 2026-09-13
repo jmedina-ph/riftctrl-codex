@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "slug": "sons-of-the-forest",
+  "game": {
+    "displayName": "Sons Of The Forest Dedicated Server",
+    "appId": 2465200,
+    "aliases": [
+      "Sons of the Forest",
+      "SOTF",
+      "SotF",
+      "SonsOfTheForestDS"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2992700419",
+      "title": "Sons Of The Forest Dedicated Server Configuration Guide (Steam)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/chemineer1/Sons-of-the-Forest-Dedicated",
+      "title": "chemineer1/Sons-of-the-Forest-Dedicated (Dockerised dedicated server)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://eggs.pterodactyl.io/egg/games-sons-of-the-forest/",
+      "title": "Sons Of The Forest - Pterodactyl egg",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://sonsoftheforest.wiki.gg/wiki/Console_commands",
+      "title": "Console commands - Sons of the Forest Wiki (wiki.gg)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://help.bisecthosting.com/hc/en-us/articles/41784644961563-How-to-Kick-or-Ban-Players-on-a-Sons-of-the-Forest-Server",
+      "title": "How to Kick or Ban Players on a Sons of the Forest Server",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://xgamingserver.com/blog/kick-ban-players-from-your-sons-of-the-forest-server/",
+      "title": "Kick/Ban Players from your Sons of The Forest Server",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.survivalservers.com/wiki/Sons_of_The_Forest_Admin_Commands",
+      "title": "Sons of The Forest Admin Commands",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://help.freakhosting.com/games/sons-of-the-forest/dedicated-server-admin-config",
+      "title": "How to Configure Dedicated Server Admin in Sons of the Forest",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Basis for \"none\": SonsOfTheForestDS ships no RCON, no REST/admin API, and no documented interactive console. Everything the server takes is read at startup from files in its userdata folder - dedicatedserver.cfg (JSON: IpAddress, GamePort 8766, QueryPort 27016, BlobSyncPort 9700, ServerName, MaxPlayers, Password, LanOnly, SaveSlot, SaveMode, GameMode, SaveInterval, IdleDayCycleSpeed, IdleTargetFramerate, ActiveTargetFramerate, LogFilesEnabled, TimestampLogFilenames, TimestampLogEntries, SkipNetworkAccessibilityTest, GameSettings, CustomGameModeSettings) and ownerswhitelist.txt, one SteamID64 per line, which is how admins are granted - the Steam guide describes owners as holding the highest role. The Steam dedicated-server configuration guide, the chemineer1 Docker project and the Pterodactyl egg all describe exactly these files and none of them mention a console, a stop command or a remote protocol. The egg's startup line is wine ./SonsOfTheForestDS.exe with -userdatapath and a series of -dedicatedserver.* launch flags (IpAddress, GamePort, QueryPort, BlobSyncPort, MaxPlayers, Password, GameMode, SkipNetworkAccessibilityTest, SaveSlot, LogFilesEnabled, TimestampLogFilenames) and defines no stop command, no console input and no RCON; the chemineer1 project likewise stops the server with CTRL+C or docker compose stop rather than any in-game or console command. Moderation is a CLIENT-side action: BisectHosting documents an admin joining the game, pressing Esc, opening the Players tab and choosing Kick or Ban per connected player, with re-authorisation under Banned Players, and notes that players ranked Trusted or above cannot be kicked or banned. That is a player in the game, not a command a server manager can send down a pipe, so no commands are recorded. DISAGREEMENT, all of it from hosting pages and none of it corroborated by a primary source: XGamingServer claims in-game chat commands - press Enter, then /kick, /ban or /unban followed by a Steam ID; SurvivalServers lists /kick (steam id) and /ban (steam id) but places command entry in the F1 developer console after enabling developer mode; FreakHosting claims an \"AdminPassword\" key in dedicatedserver.cfg plus an /adminlogin <password> command, and no AdminPassword key appears in the published config schema. The official sonsoftheforest.wiki.gg console-commands page lists cheat, spawn and debug commands only and documents no kick, ban, unban, player-list or broadcast command at all. Confidence is low because the conclusion rests on absence of evidence across several secondary sources rather than an Endnight statement - endnight's own dedicated-server page could not be retrieved (TLS/robots) at research time. If any of this is wrong, the likely correction is that an admin-only in-game chat command set exists; even then it would not change transport, because it is not reachable from the server side."
+}

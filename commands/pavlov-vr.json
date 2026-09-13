@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "slug": "pavlov-vr",
+  "game": {
+    "displayName": "Pavlov VR Dedicated Server",
+    "appId": 622970,
+    "aliases": [
+      "Pavlov VR",
+      "Pavlov",
+      "PavlovVR",
+      "Pavlov Shack"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 9100,
+    "portSetting": "Port",
+    "enableSetting": null,
+    "passwordSetting": "Password"
+  },
+  "playerId": {
+    "label": "Unique ID",
+    "example": "76561198012345678",
+    "pattern": "[0-9]{15,20}"
+  },
+  "commands": {
+    "info": "ServerInfo",
+    "listPlayers": "RefreshList",
+    "kick": "Kick {playerId}",
+    "ban": "Ban {playerId}",
+    "unban": "Unban {playerId}"
+  },
+  "playerParse": {
+    "mode": "json",
+    "rootPath": [
+      "PlayerList"
+    ],
+    "namePath": [
+      "Username"
+    ],
+    "playerIdPath": [
+      "UniqueId"
+    ]
+  },
+  "banList": {
+    "paths": [
+      "Pavlov/Saved/Config/blacklist.txt",
+      "Saved/Config/blacklist.txt"
+    ],
+    "lineIdPattern": "^\\s*([0-9]{15,20})",
+    "liveUnban": "Unban {playerId}"
+  },
+  "sources": [
+    {
+      "url": "http://pavlovwiki.com/index.php/Rcon_Overview_and_Commands",
+      "title": "Pavlov VR Wiki - Rcon Overview and Commands",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://pavlovwiki.com/index.php/Setting_up_a_dedicated_server",
+      "title": "Pavlov VR Wiki - Setting up a dedicated server",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=3350848453",
+      "title": "Pavlov VR Dedicated Server Guide + Additional Configuration",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/RainOrigami/PavlovVR-Rcon",
+      "title": "RainOrigami/PavlovVR-Rcon - .NET Pavlov RCON client",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/p3pr/pavlov-rcon",
+      "title": "p3pr/pavlov-rcon - Node.js Pavlov RCON client",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/CubeCoders/AMPTemplates/blob/main/pavlov-vrconfig.json",
+      "title": "CubeCoders AMP template for Pavlov VR (config file paths)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/622970/",
+      "title": "SteamDB - Pavlov VR Dedicated Server (AppID 622970)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Pavlov speaks its own line-based RCON, not Source RCON: plain TCP on Port from Pavlov/Saved/Config/RconSettings.txt (Password= and Port=, default 9100). The server opens with a password challenge and the client answers with the lowercase hex MD5 of the password; after that each command is sent as a single plain-text line and every reply is a JSON object echoing {\"Command\":\"...\"} plus a payload. RCON is off until RconSettings.txt exists. Commands are PascalCase and case-sensitive as the wiki lists them. RefreshList returns {\"PlayerList\":[{\"Username\":\"...\",\"UniqueId\":\"...\"}]}; ServerInfo returns ServerInfo with MapLabel, GameMode, ServerName, Teams, Team0Score, Team1Score, Round, RoundState, PlayerCount. Identifier is what Pavlov calls the UniqueID - the Steam64 id for PC players and the numeric Oculus/Meta account id for Quest and Pavlov Shack players; both are long digit strings, hence the numeric pattern. Kick, Ban and Unban all take a bare UniqueID and nothing else - there is no reason argument and no ban duration, so {reason} and {duration} are deliberately absent; Ban is permanent and simply appends the id to blacklist.txt, which Unban removes live. There is deliberately NO say/motd entry: the RCON command list has no broadcast or chat command at all (UpdateServerName [Name] changes the server browser name, which is not a broadcast), so RIFT//CTRL should report broadcast as unsupported rather than substituting something. InspectPlayer [UniqueID] gives per-player detail and ModeratorList/Banlist read the mods and blacklist files; Gag [UniqueID] [True/False] is the mute, not a kick. Disagreement between sources: the wiki's worked RCON example uses port 9101 while its own setup page, the Steam guide and both client libraries use 9100 - 9100 is the documented default and 9101 is just that author's server. blacklist.txt path is given as Pavlov/Saved/Config/blacklist.txt by the wiki and the AMP template; the leading directory depends on the install layout (SteamCMD installs under the 622970 or pavlovserver root), so both spellings are listed."
+}

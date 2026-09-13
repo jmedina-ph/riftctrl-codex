@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "slug": "humanitz",
+  "game": {
+    "displayName": "HumanitZ Dedicated Server",
+    "appId": 2728330,
+    "aliases": [
+      "HumanitZ",
+      "HZ",
+      "hzserver"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 8888,
+    "portSetting": "RConPort",
+    "enableSetting": "RCONEnabled",
+    "passwordSetting": "RCONPass"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "76561198012345678",
+    "pattern": "7656119[0-9]{10}"
+  },
+  "commands": {
+    "info": "info",
+    "listPlayers": "Players",
+    "kick": "kick {playerId}",
+    "ban": "ban {playerId}",
+    "unban": "unban {playerId}",
+    "say": "admin {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^(?<name>.+?) \\((?<playerId>7656119[0-9]{10})_\\+_\\|[a-f0-9]+\\)"
+  },
+  "banList": {
+    "paths": [
+      "F_BannedPlayers.txt",
+      "HumanitZServer/F_BannedPlayers.txt"
+    ],
+    "lineIdPattern": "(7656119[0-9]{10})",
+    "liveUnban": "unban {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://humanitz.wiki.gg/wiki/Server_Commands_Compendium",
+      "title": "Server Commands Compendium - Official HumanitZ Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://humanitz.wiki.gg/wiki/Server_Configuration_Files",
+      "title": "Server Configuration Files - Official HumanitZ Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://help.bisecthosting.com/hc/en-us/articles/46144468611483-How-to-Use-RCON-Commands-on-a-HumanitZ-Server",
+      "title": "How to Use RCON Commands on a HumanitZ Server",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/Minidoracat/humanitz-bot",
+      "title": "humanitz-bot - Discord bot driving HumanitZ over RCON",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://humanitz.wiki.gg/wiki/Port_Forwarding",
+      "title": "Port Forwarding - Official HumanitZ Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://linuxgsm.com/servers/hzserver/",
+      "title": "HumanitZ Linux Game Server - LinuxGSM",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://pingplayers.com/knowledgebase/humanitz/how-to-ban-players-from-joining-your-humanitz-server",
+      "title": "How to ban players from joining your HumanitZ server",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "RCON is a modified Valve Source RCON: the humanitz-bot source notes response request_id is always 0, the server never answers an empty packet (so the usual end-marker trick for multi-packet reads does not work), auth replies with RESPONSE_VALUE before AUTH_RESPONSE, and every command takes roughly 3 seconds to answer. Budget a generous timeout. RCON is TCP on RConPort (default 8888, confirmed on the wiki's Port Forwarding page as '8888 - TCP (RCON Port)') and the wiki calls it mandatory for now - disabling it breaks query/ping. The keys are RCONEnabled=false, RConPort=8888 and RCONPass= in GameServerSettings.ini; the wiki documents the shipped template under the name REF_GameServerSettings.ini. The RCON command names are case-insensitive in practice but are written here with the wiki's casing ('Players' capitalised, 'kick'/'ban'/'unban' lower case). Broadcast is 'admin <message>', which prints to everyone's chat with an [Admin] tag; there is no 'say'. There is no MOTD command - the greeting lives in WelcomeMessage.txt. 'fetchbanned' prints the current ban list and 'sendadminmsgto <SteamID> <message>' whispers one player; neither has a schema field here. Kick and ban take the 17-digit Steam ID (NET ID), NOT a player name; ban also writes the ID into F_BannedPlayers.txt, one unique Steam ID per line. PLAYERS REPLY FORMAT (corrected on review): the official wiki and BisectHosting describe the reply only as 'name/SteamID' and print no sample, but the humanitz-bot RCON service parses each row with '^(.+?) \\((\\d+)_\\+_\\|([a-f0-9]+)\\)' - player name, a space, then a parenthesised group holding the Steam64 ID, the literal separator '_+_|' and an EOS Product User ID in hex, optionally followed by 'Lv:X', 'Clan:Name' and 'DPassed:X' suffixes. playerParse now follows that working implementation; the previous slash-separated 'name/SteamID' regex would never have matched a real reply. DISAGREEMENT: supercraft.host documents an in-game chat command '/kick [Player]' that takes a player NAME; the official wiki's admin chat-command list contains no /kick at all, so that form is treated as unconfirmed and the RCON Steam-ID form is used."
+}

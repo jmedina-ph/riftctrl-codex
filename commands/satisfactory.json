@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "slug": "satisfactory",
+  "game": {
+    "displayName": "Satisfactory Dedicated Server",
+    "appId": 1690800,
+    "aliases": [
+      "Satisfactory",
+      "SF"
+    ]
+  },
+  "transport": "rest",
+  "rest": {
+    "defaultPort": 7777,
+    "basePath": "/api/v1",
+    "auth": {
+      "type": "bearer",
+      "credentialSetting": null
+    }
+  },
+  "sources": [
+    {
+      "url": "https://satisfactory.wiki.gg/wiki/Dedicated_servers/HTTPS_API",
+      "title": "Dedicated servers/HTTPS API - Official Satisfactory Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://satisfactory.wiki.gg/wiki/Dedicated_servers",
+      "title": "Dedicated servers - Official Satisfactory Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://satisfactory-oas.github.io/spec/",
+      "title": "Satisfactory Game Server HTTPS OpenAPI specification",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/DJWoodZ/satisfactory-dedicated-server-https-api-client",
+      "title": "satisfactory-dedicated-server-https-api-client (Node.js client for the Satisfactory Dedicated Server HTTPS API)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://docs.ficsit.app/ficsitremotemonitoring/latest/dedicatedserver.html",
+      "title": "Ficsit Remote Monitoring - Dedicated Server API",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "The dedicated server is commanded over its HTTPS API: POST https://<host>:7777/api/v1 with a JSON body {\"function\": \"<name>\", \"data\": {...}} and an Authorization: Bearer <token> header (tokens come from PasswordLogin with the admin password, PasswordlessLogin while unclaimed, or the server.GenerateAPIToken console command). No commands are recorded because vanilla Satisfactory has none of the four core operations. The published function set (HealthCheck, VerifyAuthenticationToken, PasswordlessLogin, PasswordLogin, QueryServerState, GetServerOptions, GetAdvancedGameSettings, ApplyAdvancedGameSettings, ClaimServer, RenameServer, SetClientPassword, SetAdminPassword, SetAutoLoadSessionName, RunCommand, Shutdown, ApplyServerOptions, CreateNewGame, SaveGame, DeleteSaveFile, DeleteSaveSession, EnumerateSessions, LoadGame, UploadSaveGame, DownloadSaveGame) contains no list-players, kick, ban or broadcast function; QueryServerState returns only numConnectedPlayers and playerLimit, counts with no per-player rows. RunCommand executes server console commands, but the console vocabulary the wiki documents is server.SaveGame, server.GenerateAPIToken, server.InvalidateAPITokens, FG.DedicatedServer.AllowInsecureLocalAccess and quit/stop/exit; the wiki states that list is incomplete, so treat it as the published vocabulary rather than an exhaustive one - nothing player-facing has been published anywhere. The separate Lightweight Query API (UDP on the same 7777) returns server state only. There is no ban file to edit and no admin/allow list. say and motd are omitted because no shipped function broadcasts and no source documents an in-game text chat for the API to write to (the wiki has no chat page and its Multiplayer page describes no player-to-player messaging) - that last point is absence of evidence, not a positive statement in any source, so do not quote it as a fact about the game. The mod Ficsit Remote Monitoring adds both a player read (getPlayer) and a sendChatMessage write through its own layer, served on the same 7777 API port; it is a mod and not part of the shipped server, so it is not recorded here. Credential setting is null: the admin password is set through the API (SetAdminPassword) or the in-game Server Manager, not through a config key. Transport is recorded as rest rather than none because the admin API is real and useful for info and saves; it simply exposes no moderation, so kick/ban must fall to the host-level floor."
+}

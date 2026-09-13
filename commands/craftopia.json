@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "slug": "craftopia",
+  "game": {
+    "displayName": "Craftopia Dedicated Server",
+    "appId": 1670340,
+    "aliases": [
+      "Craftopia",
+      "ctserver",
+      "Craftopia Server"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://steamdb.info/app/1670340/",
+      "title": "Craftopia Dedicated Server (App 1670340) - SteamDB",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/master/lgsm/config-default/config-lgsm/ctserver/_default.cfg",
+      "title": "LinuxGSM ctserver _default.cfg",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/master/lgsm/modules/info_game.sh",
+      "title": "LinuxGSM info_game.sh (fn_info_game_ct reads no rcon key)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/master/lgsm/modules/command_stop.sh",
+      "title": "LinuxGSM command_stop.sh (stopmode 5 = send \"stop\")",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://linuxgsm.com/servers/craftopia/",
+      "title": "LinuxGSM - Craftopia server",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/KagurazakaNyaa/craftopia-docker/master/docker-entrypoint.sh",
+      "title": "craftopia-docker docker-entrypoint.sh (ServerSetting.ini keys)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/antimodes201/craftopia-server",
+      "title": "antimodes201/craftopia-server - Docker container for a Craftopia Server",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://store.steampowered.com/app/1307550/Craftopia/",
+      "title": "Craftopia on Steam (Pocketpair)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Craftopia's dedicated server (Steam tool app 1670340, confirmed independently by LinuxGSM's appid=\"1670340\" and by craftopia-docker's steamcmd +app_update 1670340; Unity headless, ./Craftopia.x86_64 launched with -batchmode -showlogs) exposes no command channel: no RCON, no admin HTTP/REST API, and no documented console verb. Its configuration surface is ServerSetting.ini (LinuxGSM sets servercfg=\"ServerSetting.ini\"; the antimodes201 README spells it ServerSettings.ini). The keys observed across independent tooling are name, difficulty, gameMode, port, bindAddress, maxPlayerNumber, usePassword, serverPassword, autoSaveSec and autoSavePerHour - craftopia-docker's entrypoint writes nine of them and LinuxGSM's fn_info_game_ct additionally reads bindAddress. No source enumerates the file authoritatively, so treat that list as the observed union rather than as provably complete; what matters here is that no observed key is an RCON enable/port/password setting and none is an admin, whitelist or ban-list setting. Two further LinuxGSM signals corroborate: ctserver's _default.cfg contains no rcon lines at all, and info_game.sh's fn_info_game_ct reads no rcon key even though the same file reads rconport/rconpassword for RCON-capable games in ~70 places. LinuxGSM also sets querymode=\"1\" (session only), i.e. it attempts no game query protocol against Craftopia. Default game port is 6587 TCP/UDP per the antimodes201 wrapper (GAME_PORT=6587, published as 6587/udp and 6587/tcp); LinuxGSM hardcodes no default and reads port from the ini. Caveat on the one ambiguous signal: LinuxGSM sets stopmode=\"5\", which command_stop.sh implements as fn_stop_graceful_cmd \"stop\" 30 - tmux send-keys \"stop\", wait up to 30s, then fall back to fn_stop_tmux. That is a best-effort shutdown attempt common to Unity headless servers and is not evidence of an admin console; no listPlayers/kick/ban/say verb has ever been published for it, so no stdin commands are recorded. Craftopia does have an in-game cheat/command text box, but that is a CLIENT-side console for item spawning and is unreachable from the server host, so it cannot be used for moderation. Confidence is low rather than high because Pocketpair publishes no dedicated-server documentation that could be located; this is a negative finding resting on agreement-by-absence across independent server-management tooling, not on an explicit publisher statement. Kick and ban therefore have to fall through to the host-level floor (firewall / network layer)."
+}

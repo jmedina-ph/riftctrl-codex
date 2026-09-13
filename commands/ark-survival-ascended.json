@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "slug": "ark-survival-ascended",
+  "game": {
+    "displayName": "ARK: Survival Ascended Dedicated Server",
+    "appId": 2430930,
+    "aliases": [
+      "ARK: Survival Ascended",
+      "ARK Survival Ascended",
+      "ASA",
+      "ARK SA",
+      "ShooterGame"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 27020,
+    "portSetting": "RCONPort",
+    "enableSetting": "RCONEnabled",
+    "passwordSetting": "ServerAdminPassword"
+  },
+  "playerId": {
+    "label": "EOS ID",
+    "example": "0002e5d0a1f04c4e9b3d7a6c5e8f1b24",
+    "pattern": "[0-9a-fA-F]{16,32}"
+  },
+  "commands": {
+    "listPlayers": "ListPlayers",
+    "kick": "KickPlayer {playerId}",
+    "ban": "BanPlayer {playerId}",
+    "unban": "UnbanPlayer {playerId}",
+    "say": "Broadcast {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^\\s*\\d+\\.\\s+(?<name>[^,]+),\\s+(?<playerId>[0-9a-fA-F]{16,32})\\s*$",
+    "skipLinePattern": "^\\s*No Players Connected"
+  },
+  "banList": {
+    "paths": [
+      "ShooterGame/Binaries/Win64/BanList.txt"
+    ],
+    "lineIdPattern": "([0-9a-fA-F]{16,32})",
+    "liveUnban": "UnbanPlayer {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://ark.wiki.gg/wiki/Console_commands",
+      "title": "Console commands - ARK Official Community Wiki (ListPlayers, KickPlayer <UE4 net ID>, BanPlayer, UnbanPlayer, Broadcast, ServerChat, ServerChatTo, all tagged ASA+ASE)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://ark.wiki.gg/wiki/Dedicated_server_setup",
+      "title": "Dedicated server setup - ARK Official Community Wiki (SteamCMD app 2430930 for Survival Ascended; TCP 27020 RCON)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/CubeCoders/AMPTemplates/main/ark-sa.kvp",
+      "title": "CubeCoders AMP ark-sa.kvp - AdminMethod=SourceRCON, ?RCONEnabled=True?RCONPort=..?ServerAdminPassword=.., app 2430930, GetGameLog heartbeat, DoExit",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/CubeCoders/AMPTemplates/main/ark-saports.json",
+      "title": "CubeCoders AMP ark-saports.json - TCP 27020 RCON port, UDP 7777 game port",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/CubeCoders/AMPTemplates/main/ark-saconfig.json",
+      "title": "CubeCoders AMP ark-saconfig.json - whitelist settings described as 'List of EOS IDs', PlayersExclusiveJoinList.txt under ShooterGame/Binaries/Win64, BanListURL default",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Acekorneya/Ark-Survival-Ascended-Server/master/scripts/rcon_interface.sh",
+      "title": "POK-manager (Ark-Survival-Ascended-Server) rcon_interface.sh - sends ServerChat / SaveWorld / DoExit over RCON to an ASA server",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://arkascendedservermanager.com/common-rcon-commands/",
+      "title": "Common RCON Commands (Cheatsheet) - Ark Ascended Server Manager (listplayers, kickplayer, banplayer, unbanplayer, broadcast, serverchat, setmessageoftheday, getgamelog)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://arkascendedservermanager.com/whitelist-and-banlist/",
+      "title": "Whitelist & Ban List Management - Ark Ascended Server Manager (BanList.txt; RCON banplayer also writes to it)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://legionhosting.net/kb/ark-survival-ascended/ark-survival-ascended-admin-commands",
+      "title": "ARK: Survival Ascended Admin Commands - Legion Hosting (RCONEnabled=True, RCONPort=27020, ListPlayers/KickPlayer/BanPlayer/UnbanPlayer)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://arkonbot.com/guides/ark-rcon-commands",
+      "title": "Ark RCON Commands - Full Server Admin Reference (ASE & ASA), Arkon (ListPlayers returns 'their ID and EOS/Steam ID'; ServerChatTo takes <EOSID>)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/app/2399830/discussions/0/4200239074423469354/",
+      "title": "Exclusive Join/Whitelist - ARK: Survival Ascended General Discussions (EOS IDs, not Steam IDs, in PlayersExclusiveJoinList.txt / PlayersJoinNoCheckList.txt under /ShooterGame/Binaries/Win64/)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://cousinrcon.nebre.net/",
+      "title": "Cousin RCON - ARK Survival Ascended (custom RCON command placeholders {eosid}, {ue4id}, {playerName}; 'player name / EOS ID lookup in all command fields')",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Valve Source RCON, TCP 27020 by default. Set RCONEnabled=True, RCONPort=27020 and ServerAdminPassword=<pw> in [ServerSettings] of ShooterGame/Saved/Config/WindowsServer/GameUserSettings.ini or pass them as ?RCONEnabled=True?RCONPort=..?ServerAdminPassword=.. launch arguments; the official wiki's port table lists 'TCP 27020 RCON' and AMP's ASA template passes exactly those arguments and speaks SourceRCON to the result. The Linux ASA server is the Windows binary under Proton, so on both platforms the config stays under Config/WindowsServer and the list files stay under ShooterGame/Binaries/Win64. Over RCON the session is already authenticated as admin, so commands go WITHOUT the 'cheat' prefix the in-game console needs (the wiki writes 'cheat ListPlayers' because it documents the client console). Commands are case-insensitive; PascalCase matches the wiki. ListPlayers returns one line per player as '0. PlayerName, <id>' and the literal 'No Players Connected' when empty. IDENTIFIER DISAGREEMENT, and this is the field that matters: ASA routes every platform through Epic Online Services, so the identifier the server hands out is the 32-hex-character EOS ID rather than a SteamID64. Evidence for EOS: the official wiki types KickPlayer's argument as a 'UE4 net ID' (which on ASA is the EOS id); the Steam discussion on exclusive join states the whitelist files take EOS IDs obtained with the 'whoami' console command; AMP's own ASA config calls those settings 'List of EOS IDs'; ASA-specific RCON tools expose {eosid}/{ue4id} placeholders and pair kick/ban buttons with a 'copy EOS ID' action. Against that, most hosting knowledge bases (Legion Hosting, Apex Hosting, Ark Ascended Server Manager) and the wiki's own BanPlayer row still say 'SteamID', which is inherited verbatim from ARK: Survival Evolved and was not re-checked for ASA. The pattern here therefore accepts both shapes - [0-9a-fA-F]{16,32} covers a 32-character EOS id and a 17-digit SteamID64 - and the safe practice is to pass back exactly the id ListPlayers printed instead of converting it. The wiki also notes Xbox/PlayStation players may have to be banned by character name instead. No server-status command exists over RCON (GetGameLog only dumps the log and only when the server was launched with -servergamelog), so commands.info is omitted. say uses Broadcast, the full-screen message to everyone; ServerChat {message} is the alternative that posts into the chat box and is what ASA server managers use for restart warnings. BanPlayer is permanent and takes no duration; it also writes ShooterGame/Binaries/Win64/BanList.txt, and UnbanPlayer reverses it live, so the banList block is a reconciliation aid rather than the primary path - the game re-reads that file only at startup. Do not confuse it with BanListURL= in GameUserSettings.ini, which points at a REMOTE shared list (default https://cdn2.arkdedicated.com/asa/BanList.txt) keyed by SteamID64 and is not this server's own file. SetMessageOfTheDay is carried over from ASE and is listed for ASA by two ASA-focused command references; one of them writes the argument quoted, the other bare - the bare form is recorded here and it is not confirmed against a live ASA server. SaveWorld and DoExit exist for lifecycle work and are outside this schema's four operations. ARK: Survival Evolved is a separate app (376030) with its own file. SetMessageOfTheDay was considered and rejected: it does not appear in the official wiki command list (which has ShowMessageOfTheDay), and the only backing was two commercial tool sites that disagree on quoting; the MOTD is set through [MessageOfTheDay] in GameUserSettings.ini instead."
+}

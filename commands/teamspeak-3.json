@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "slug": "teamspeak-3",
+  "game": {
+    "displayName": "TeamSpeak 3 Server",
+    "appId": null,
+    "aliases": [
+      "TeamSpeak 3",
+      "TS3",
+      "TeamSpeak Server",
+      "ts3server",
+      "TeamSpeak"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 10011,
+    "portSetting": "query_port",
+    "enableSetting": null,
+    "passwordSetting": "serveradmin_password"
+  },
+  "playerId": {
+    "label": "Client ID (clid)",
+    "example": "5",
+    "pattern": "[0-9]+"
+  },
+  "commands": {
+    "info": "serverinfo",
+    "listPlayers": "clientlist -uid",
+    "kick": "clientkick clid={playerId} reasonid=5 reasonmsg={reason}",
+    "ban": "banclient clid={playerId} time={duration} banreason={reason}",
+    "say": "gm msg={message}",
+    "motd": "serveredit virtualserver_welcomemessage={message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "clid=(?<playerId>[0-9]+)[^|]*?client_nickname=(?<name>[^\\s|]*)[^|]*?client_unique_identifier=(?<accountId>[^\\s|]*)"
+  },
+  "sources": [
+    {
+      "url": "https://static.ibugone.com/web/serverquery/serverquery",
+      "title": "TeamSpeak 3 ServerQuery Manual (TeamSpeak Systems GmbH), HTML mirror - syntax for clientlist, clientkick, banclient, banadd, bandel, gm, sendtextmessage, serveredit, plus the escape table",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://eve-files.com/media/corp/jantpeuk/ts3_serverquery_manual.pdf",
+      "title": "TeamSpeak 3 ServerQuery Manual (2013-09-20) PDF mirror",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://support.teamspeak.com/hc/en-us/articles/360002712257-Which-ports-does-the-TeamSpeak-3-server-use",
+      "title": "TeamSpeak Support - Which ports does the TeamSpeak 3 server use",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/planetteamspeak/ts3phpframework/blob/master/src/Node/Server.php",
+      "title": "TS3 PHP Framework - clientKick/clientList/banClient/banDel/message implementations",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/planetteamspeak/ts3phpframework/blob/master/src/Node/Host.php",
+      "title": "TS3 PHP Framework - instance-wide message via 'gm msg='",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/TheHolyWaffle/TeamSpeak-3-Java-API/blob/master/src/main/java/com/github/theholywaffle/teamspeak3/api/VirtualServerProperty.java",
+      "title": "TeamSpeak 3 Java API - VIRTUALSERVER_WELCOMEMESSAGE listed as a changeable virtual server property",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://networkjanitor.gitlab.io/py-ts3/api/commands.html",
+      "title": "py-ts3 command reference - clientkick/banclient/banadd/bandel/gm syntax",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://tserverhq.com/clients/knowledgebase/132/How-do-I-use-the-ts3server.ini-file.html",
+      "title": "Default ts3server.ini showing query_port=10011",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "TeamSpeak 3 is voice chat rather than a game, but it is run and moderated like a dedicated server. ServerQuery is a plain-text, telnet-style line protocol over TCP - one command per line, CRLF terminated - and is not Valve RCON, hence flavour custom. Session order: connect to query_port (default 10011), 'login <username> <password>', then 'use sid=1' to select a virtual server; serverinfo, clientlist, clientkick, banclient and serveredit all act on the selected virtual server. ESCAPING IS MANDATORY in every value: space -> \\s, | -> \\p, \\ -> \\\\, / -> \\/, newline -> \\n, CR -> \\r, tab -> \\t. An unescaped space inside {reason} or {message} is read as the start of the next parameter and the command fails or silently truncates. playerId is clid, the per-session client id from clientlist; it is not stable across reconnects. The persistent identity is client_unique_identifier (captured as accountId), which 'banadd uid=<uid> time=<seconds> banreason=<text>' takes for offline bans. clientlist returns every client on ONE line with records separated by '|': split the response on '|' before applying playerParse.linePattern, which is written to match one record. reasonid=5 is kick from the server; reasonid=4 only kicks to the default channel. banclient time is in SECONDS and 0 or omitted means permanent, so {duration} must be seconds, not minutes. No unban command is recorded: unbanning is 'bandel banid=<banID>' where banID is a ban-list row id obtained from 'banlist', not a player identifier, so it cannot be written with the allowed placeholders ('bandelall' clears all bans). No banList block either - bans live in the server's SQLite database (ts3server.sqlitedb), not in a parseable text file. say uses 'gm', which is instance-wide and reaches clients on every virtual server this instance hosts; to hit only one virtual server use 'sendtextmessage targetmode=3 target=<sid> msg=<text>' instead, which needs the virtual server id and therefore does not fit the placeholder set. motd maps to the virtual server welcome message shown on connect. The same server also exposes ServerQuery over SSH on 10022 and, from server 3.12.0, WebQuery (HTTP/JSON, identical command names) on 10080/10443 authenticated with an x-api-key header; either is a valid alternative transport. The serveradmin ServerQuery password is generated on first start and can be set with the serveradmin_password start parameter; ServerQuery raw is enabled by default, and on 3.3.0+ the query_protocols key in ts3server.ini selects which of raw/ssh/http are listening."
+}

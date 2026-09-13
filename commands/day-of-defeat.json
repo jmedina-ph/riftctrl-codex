@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "slug": "day-of-defeat",
+  "game": {
+    "displayName": "Day of Defeat",
+    "appId": 30,
+    "aliases": [
+      "DoD",
+      "Day of Defeat 1.3",
+      "dodserver",
+      "Half-Life Dedicated Server (dod)"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 27015,
+    "portSetting": null,
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:1:12345678",
+    "pattern": "STEAM_[0-9]:[01]:[0-9]+"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kick \"{playerName}\" {reason}",
+    "ban": "banid {duration} {playerId} kick",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*\\d+\\s+\"(?<name>[^\"]*)\"\\s+(?<accountId>\\d+)\\s+(?<playerId>STEAM_[0-9]:[01]:[0-9]+)",
+    "skipLinePattern": "^#\\s+name\\s+userid"
+  },
+  "banList": {
+    "paths": [
+      "dod/banned.cfg",
+      "banned.cfg"
+    ],
+    "lineIdPattern": "^banid\\s+[0-9.]+\\s+(STEAM_[0-9]:[01]:[0-9]+)",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/dreamstalker/rehlds/blob/master/rehlds/engine/sv_main.cpp",
+      "title": "ReHLDS engine sv_main.cpp - SV_BanId_f, SV_RemoveId_f, SV_WriteId_f, Host_Kick_f, rcon handling",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/dreamstalker/rehlds/blob/master/rehlds/engine/host_cmd.cpp",
+      "title": "ReHLDS engine host_cmd.cpp - Host_Status_f, Host_Say, Host_Say_f",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/dreamstalker/rehlds/blob/master/rehlds/engine/common.cpp",
+      "title": "ReHLDS engine common.cpp - COM_Parse (':' is a single-character token, com_ignorecolons is never set)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://counter-strike-boost.com/tutorials/rcon-commands-list",
+      "title": "Essential RCON Commands Every CS 1.6 Admin Needs (GoldSrc)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://sturmbot.org/index.php/marine-bot/132-linux-dod-dedicated-server-setup-on-a-lan-with-bots",
+      "title": "Linux dod dedicated server setup on a LAN - with bots",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/GameServerManagers/LinuxGSM/blob/master/lgsm/config-default/config-lgsm/dodserver/_default.cfg",
+      "title": "LinuxGSM dodserver default config (appid 90, appidmod dod, port 27015, engine goldsrc, -game dod)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://store.steampowered.com/app/30/Day_of_Defeat/",
+      "title": "Day of Defeat on Steam",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "GoldSrc Day of Defeat 1.3, the Half-Life 1 mod - NOT Day of Defeat: Source (game app 300, dedicated server app 232290), which speaks Source TCP RCON and uses kickid/banid with 64-bit or #userid forms. Installed with SteamCMD as app 90 (Half-Life Dedicated Server) plus app_set_config 90 mod dod, then launched with -game dod; appId here is the game's (30) because app 90 is shared by every GoldSrc mod and is not a usable match key. TRANSPORT: GoldSrc RCON is NOT the Valve Source RCON wire protocol - it is the older connectionless UDP scheme on the game's own port (send 'challenge rcon', then 'rcon <challenge> <password> <command>'; the engine compares Cmd_Argv(2) against rcon_password), which is why flavour is custom. It listens on the game port (default 27015, set with -port / +port), so there is no separate RCON port or enable setting; RCON is live as soon as rcon_password is non-empty in the server cfg (dod/<servercfgfile>.cfg). Failure throttling cvars sv_rcon_minfailures (5) / sv_rcon_maxfailures (10) / sv_rcon_banpenalty (0) exist but do not gate normal use. COMMANDS, exactly as the engine registers them: status prints hostname/version/tcp-ip/map/player count and then one row per player under the header '#      name userid uniqueid frag time ping loss adr', each row formatted '#%2i %8s %i %s' - slot, quoted name (right-padded to width 8 including the quotes, so short names get leading spaces), userid, uniqueid. TOKENIZER: COM_Parse treats ':' (and ',') as single-character tokens and com_ignorecolons is never enabled, so a STEAM_x:y:z argument arrives split across five argv slots and both SV_BanId_f and Host_Kick_f reassemble it with '%s:%s:%s'; this is why the argument-count checks below look odd. KICK TARGETS BY EXACT IN-GAME NAME here ({playerName} from the status row, matched with a case-insensitive compare against Cmd_Argv(1)) - quoting is what protects names containing spaces, colons or commas from the tokenizer. Vanilla HLDS prints 'usage:  kick < name > | < # userid >' while ReHLDS built with REHLDS_FIXES prints '... [reason]', but the trailing reason text is honoured by both: Host_Kick_f passes it to SV_DropClient as 'Kicked :<reason>' and logs it. The engine will also accept 'kick #<userid>' and, awkwardly, 'kick #STEAM_0:1:12345678', but the name form is the safe one. BAN targets the STEAM_x:y:z uniqueid; usage is 'Usage:  banid <minutes> <uniqueid or #userid> { kick }' with 'Use 0 minutes for permanent', {duration} is MINUTES and 0 means permanent, and the trailing literal 'kick' (checked as the last argv) drops the player immediately. banid rejects Cmd_Argc() < 3 or > 8, and 'banid 0 STEAM_0:1:12345678 kick' tokenizes to exactly 8 - do not append a reason, banid has no reason argument and the extra tokens would push it over the limit. PERSISTENCE: banid and removeid only change the in-memory userfilters list. 'writeid' must be run afterwards or the change is lost on restart; it rewrites the file named by the bannedcfgfile cvar (default banned.cfg, in the dod/ mod folder) with one 'banid 0.0 STEAM_0:1:12345678' line per PERMANENT ban only - entries with a non-zero banTime are skipped and never persisted. Valve-built HLDS is reported to write the same line with a wider float such as 'banid 0.000000 ...', so lineIdPattern accepts any numeric form. removeid accepts Cmd_Argc() of exactly 2 or 6 ('Usage:  removeid <uniqueid | #slotnumber>'), which a bare STEAM id satisfies. IP bans are separate (addip <minutes> <ipaddress>, removeip, listip, file listip.cfg via the listipcfgfile cvar) and are not in banList because they hold no player id. NO MOTD COMMAND: the MOTD is the file named by the motdfile cvar (default motd.txt) and has to be edited on disk, so motd is omitted. SAY: 'say <text>' from the console/RCON broadcasts to everyone prefixed with the server's hostname in angle brackets - Host_Say builds '<%s> ' from the hostname cvar (vanilla also prepends a 0x01 colour byte), NOT 'Console:'. It needs no quoting (a leading quote is stripped) and the text is truncated hard - roughly 63 characters of message inside a 128-byte buffer. Rows whose uniqueid is BOT, HLTV, STEAM_ID_PENDING, STEAM_ID_LAN or VALVE_ID_LOOPBACK do not match playerParse and are skipped by design - a pending player has no id to moderate by yet. Command set is engine-level and unchanged since the 1.1.2.x/protocol-48 era; the DoD mod DLL adds mp_* cvars but no moderation commands."
+}

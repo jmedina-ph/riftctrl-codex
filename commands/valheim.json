@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "slug": "valheim",
+  "game": {
+    "displayName": "Valheim Dedicated Server",
+    "appId": 896660,
+    "aliases": [
+      "Valheim",
+      "valheim_server"
+    ]
+  },
+  "transport": "none",
+  "playerId": {
+    "label": "Platform User ID",
+    "example": "76561198012345678",
+    "pattern": "[0-9]{7,20}"
+  },
+  "banList": {
+    "paths": [
+      "bannedlist.txt",
+      "config/bannedlist.txt"
+    ],
+    "lineIdPattern": "^\\s*(?:[A-Za-z]+_)?([0-9]{7,20})"
+  },
+  "sources": [
+    {
+      "url": "https://www.valheimgame.com/support/a-guide-to-dedicated-servers/",
+      "title": "A Guide to Dedicated Servers - Valheim (Iron Gate)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://valheim.fandom.com/wiki/Dedicated_servers",
+      "title": "Dedicated servers - Valheim Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://berrybyte.net/wiki/games/valheim/admin-console-commands",
+      "title": "Valheim admin and console commands - berrybyte Wiki",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/lloesche/valheim-server-docker",
+      "title": "lloesche/valheim-server-docker README",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://winternode.com/help/games/valheim/administration/getting-a-player-id",
+      "title": "How to Find a Player ID in Valheim - WinterNode",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://hosthavoc.com/wiki/game-servers/valheim/add-admins",
+      "title": "How to Add Admins to Your Valheim Server - Host Havoc",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://supercraft.host/article/valheim-dedicated-server-save-location/",
+      "title": "Valheim Dedicated Server Save Location",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://xgamingserver.com/docs/valheim/rcon",
+      "title": "Use RCON on Your Valheim Server - XGamingServer (disputed)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Valheim's dedicated server exposes no command channel: Iron Gate documents no RCON and no admin API, and the server process takes no typed commands on its own console (it is stopped with Ctrl+C / SIGINT so the world saves). The Kick PLAYERNAME / Ban PLAYERNAME / Unban PLAYERNAME / Banned commands Iron Gate lists run in a CLIENT's F5 admin console while connected to the server as an admin (some guides also say Steam clients need the -console launch option; Iron Gate does not mention it); they cannot be issued from the host, which is why no commands are recorded here. Out-of-band moderation is the three plain-text lists in the server's save directory - adminlist.txt, bannedlist.txt, permittedlist.txt - one Platform User ID per line, format '[Platform]_[User ID] (case sensitive)' per Iron Gate; note that populating permittedlist.txt locks out everyone not on it. Sources disagree on the literal platform token: WinterNode and Host Havoc both give Steam as 'V_' + SteamID64 (Xbox 'X_') and WinterNode adds that a bare SteamID64 stopped working at 1.0, Iron Gate documents only the [Platform]_[User ID] shape without naming the token, and the pre-crossplay Fandom wiki shows a bare SteamID64; no primary source confirms a literal, so no playerId.prefix is asserted and lineIdPattern instead tolerates any [Letters]_ prefix and captures the bare numeric id - a manager WRITING a ban line must re-add whatever prefix that server's own log/F2 panel shows. banList paths are relative to the SAVE directory, not the install root the schema assumes: %USERPROFILE%\\AppData\\LocalLow\\IronGate\\Valheim on Windows, ~/.config/unity3d/IronGate/Valheim on Linux, or whatever -savedir points at (/config in the common Docker images). Sources also disagree on live reload - Host Havoc says restart the server after editing, so assume a restart is required. XGamingServer's docs claim Valheim has 'very limited' native Source RCON answering save/info/quit; nothing from Iron Gate supports that and no independent source repeats it, so it is recorded as disputed and not acted on - that single conflict, plus the fact that 'none' is a negative claim, is why confidence is low."
+}

@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "slug": "dont-starve-together",
+  "game": {
+    "displayName": "Don't Starve Together Dedicated Server",
+    "appId": 343050,
+    "aliases": [
+      "Don't Starve Together",
+      "DST",
+      "Dont Starve Together"
+    ]
+  },
+  "transport": "stdin",
+  "stdin": {
+    "note": "Launch the server binary with -console: 'Enable a command line console input mechanism. Allows you to execute privileged Lua directly in the server window.' Each line written to that shard process's stdin is executed as privileged Lua, and print() output comes back on the same shard's stdout / server_log.txt, prefixed with a [HH:MM:SS]: timestamp. Write to the Master shard's process; TheNet:Kick is shard-aware but most other helpers act only on the shard they were typed into. There is no RCON and no admin HTTP API."
+  },
+  "playerId": {
+    "label": "Klei User ID",
+    "example": "KU_aBCd1234",
+    "pattern": "KU_[a-zA-Z0-9_-]{6,}"
+  },
+  "commands": {
+    "listPlayers": "c_listplayers()",
+    "kick": "TheNet:Kick(\"{playerId}\")",
+    "ban": "TheNet:Ban(\"{playerId}\")",
+    "say": "c_announce(\"{message}\")"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "\\[\\d+\\]\\s+\\((?<playerId>KU_[a-zA-Z0-9_-]+)\\)\\s+(?<name>.+)\\s+<[^<>]*>\\s*$"
+  },
+  "banList": {
+    "paths": [
+      "blocklist.txt"
+    ],
+    "lineIdPattern": "(KU_[a-zA-Z0-9_-]{6,})"
+  },
+  "sources": [
+    {
+      "url": "https://dontstarve.wiki.gg/wiki/Console/Don't_Starve_Together_Commands",
+      "title": "Console/Don't Starve Together Commands - Don't Starve Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://dontstarve.wiki.gg/wiki/Guides/Don%E2%80%99t_Starve_Together_Dedicated_Servers",
+      "title": "Guides/Don't Starve Together Dedicated Servers - Don't Starve Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/penguin0616/dst_gamescripts/master/consolecommands.lua",
+      "title": "DST game scripts mirror - consolecommands.lua (c_listplayers, c_listallplayers, c_announce)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/penguin0616/dst_gamescripts/master/builtinusercommands.lua",
+      "title": "DST game scripts mirror - builtinusercommands.lua (TheNet:Kick / TheNet:Ban / TheNet:BanForTime)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/penguin0616/dst_gamescripts/master/networking.lua",
+      "title": "DST game scripts mirror - networking.lua (TheNet:Kick(user_id))",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://forums.kleientertainment.com/forums/topic/101961-unban-command/",
+      "title": "Unban command - Klei Entertainment Forums",
+      "kind": "forum",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/mathielo/dst-dedicated-server/blob/main/docs/AdminBanWhitelist.md",
+      "title": "Setting Admins, Bans and Whitelisted Players (dst-dedicated-server)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "The dedicated server console is Lua, not a command language: everything below is a Lua expression typed into the shard process. kick/ban take the Klei user id (KU_xxxxxxxx) as a quoted string - the wiki documents TheNet:Kick(userid) / TheNet:Ban(userid) and networking.lua calls TheNet:Kick(user_id) directly; the game's own /kick and /ban slash commands instead resolve their argument through UserToClientID first (builtinusercommands.lua) and are CHAT commands for in-game admins, not console input - several hosting knowledge bases present them as server-console commands, which is wrong for stdin. TheNet:Kick takes an optional second argument that is a kick DURATION in seconds (builtinusercommands.lua passes TUNING.VOTE_KICK_TIME there), not a reason, so no {reason} is recorded. Temporary bans use TheNet:BanForTime(\"KU_xxxxxxxx\", seconds) - seconds, not a duration string - which is why ban here is the permanent form. There is no built-in unban: banning appends the id to blocklist.txt in the cluster directory and unbanning means removing that line (Klei forum thread 101961 has only a mod-supplied c_unban). banList.paths are relative to the CLUSTER directory (default ~/.klei/DoNotStarveTogether/<cluster>/, alongside cluster.ini, adminlist.txt and whitelist.txt), not the install root; both the Klei wiki dedicated-server guide and the dst-dedicated-server docs place blocklist.txt in the cluster folder only, so no shard-level path is recorded. c_listplayers() prints the client table with the format string \"%s[%d] (%s) %s <%s>\", i.e. '*[1] (KU_aBCd1234) Name <wilson>' (leading * marks an admin), and is preferred over the wiki-documented c_listallplayers(), which prints the same shape without the star but only lists players who have already spawned; linePattern matches either, and tolerates the log timestamp prefix. No motd command exists - the server description lives in cluster.ini. {message} is substituted inside a Lua double-quoted string, so a message containing a double quote or backslash will break the expression."
+}

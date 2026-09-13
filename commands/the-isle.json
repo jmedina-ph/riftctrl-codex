@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "slug": "the-isle",
+  "game": {
+    "displayName": "The Isle Dedicated Server",
+    "appId": 412680,
+    "aliases": [
+      "The Isle",
+      "The Isle: Evrima",
+      "Evrima",
+      "The Isle Evrima Dedicated Server"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 8888,
+    "portSetting": "RconPort",
+    "enableSetting": "bRconEnabled",
+    "passwordSetting": "RconPassword"
+  },
+  "playerId": {
+    "label": "Player ID (Steam ID or EOS ID)",
+    "example": "76561198012345678",
+    "pattern": "[0-9]{17}|[0-9A-Fa-f]{32}"
+  },
+  "commands": {
+    "info": "serverdetails",
+    "listPlayers": "playerlist",
+    "kick": "kick {playerId},{reason}",
+    "ban": "ban {playerId},{reason}",
+    "say": "announce {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^\\s*(?<playerId>[0-9]{17}|[0-9A-Fa-f]{32})\\s*,\\s*(?<name>[^,]*?)\\s*(?:,\\s*(?<accountId>[0-9A-Fa-f]{32}))?\\s*,?\\s*$",
+    "skipLinePattern": "^\\s*(?:PlayerList|PlayerListEnd|PlayerData|PlayerDataEnd)\\s*$"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/Theislemanager/evrima-rcon/blob/main/README.md",
+      "title": "evrima-rcon (PHP) - opcode map plus the developers' RCON and Game.ini documentation (RconPort=5555 example)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/butt4cak3/theislercon/blob/main/messages.go",
+      "title": "theislercon messages.go - MessageType constants (Auth 0x01, ExecCommand 0x02, BanPlayer 0x20, KickPlayer 0x30, GetPlayerList 0x40)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/butt4cak3/theislercon/blob/main/client.go",
+      "title": "theislercon client.go - Auth expects \"Password Accepted\"; GetPlayerList splits the payload on commas in strides of three",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/aerond7/TheIsleEvrimaRconClient",
+      "title": "TheIsleEvrimaRconClient - C# client, EvrimaRconCommand table giving Ban/Kick as player,reason and port 8888 in examples",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/aerond7/TheIsleEvrimaRcon/blob/master/README.md",
+      "title": "TheIsleEvrimaRcon - WPF client, command list and argument formats",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/smultar-dev/evrima.rcon",
+      "title": "evrima.rcon - TypeScript RCON client (aliases players, srv:details)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/menix1337/isle-evrima-rcon/blob/main/src/protocol.ts",
+      "title": "isle-evrima-rcon protocol.ts - AUTH_PREFIX 0x01, COMMAND_PREFIX 0x02, TERMINATOR 0x00, AUTH_SUCCESS \"Password Accepted\", parsePlayersResponse column-line parser",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://supercraft.host/wiki/the-isle/rcon_admin_commands/",
+      "title": "The Isle Evrima RCON & Admin Commands Guide - Game.ini [/Script/TheIsle.TIGameSession], RconPort=8888 example",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamdb.info/app/412680/",
+      "title": "SteamDB - The Isle Dedicated Server (app 412680)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Evrima RCON is NOT Source RCON. The client opens a raw TCP socket, sends 0x01 + password + 0x00 (the server answers \"Password Accepted\"), then sends 0x02 + one opcode byte + the arguments joined by commas + 0x00. That framing is stated identically and independently by three implementations: the PHP opcode map (RCON_AUTH 0x01, RCON_EXECCOMMAND 0x02, RCON_RESPONSE_VALUE 0x03), theislercon's messages.go/client.go (Auth 0x01, ExecCommand 0x02, success string \"Password Accepted\"), and isle-evrima-rcon's protocol.ts (AUTH_PREFIX 0x01, COMMAND_PREFIX 0x02, TERMINATOR 0x00, AUTH_SUCCESS \"Password Accepted\"). The words recorded in commands are the names community RCON clients type for those opcodes - announce 0x10, serverdetails 0x12, ban 0x20, kick 0x30, playerlist 0x40, save 0x50 - and are what a person types in an Evrima RCON terminal; the server matches on the opcode byte, not the word, so other clients expose different aliases for the same opcodes (smultar/evrima.rcon and isle-evrima-rcon use \"players\" for 0x40 and \"srv:details\" for 0x12). kick and ban take the player and the reason separated by a comma - aerond7's command table gives both explicitly as player,reason - and accept an EOS ID, a Steam ID or a player name. No published opcode map contains an unban opcode and no source documents a ban-file path, so unban and banList are omitted; note also that theislercon defines BanPlayer 0x20 but ships no ban method, so ban rests on the PHP, C# and TypeScript clients. Evrima has no hardcoded RCON port: RconPort must be set in Game.ini under [/Script/TheIsle.TIGameSession] alongside bRconEnabled and RconPassword; 8888 is the common self-hosted default used by the community clients and guides, while the developers' own example config shown in the evrima-rcon repo uses RconPort=5555, so the port must never be assumed. Sources disagree on the playerlist response layout: theislercon strips a leading \"PlayerList\" tag and then splits the ENTIRE payload on commas, walking it in strides of three and taking field 0 as the ID and field 1 as the name while discarding field 2 - it is not line-oriented and never reads an EOS ID - whereas isle-evrima-rcon splits on newlines and reads three column lines holding all Steam IDs, then all names, then all EOS IDs. The recorded playerParse assumes one \"id,name,eosid,\" record per line; a stride-of-three comma split accepts that shape, but no source states it outright, and the PlayerListEnd entry in skipLinePattern is defensive and unattested (PlayerData/PlayerDataEnd are real markers, but they wrap the getplayerdata response, not playerlist). playerParse is the one field that must be re-checked against a live server before verifiedAt is set."
+}

@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "slug": "counter-strike-condition-zero",
+  "game": {
+    "displayName": "Counter-Strike: Condition Zero",
+    "appId": 90,
+    "aliases": [
+      "CS:CZ",
+      "CSCZ",
+      "Condition Zero",
+      "czero",
+      "Counter-Strike: Condition Zero Dedicated Server"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 27015,
+    "portSetting": null,
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:1:12345678",
+    "pattern": "STEAM_[0-9]:[01]:[0-9]+"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kick \"{playerName}\" \"{reason}\"",
+    "ban": "banid {duration} {playerId};wait;writeid",
+    "unban": "removeid {playerId};writeid",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*\\d+\\s+\"(?<name>.*)\"\\s+(?<accountId>\\d+)\\s+(?<playerId>STEAM_[0-9]:[01]:[0-9]+)\\s",
+    "skipLinePattern": "^#\\s*name\\s+userid"
+  },
+  "banList": {
+    "paths": [
+      "czero/banned.cfg",
+      "banned.cfg"
+    ],
+    "lineIdPattern": "banid\\s+[0-9.]+\\s+(STEAM_[0-9]:[01]:[0-9]+)",
+    "liveUnban": "removeid {playerId};writeid"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/alliedmodders/amxmodx/blob/master/plugins/admincmd.sma",
+      "title": "AMX Mod X admincmd.sma - emits 'banid \"<minutes>\" <steamid>;wait;writeid', 'removeid <steamid>;writeid', 'kick #<userid> \"<reason>\"'",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/mitchellhuang/SRCDS.py/blob/master/SRCDS.py",
+      "title": "SRCDS.py - HL1/HL2 RCON library: HL1 auth via 'challenge rcon' over UDP; banid <minutes> <steamid> + writeid; removeid <steamid> + writeid; say; status; swaps the name/userid header keys on HL1",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Console_Command_List",
+      "title": "Valve Developer Community console command list - kick 'Kick a player by slot, userid or name'; banid 'Add a user ID to the ban list'; removeid 'Remove a user ID from the ban list'",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.mail-archive.com/hlds@list.valvesoftware.com/msg08893.html",
+      "title": "Valve hlds mailing list - ban list is loaded into memory from banned.cfg and edited with addid/removeid",
+      "kind": "forum",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/evandrocoan/MultiModServer/issues/46",
+      "title": "MultiModServer issue #46 - real GoldSrc status capture: header '#      name userid uniqueid frag time ping loss adr', rows '# 1 \"<name>\" 550 BOT 0 11:51:08 0 0'",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/pushrax/node-rcon/blob/master/README.md",
+      "title": "node-rcon - protocol table: 'Any GoldSrc game | UDP | Yes (challenge)' vs 'Any Source game | TCP | N/A'",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://linuxgsm.com/servers/csczserver/",
+      "title": "LinuxGSM CS:CZ server - 'Steam uses appid 90'",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamdb.info/app/90/",
+      "title": "SteamDB app 90 - Half-Life Dedicated Server (Tool, GoldSource)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Condition Zero is a GoldSrc mod: the server binary is Half-Life Dedicated Server (Steam app 90, confirmed by LinuxGSM) run with mod dir 'czero'; the game's own app id is 80. App 90 is SHARED with CS 1.6, DoD and every other HL1 mod, so appId alone cannot identify a CZ server - the mod dir is what distinguishes it, and the generic alias 'Half-Life Dedicated Server' is deliberately NOT listed here because it would match those other mods' files too. GoldSrc RCON is Valve's older UDP challenge-response protocol on the game port, NOT Source TCP RCON, hence flavour 'custom'; node-rcon's protocol table and SRCDS.py's 'challenge rcon' handshake agree. It is enabled purely by setting a non-empty rcon_password - no enable setting, no separate RCON port (it rides the UDP game port, default 27015). status is both info and roster; a real GoldSrc capture (MultiModServer #46) shows header '#      name userid uniqueid frag time ping loss adr' with rows '# <slot> \"<name>\" <userid> <uniqueid> ...', i.e. the name precedes the userid, the reverse of Source. SRCDS.py corroborates by swapping those two header keys on its HL1 branch. Bots and LAN clients print BOT or VALVE_ID_LAN in the uniqueid column and are dropped by linePattern. kick is written against {playerName} because Valve's command list documents kick as taking a slot, userid or name and GoldSrc has no kickid; note that AMX Mod X itself only ever emits the 'kick #<userid>' form, so the quoted-name form is documented rather than observed in that code - the userid is captured as accountId so a caller can use 'kick #<userid>' instead. banid takes MINUTES FIRST then the Steam ID (0 = permanent) and does NOT reliably disconnect an already-connected player: AMX Mod X always issues a kick alongside it and so should the runtime. writeid flushes the in-memory list to czero/banned.cfg; the 'wait' between banid and writeid is copied verbatim from AMX Mod X, which inserts it deliberately. removeid is chained with writeid and NO wait, again matching AMX Mod X exactly. There is no motd command - the MOTD is the file czero/motd.txt. Correction to an earlier draft of this file: developer.valvesoftware.com is reachable and was read for this entry; the previous claim that it returned HTTP 403 to every attempt was wrong."
+}

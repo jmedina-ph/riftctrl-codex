@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "slug": "rising-world",
+  "game": {
+    "displayName": "Rising World Dedicated Server",
+    "appId": 339010,
+    "aliases": [
+      "Rising World",
+      "RW"
+    ]
+  },
+  "transport": "stdin",
+  "stdin": {
+    "note": "Commands are typed directly into the dedicated server's own console window (the process's standard input). The developer's server-command list explicitly distinguishes these from the in-game console commands. No leading slash is used in the server console; a slash is only required when the same commands are fired from the server's scheduler (e.g. '/say'). One command per line."
+  },
+  "playerId": {
+    "label": "UID",
+    "example": "76561197960265720",
+    "pattern": "[0-9]{17}"
+  },
+  "commands": {
+    "info": "version",
+    "kick": "kick {playerId} {reason}",
+    "ban": "ban {playerId} {duration} {reason}",
+    "unban": "unban {playerId}",
+    "say": "say {message}"
+  },
+  "banList": {
+    "paths": [
+      "blacklist.txt"
+    ],
+    "lineIdPattern": "^\\s*([0-9]{17})\\s*$"
+  },
+  "sources": [
+    {
+      "url": "https://forum.rising-world.net/thread/11476-server-commands-new-version/",
+      "title": "Server Commands [New Version] - Rising World forum",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://forum.rising-world.net/thread/11490-dedicated-server-setup-new-version/",
+      "title": "Dedicated Server Setup [New Version] - Rising World forum",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.rising-world.net/Konsole",
+      "title": "Konsolenbefehle - Rising World Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://forum.rising-world.net/thread/13245-command-ban/",
+      "title": "command ban - Rising World forum (red51)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://forum.rising-world.net/thread/13249-wie-benutze-ich-das-built-in-rcon-tool/",
+      "title": "wie benutze ich das built-in-rcon Tool? - Rising World forum (red51)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://xgamingserver.com/configs/rw",
+      "title": "Rising World server.properties reference",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1708307050",
+      "title": "Rising World - Console Commands (Java version guide)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/339010/",
+      "title": "Rising World Dedicated Server - AppID 339010",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Covers the current Unity version of Rising World (which replaced the Java version on 2025-01-31). Transport is the server console (stdin), NOT RCON: server.properties does carry RCON_Enabled / RCON_Port (4253 TCP) / RCON_Password / RCON_APIOnly / RCON_Certificate, but the developer (red51) stated the RCON tool for the new version is still disabled and that the old Java RCON tool is incompatible, so there is no usable remote console yet - the port that answers in a browser is the query port (server port - 1, default 4254). Only 'kick', 'say' and 'yell' are in the developer's official server-console table; 'ban', 'unban' and 'offlineban' come from the Rising World wiki's console-command list and from red51's own forum post ('ban <name/uid> <duration> [reason]', 'offlineban 76561197960265720 -1 ...'), so it is not fully confirmed that ban is accepted in the SERVER console as opposed to the in-game console - that is the main reason this file is 'low'. Sources also disagree on the ban duration unit: the wiki says seconds, the older Java-version guide says minutes; -1 means permanent, and red51 reported a bug with -1 with the workaround of a large value below 2000000000. kick and ban accept either a player name or a UID; the UID is the 17-digit Steam ID and is the safer target, which is why playerId is the UID. There is NO documented player-list command in the new version - the Java version had 'playerlist' and the wiki's Unity list has only 'playerinfo <uid>' - so commands.listPlayers and playerParse are deliberately absent rather than guessed. 'say {message}' broadcasts a chat line to everyone (append '@playername' to target one player, and it accepts rich-text tags); 'yell <message>' is the large on-screen announcement variant. File-based banning: create blacklist.txt in the server directory, one UID per line, and set Server_UseBlacklist=True in server.properties; the live 'unban' command clears the ban database and is not documented to edit blacklist.txt, so no liveUnban is recorded on banList. Hosting knowledge bases (e.g. Legion Hosting) list 'players', 'broadcast', 'banlist', 'status', 'save' and 'setgamemode' for Rising World; none of those appear in the developer's list or the wiki and they are treated here as wrong. No motd command exists - the server description is set via Server_Description in server.properties."
+}

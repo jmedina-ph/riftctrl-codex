@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "slug": "starbound",
+  "game": {
+    "displayName": "Starbound Dedicated Server",
+    "appId": 533830,
+    "aliases": [
+      "Starbound",
+      "Starbound Server",
+      "starbound_server"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 21026,
+    "portSetting": "rconServerPort",
+    "enableSetting": "runRconServer",
+    "passwordSetting": "rconServerPassword"
+  },
+  "playerId": {
+    "label": "Player UUID",
+    "example": "5f1a2b3c4d5e6f708192a3b4c5d6e7f8",
+    "pattern": "[0-9a-fA-F]{32}",
+    "prefix": "$$"
+  },
+  "commands": {
+    "listPlayers": "list",
+    "kick": "kick $${playerId} \"{reason}\"",
+    "ban": "ban $${playerId} \"{reason}\" both {duration}",
+    "unban": "unbanuuid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^\\$\\d+ : (?<name>.+) : \\$\\$(?<playerId>[0-9a-fA-F]{32})$"
+  },
+  "banList": {
+    "paths": [
+      "storage/starbound_server.config",
+      "starbound_server.config"
+    ],
+    "lineIdPattern": "\"uuid\"\\s*:\\s*\"([0-9a-fA-F]{32})\"",
+    "liveUnban": "unbanuuid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/OpenStarbound/OpenStarbound/blob/main/source/server/StarServerRconClient.cpp",
+      "title": "OpenStarbound - ServerRconClient (Source RCON wire protocol, say/broadcast/stop, adminCommand dispatch)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/OpenStarbound/OpenStarbound/blob/main/source/server/main.cpp",
+      "title": "OpenStarbound - server main (runRconServer / rconServerPort 21026 / rconServerPassword defaults, no stdin console)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/OpenStarbound/OpenStarbound/blob/main/source/game/StarCommandProcessor.cpp",
+      "title": "OpenStarbound - CommandProcessor (kick/ban/unbanip/unbanuuid/list, player specifier prefixes @ $ $$)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://starbounder.org/Commands",
+      "title": "Commands - Starbounder (Starbound Wiki): /kick, /ban, /list, /unbanip, /serverwhoami",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://shockbyte.com/billing/knowledgebase/535/How-To-Setup-RCON-on-Your-Starbound-Server.html",
+      "title": "How To Setup RCON on Your Starbound Server (runRconServer / rconServerPort / rconServerPassword)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://shockbyte.com/billing/knowledgebase/539/How-to-Ban-or-Unban-a-Player-from-Your-Starbound-Server.html",
+      "title": "How to Ban or Unban a Player from Your Starbound Server (/ban, /unbanip, /unbanuuid, storage/starbound_server.config bannedUuids)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://playstarbound.com/february-17-server-configuration-changes/",
+      "title": "Starbound dev blog - Server Configuration Changes (bannedIPs / bannedUuids in the server config)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "RCON is Starbound's only remote command channel: starbound_server has no interactive stdin console (its main loop only sleeps), so panels that show a 'console' are showing the log. RCON is OFF by default - set runRconServer true and a non-empty rconServerPassword in storage/starbound_server.config (rconServerPort default 21026, distinct from the game port 21025 and from queryServerPort, whose default is 21025). The wire protocol is Valve Source RCON (SERVERDATA_AUTH 0x03 / SERVERDATA_EXECCOMMAND 0x02, little-endian, NUL-terminated), so ordinary Source RCON clients work. Commands sent over RCON carry NO leading slash - the wiki and every hosting guide write them as /kick, /ban, /list because that is the in-game chat form; the RCON handler takes the first token as the command name, so '/kick' would be an unknown command. 'say' and 'broadcast' are handled by the RCON layer itself (adminBroadcast) rather than by the chat command table, and the whole remainder of the line is the message - no quoting. Player specifier accepts '@nick', '$connectionId', '$$uuid', or a bare nickname; these templates use the '$$' UUID form, so the runtime must substitute the BARE 32-hex UUID and leave the literal '$$' in the template alone. kick and ban resolve a CONNECTED client only - you cannot ban an offline player by command; ban's 3rd argument is the ban kind (ip|uuid|both, default both) and the 4th is a duration in SECONDS (omit for permanent). Permanent bans are written into storage/starbound_server.config as bannedUuids/bannedIPs entries; timed bans live in memory only and are lost on restart. unbanuuid takes the bare UUID with no '$$' prefix and is confirmed by the code and by Shockbyte; the Starbounder wiki lists only /unbanip. There is no server-info and no MOTD command. Command text taken from OpenStarbound, the open fork of the retail 1.4.4 server code; the wiki's independent descriptions of /kick, /ban and /list (including the '$cid : nick : $$uuid' output format) match it exactly. appId here is the dedicated-server tool app 533830; the game app is 211820 and also ships linux/starbound_server."
+}

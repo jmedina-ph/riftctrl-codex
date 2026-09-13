@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "slug": "teeworlds",
+  "game": {
+    "displayName": "Teeworlds Server",
+    "appId": 380840,
+    "aliases": [
+      "Teeworlds",
+      "teeworlds_srv",
+      "Teeworlds Dedicated Server",
+      "TW"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": null,
+    "portSetting": "ec_port",
+    "enableSetting": "ec_port",
+    "passwordSetting": "ec_password"
+  },
+  "playerId": {
+    "label": "Client ID",
+    "example": "3",
+    "pattern": "[0-9]{1,2}"
+  },
+  "commands": {
+    "listPlayers": "status",
+    "kick": "kick {playerId} {reason}",
+    "ban": "ban {playerId} {duration} {reason}",
+    "say": "say {message}",
+    "motd": "sv_motd {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "id=(?<playerId>[0-9]+) addr=(?<accountId>\\S+)(?: client=\\S+)? name='(?<name>.*)' score=",
+    "skipLinePattern": "connecting\\s*$"
+  },
+  "sources": [
+    {
+      "url": "https://www.teeworlds.com/?page=docs&wiki=server_commands",
+      "title": "Teeworlds docs - Server Commands",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.teeworlds.com/?page=docs&wiki=server_settings",
+      "title": "Teeworlds docs - Server Settings (econ)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/teeworlds/documentation/blob/master/server_settings.md",
+      "title": "teeworlds/documentation - server_settings.md",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/teeworlds/teeworlds/blob/master/src/engine/server/server.cpp",
+      "title": "teeworlds source - CServer console registration (kick, status, ban)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/teeworlds/teeworlds/blob/master/src/game/server/gamecontext.cpp",
+      "title": "teeworlds source - CGameContext console registration (say, broadcast)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/teeworlds/teeworlds/blob/master/src/engine/shared/netban.cpp",
+      "title": "teeworlds source - CNetBan (ban, unban, unban_all, bans, bans_save)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.teeworlds.com/forum/viewtopic.php?id=8275",
+      "title": "Teeworlds forum - Accessing the external console / econ",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Transport is Teeworlds' external console (econ), NOT Source RCON: a plain TCP line protocol. Connect to ec_port, the server answers 'Enter password:', send ec_password followed by a newline, then send console commands one per line. econ is off until ec_port is set (there is no default port and no separate enable flag); ec_password must also be set, and ec_bindaddr defaults to localhost. Output lines are prefixed by the console formatter as '[<timestamp>][<system>]: ' (e.g. '[2026-09-13 10:00:00][server]: id=0 ...'), so playerParse.linePattern is deliberately unanchored. status output is 'id=<n> addr=<ip:port> client=<hex> name='<name>' score=<n> [(Admin)|(Mod)]' on 0.7 and the same line without the client= field on 0.6; the pattern tolerates both, and rows still connecting are skipped. accountId is captured as the client's address because that is the identifier bans and unban actually key on. kick takes the ephemeral client id (0-15 on 0.6, 0-63 on 0.7), so re-run status immediately before acting - ids are reassigned as players reconnect. ban accepts a client id, an IP, or an IP range; minutes are clamped to 0-44640 and default to 30 when omitted; the ban is stored against the resolved IP, not the client id. unban is deliberately omitted: 'unban' takes an IP, an IP range, or a ban-list index from 'bans', never a client id, so it cannot be expressed with {playerId} here - list with 'bans' and unban with 'unban <ip>' (or 'unban_all'). No banList either: 0.6/0.7 keep bans in memory only and write a file solely on demand via 'bans_save <file>', so there is no default path. motd uses the sv_motd config variable, which is CFGFLAG_SERVER and registered with a rest-of-line argument, so it is settable live over econ without quoting. No info/serverinfo command exists; status is the only roster command. Official docs list 'kick id' and 'ban ip/id minutes' without the reason argument, while the source registers 'kick i[id] ?r[reason]' and 'ban s[id|ip|range] ?i[minutes] r[reason]' - the source is the stricter and newer of the two and is what is recorded. DDNet and other forks share this console surface but add commands not recorded here."
+}

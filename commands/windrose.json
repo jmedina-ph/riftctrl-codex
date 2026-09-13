@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "slug": "windrose",
+  "game": {
+    "displayName": "Windrose Dedicated Server",
+    "appId": 4129620,
+    "aliases": [
+      "Windrose",
+      "windrose"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://playwindrose.com/dedicated-server-guide/",
+      "title": "Dedicated Server Guide - Windrose (official)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.pcgamer.com/games/survival-crafting/windrose-admin-commands-dedicated-server-setup/",
+      "title": "Windrose admin commands and dedicated server settings: Here's what works in early access (PC Gamer, Wes Fenlon, 2026-04-15)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://low.ms/knowledgebase/windrose-server-commands",
+      "title": "Windrose Server Commands - What's Available Right Now",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.survivalservers.com/wiki/index.php/Windrose_Admin_Commands",
+      "title": "Windrose Console Commands & Admin Guide (Windrose+ mod)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamdb.info/app/4129620/",
+      "title": "Windrose Dedicated Server (App 4129620)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Windrose ships no server console, no RCON and no admin HTTP API, so there is nothing to send. The developer's own dedicated server guide describes administration entirely as offline edits to two JSON files: ServerDescription.json (PersistentServerId, InviteCode, IsPasswordProtected, Password, ServerName, MaxPlayerCount, UseDirectConnection/DirectConnection*, and the guide's warning that the file must only be edited while the server is shut down) and WorldDescription.json (IslandId, WorldName, WorldPresetType, WorldSettings - difficulty preset, mob/ship health and damage multipliers in the 0.2-5.0 range, boarding difficulty, co-op stat correction and Coop.SharedQuests), the latter edited via R5WorldDescriptionUpdater.exe. PC Gamer (Wes Fenlon, 2026-04-15) independently states 'there are no Windrose admin commands that you can run from within the game (or in the dev console)' and that 'the expected controls like booting players, restarting, saving, etc. are absent'. The guide also states that ports are assigned dynamically via NAT punch-through, so there is no admin port to probe on a vanilla server; DirectConnectionServerPort (default 7777, TCP and UDP) is the optional direct-connect game port only, not a console port. DISAGREEMENT: hosting sites publish command lists anyway - Survival Servers documents a large wp.* set (wp.help, wp.status, wp.players, wp.kick, wp.ban, wp.unban, wp.listbans, wp.tp and many more) and states on the same page that they 'come from Windrose+, the open-source server mod included free with every Survival Servers Windrose server' and are 'executed over RCON, not typed in game chat', i.e. the RCON port is added by the mod; LOW.MS separately says Windrose 'shipped without' server commands and describes an unofficial standalone UE4SS mod, 'Windrose RCON', offering kick/ban/unban/showplayers/server info. Neither set is shipped by the developer and neither exists on a vanilla server, so they are deliberately not recorded here; if a server is known to run Windrose+ or Windrose RCON that is a separate descriptor. Kick and ban must therefore come from the host-level floor. Steam ids: dedicated server tool app is 4129620, base game app is 3041230."
+}

@@ -1,7 +1,68 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-12T15:45:38Z",
+  "generatedAt": "2026-09-13T05:14:52Z",
   "games": [
+    {
+      "slug": "7-days-to-die",
+      "displayName": "7 Days to Die Dedicated Server",
+      "appId": 294420,
+      "aliases": [
+        "7 Days to Die",
+        "7DTD",
+        "7D2D",
+        "SDTD"
+      ],
+      "transport": "rcon",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "abiotic-factor",
+      "displayName": "Abiotic Factor Dedicated Server",
+      "appId": 2857200,
+      "aliases": [
+        "Abiotic Factor",
+        "AbioticFactor",
+        "AF"
+      ],
+      "transport": "none",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "action-half-life",
+      "displayName": "Action Half-Life",
+      "appId": 90,
+      "aliases": [
+        "AHL",
+        "Action Half-Life Dedicated Server",
+        "Action HL",
+        "action",
+        "Half-Life Dedicated Server (-game action)"
+      ],
+      "transport": "rcon",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "action-source",
+      "displayName": "Action: Source Dedicated Server",
+      "appId": 985050,
+      "aliases": [
+        "Action: Source",
+        "Action Source",
+        "ahl2",
+        "AHL2",
+        "Action Half-Life 2"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
     {
       "slug": "american-truck-simulator-dedicated-server",
       "displayName": "American Truck Simulator Dedicated Server",
@@ -13,6 +74,36 @@
         "atsserver"
       ],
       "transport": "none",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "archean",
+      "displayName": "Archean Server",
+      "appId": 3557220,
+      "aliases": [
+        "Archean",
+        "Archean server",
+        "Archean Dedicated Server"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "ark-survival-ascended",
+      "displayName": "ARK: Survival Ascended Dedicated Server",
+      "appId": 2430930,
+      "aliases": [
+        "ARK: Survival Ascended",
+        "ARK Survival Ascended",
+        "ASA",
+        "ARK SA",
+        "ShooterGame"
+      ],
+      "transport": "rcon",
       "confidence": "high",
       "verified": false,
       "updatedAt": "2026-09-12"
@@ -77,6 +168,34 @@
       "updatedAt": "2026-09-12"
     },
     {
+      "slug": "astro-colony",
+      "displayName": "Astro Colony Dedicated Server Linux",
+      "appId": 2934900,
+      "aliases": [
+        "Astro Colony",
+        "Astro Colony Dedicated Server",
+        "AstroColony"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "astroneer-dedicated-server",
+      "displayName": "ASTRONEER Dedicated Server",
+      "appId": 728470,
+      "aliases": [
+        "Astroneer Dedicated Server",
+        "Astroneer",
+        "ASTRONEER"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
       "slug": "avorion",
       "displayName": "Avorion Dedicated Server",
       "appId": 565060,
@@ -88,6 +207,21 @@
       "confidence": "high",
       "verified": false,
       "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "ballistic-overkill",
+      "displayName": "Ballistic Overkill Dedicated Server",
+      "appId": 416880,
+      "aliases": [
+        "Ballistic Overkill",
+        "BO",
+        "BODS",
+        "boserver"
+      ],
+      "transport": "none",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
     },
     {
       "slug": "barotrauma",
@@ -102,6 +236,54 @@
       "updatedAt": "2026-09-12"
     },
     {
+      "slug": "black-mesa",
+      "displayName": "Black Mesa Dedicated Server",
+      "appId": 346680,
+      "aliases": [
+        "Black Mesa",
+        "Black Mesa: Source",
+        "BMS",
+        "bms",
+        "srcds bms"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "call-of-duty-world-at-war",
+      "displayName": "Call of Duty: World at War",
+      "appId": 10090,
+      "aliases": [
+        "Call of Duty: World at War Dedicated Server",
+        "CoD:WaW",
+        "CoDWaW",
+        "CoD5",
+        "World at War"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "chivalry-medieval-warfare",
+      "displayName": "Chivalry: Medieval Warfare Dedicated Server",
+      "appId": 220070,
+      "aliases": [
+        "Chivalry: Medieval Warfare",
+        "Chivalry",
+        "CMW",
+        "chivalry_ded_server",
+        "Chivalry: Deadliest Warrior"
+      ],
+      "transport": "rcon",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
       "slug": "colony-survival",
       "displayName": "Colony Survival Dedicated Server",
       "appId": 748090,
@@ -110,6 +292,20 @@
         "colserver"
       ],
       "transport": "stdin",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "conan-exiles",
+      "displayName": "Conan Exiles Dedicated Server",
+      "appId": 443030,
+      "aliases": [
+        "Conan Exiles",
+        "CE",
+        "ConanSandbox"
+      ],
+      "transport": "rcon",
       "confidence": "low",
       "verified": false,
       "updatedAt": "2026-09-12"
@@ -129,6 +325,24 @@
       "updatedAt": "2026-09-12"
     },
     {
+      "slug": "counter-strike-1-6",
+      "displayName": "Counter-Strike 1.6 Dedicated Server",
+      "appId": 90,
+      "aliases": [
+        "Counter-Strike",
+        "CS 1.6",
+        "CS1.6",
+        "cstrike",
+        "Half-Life Dedicated Server",
+        "HLDS",
+        "ReHLDS"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
       "slug": "counter-strike-2",
       "displayName": "Counter-Strike 2 Dedicated Server",
       "appId": 730,
@@ -138,6 +352,39 @@
         "cs2",
         "Counter-Strike: Global Offensive",
         "CSGO"
+      ],
+      "transport": "rcon",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "counter-strike-condition-zero",
+      "displayName": "Counter-Strike: Condition Zero",
+      "appId": 90,
+      "aliases": [
+        "CS:CZ",
+        "CSCZ",
+        "Condition Zero",
+        "czero",
+        "Counter-Strike: Condition Zero Dedicated Server"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "counter-strike-global-offensive",
+      "displayName": "Counter-Strike Global Offensive - Dedicated Server",
+      "appId": 740,
+      "aliases": [
+        "CS:GO",
+        "CSGO",
+        "Counter-Strike: Global Offensive",
+        "csgo",
+        "Counter-Strike: Global Offensive Dedicated Server",
+        "Counter-Strike 2 Dedicated Server"
       ],
       "transport": "rcon",
       "confidence": "low",
@@ -161,6 +408,63 @@
       "updatedAt": "2026-09-12"
     },
     {
+      "slug": "craftopia",
+      "displayName": "Craftopia Dedicated Server",
+      "appId": 1670340,
+      "aliases": [
+        "Craftopia",
+        "ctserver",
+        "Craftopia Server"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "day-of-defeat",
+      "displayName": "Day of Defeat",
+      "appId": 30,
+      "aliases": [
+        "DoD",
+        "Day of Defeat 1.3",
+        "dodserver",
+        "Half-Life Dedicated Server (dod)"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "day-of-defeat-source",
+      "displayName": "Day of Defeat: Source Dedicated Server",
+      "appId": 232290,
+      "aliases": [
+        "Day of Defeat: Source",
+        "DoD:S",
+        "DoDS",
+        "dod"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "day-of-dragons",
+      "displayName": "Day of Dragons - Dedicated Server",
+      "appId": 1088320,
+      "aliases": [
+        "Day of Dragons",
+        "dodrserver"
+      ],
+      "transport": "none",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
       "slug": "dayz",
       "displayName": "DayZ Server",
       "appId": 223350,
@@ -177,6 +481,34 @@
       "updatedAt": "2026-09-12"
     },
     {
+      "slug": "deadpoly",
+      "displayName": "DeadPoly Dedicated Server",
+      "appId": 2208380,
+      "aliases": [
+        "DeadPoly",
+        "Deadpoly",
+        "DeadPoly (Rebuild)"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "dont-starve-together",
+      "displayName": "Don't Starve Together Dedicated Server",
+      "appId": 343050,
+      "aliases": [
+        "Don't Starve Together",
+        "DST",
+        "Dont Starve Together"
+      ],
+      "transport": "stdin",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
       "slug": "eco",
       "displayName": "Eco Server",
       "appId": 739590,
@@ -184,6 +516,51 @@
         "Eco",
         "Eco Global Survival",
         "Eco Dedicated Server"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "empyrion-galactic-survival",
+      "displayName": "Empyrion - Galactic Survival Dedicated Server",
+      "appId": 530870,
+      "aliases": [
+        "Empyrion - Galactic Survival",
+        "Empyrion",
+        "EGS"
+      ],
+      "transport": "rcon",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "enshrouded",
+      "displayName": "Enshrouded Dedicated Server",
+      "appId": 2278520,
+      "aliases": [
+        "Enshrouded",
+        "Enshrouded Server",
+        "enshrouded_server"
+      ],
+      "transport": "none",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "et-legacy",
+      "displayName": "ET: Legacy",
+      "appId": null,
+      "aliases": [
+        "ETL",
+        "etlegacy",
+        "ET Legacy",
+        "ET: Legacy Dedicated Server",
+        "etlded",
+        "Wolfenstein: Enemy Territory"
       ],
       "transport": "rcon",
       "confidence": "high",
@@ -220,6 +597,79 @@
       "updatedAt": "2026-09-12"
     },
     {
+      "slug": "fistful-of-frags",
+      "displayName": "Fistful of Frags Dedicated Server",
+      "appId": 295230,
+      "aliases": [
+        "Fistful of Frags",
+        "FoF",
+        "fofserver"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "foundry",
+      "displayName": "FOUNDRY: Dedicated Server",
+      "appId": 2915550,
+      "aliases": [
+        "FOUNDRY",
+        "Foundry"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "half-life-2-deathmatch",
+      "displayName": "Half-Life 2: Deathmatch Dedicated Server",
+      "appId": 232370,
+      "aliases": [
+        "Half-Life 2: Deathmatch",
+        "Half-Life 2 Deathmatch",
+        "HL2DM",
+        "HL2:DM",
+        "hl2mp"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "half-life-deathmatch-source",
+      "displayName": "Half-Life Deathmatch: Source Dedicated Server",
+      "appId": 255470,
+      "aliases": [
+        "Half-Life Deathmatch: Source",
+        "Half-Life Deathmatch Source",
+        "HLDM: Source",
+        "HLDMS",
+        "hl1mp"
+      ],
+      "transport": "rcon",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "humanitz",
+      "displayName": "HumanitZ Dedicated Server",
+      "appId": 2728330,
+      "aliases": [
+        "HumanitZ",
+        "HZ",
+        "hzserver"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
       "slug": "hurtworld",
       "displayName": "Hurtworld Dedicated Server",
       "appId": 405100,
@@ -229,6 +679,49 @@
       ],
       "transport": "none",
       "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "hytale",
+      "displayName": "Hytale Server",
+      "appId": null,
+      "aliases": [
+        "Hytale",
+        "Hytale Dedicated Server",
+        "HytaleServer"
+      ],
+      "transport": "stdin",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "icarus",
+      "displayName": "Icarus Dedicated Server",
+      "appId": 2089300,
+      "aliases": [
+        "Icarus",
+        "ICARUS",
+        "Icarus Server"
+      ],
+      "transport": "none",
+      "confidence": "high",
+      "verified": true,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "insurgency",
+      "displayName": "Insurgency Dedicated Server",
+      "appId": 237410,
+      "aliases": [
+        "Insurgency",
+        "Insurgency (2014)",
+        "Insurgency 2014",
+        "INS"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
       "verified": false,
       "updatedAt": "2026-09-12"
     },
@@ -245,6 +738,22 @@
       "transport": "rcon",
       "confidence": "high",
       "verified": true,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "killing-floor",
+      "displayName": "Killing Floor Dedicated Server",
+      "appId": 215360,
+      "aliases": [
+        "Killing Floor",
+        "Killing Floor (2009)",
+        "Killing Floor 1",
+        "KF",
+        "KF1"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": false,
       "updatedAt": "2026-09-12"
     },
     {
@@ -293,6 +802,36 @@
       "updatedAt": "2026-09-12"
     },
     {
+      "slug": "mindustry",
+      "displayName": "Mindustry Dedicated Server",
+      "appId": 1127400,
+      "aliases": [
+        "Mindustry",
+        "Mindustry Server",
+        "server-release.jar"
+      ],
+      "transport": "stdin",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "minetest",
+      "displayName": "Luanti",
+      "appId": null,
+      "aliases": [
+        "Minetest",
+        "Luanti Server",
+        "Minetest Server",
+        "luantiserver",
+        "minetestserver"
+      ],
+      "transport": "stdin",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
       "slug": "mordhau",
       "displayName": "MORDHAU Dedicated Server",
       "appId": 629800,
@@ -304,6 +843,75 @@
       "confidence": "low",
       "verified": false,
       "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "myth-of-empires",
+      "displayName": "Myth of Empires Dedicated Server",
+      "appId": 1794810,
+      "aliases": [
+        "Myth of Empires",
+        "MoE",
+        "帝国神话"
+      ],
+      "transport": "rcon",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "necesse",
+      "displayName": "Necesse Dedicated Server",
+      "appId": 1169370,
+      "aliases": [
+        "Necesse",
+        "Necesse Server"
+      ],
+      "transport": "stdin",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "no-more-room-in-hell",
+      "displayName": "No More Room in Hell Dedicated Server",
+      "appId": 317670,
+      "aliases": [
+        "No More Room in Hell",
+        "NMRiH",
+        "NMRIH",
+        "nmrih"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": true,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "onset",
+      "displayName": "Onset Dedicated Server",
+      "appId": 1204170,
+      "aliases": [
+        "Onset",
+        "OnsetServer"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": true,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "openttd",
+      "displayName": "OpenTTD",
+      "appId": 1536610,
+      "aliases": [
+        "OpenTTD Dedicated Server",
+        "Open Transport Tycoon Deluxe",
+        "openttd"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
     },
     {
       "slug": "operation-harsh-doorstop",
@@ -332,6 +940,35 @@
       "confidence": "high",
       "verified": false,
       "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "pavlov-vr",
+      "displayName": "Pavlov VR Dedicated Server",
+      "appId": 622970,
+      "aliases": [
+        "Pavlov VR",
+        "Pavlov",
+        "PavlovVR",
+        "Pavlov Shack"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "pixark",
+      "displayName": "PixARK Dedicated Server",
+      "appId": 824360,
+      "aliases": [
+        "PixARK",
+        "Pix ARK",
+        "PixArk"
+      ],
+      "transport": "rcon",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
     },
     {
       "slug": "project-zomboid",
@@ -363,6 +1000,34 @@
       "updatedAt": "2026-09-12"
     },
     {
+      "slug": "rising-world",
+      "displayName": "Rising World Dedicated Server",
+      "appId": 339010,
+      "aliases": [
+        "Rising World",
+        "RW"
+      ],
+      "transport": "stdin",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "risk-of-rain-2",
+      "displayName": "Risk of Rain 2 Dedicated Server",
+      "appId": 1180760,
+      "aliases": [
+        "Risk of Rain 2",
+        "RoR2",
+        "RoR2DS",
+        "Risk of Rain 2 Dedicated Server"
+      ],
+      "transport": "stdin",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
       "slug": "rust",
       "displayName": "Rust Dedicated Server",
       "appId": 258550,
@@ -373,6 +1038,430 @@
       "confidence": "high",
       "verified": false,
       "updatedAt": "2026-09-10"
+    },
+    {
+      "slug": "satisfactory",
+      "displayName": "Satisfactory Dedicated Server",
+      "appId": 1690800,
+      "aliases": [
+        "Satisfactory",
+        "SF"
+      ],
+      "transport": "rest",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "soldat",
+      "displayName": "Soldat Dedicated Server",
+      "appId": 638500,
+      "aliases": [
+        "Soldat",
+        "OpenSoldat",
+        "OpenSoldat Dedicated Server",
+        "soldatserver"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "sons-of-the-forest",
+      "displayName": "Sons Of The Forest Dedicated Server",
+      "appId": 2465200,
+      "aliases": [
+        "Sons of the Forest",
+        "SOTF",
+        "SotF",
+        "SonsOfTheForestDS"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "soulmask",
+      "displayName": "Soulmask Dedicated Server",
+      "appId": 3017300,
+      "aliases": [
+        "Soulmask",
+        "WS",
+        "WSServer"
+      ],
+      "transport": "rcon",
+      "confidence": "low",
+      "verified": true,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "space-engineers",
+      "displayName": "Space Engineers Dedicated Server",
+      "appId": 298740,
+      "aliases": [
+        "Space Engineers",
+        "SE",
+        "SpaceEngineers"
+      ],
+      "transport": "rest",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "squad",
+      "displayName": "Squad Dedicated Server",
+      "appId": 403240,
+      "aliases": [
+        "Squad",
+        "SquadGame",
+        "Squad Server"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": true,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "starbound",
+      "displayName": "Starbound Dedicated Server",
+      "appId": 533830,
+      "aliases": [
+        "Starbound",
+        "Starbound Server",
+        "starbound_server"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "starmade",
+      "displayName": "StarMade Dedicated Server",
+      "appId": 244770,
+      "aliases": [
+        "StarMade",
+        "Star-Made",
+        "SM"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "stationeers",
+      "displayName": "Stationeers Dedicated Server",
+      "appId": 600760,
+      "aliases": [
+        "Stationeers",
+        "rocketstation",
+        "rocketstation_DedicatedServer"
+      ],
+      "transport": "stdin",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "sven-co-op",
+      "displayName": "Sven Co-op Dedicated Server",
+      "appId": 276060,
+      "aliases": [
+        "Sven Co-op",
+        "Sven Coop",
+        "SvenDS",
+        "SC"
+      ],
+      "transport": "rcon",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "team-fortress-2",
+      "displayName": "Team Fortress 2 Dedicated Server",
+      "appId": 232250,
+      "aliases": [
+        "TF2",
+        "Team Fortress 2",
+        "tf",
+        "srcds tf"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": true,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "team-fortress-classic",
+      "displayName": "Team Fortress Classic",
+      "appId": 20,
+      "aliases": [
+        "TFC",
+        "Team Fortress Classic Dedicated Server",
+        "tfcserver",
+        "hlds -game tfc",
+        "Half-Life Dedicated Server (tfc)"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "teamspeak-3",
+      "displayName": "TeamSpeak 3 Server",
+      "appId": null,
+      "aliases": [
+        "TeamSpeak 3",
+        "TS3",
+        "TeamSpeak Server",
+        "ts3server",
+        "TeamSpeak"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "teeworlds",
+      "displayName": "Teeworlds Server",
+      "appId": 380840,
+      "aliases": [
+        "Teeworlds",
+        "teeworlds_srv",
+        "Teeworlds Dedicated Server",
+        "TW"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "the-forest",
+      "displayName": "The Forest Dedicated Server",
+      "appId": 556450,
+      "aliases": [
+        "The Forest",
+        "TheForestDedicatedServer",
+        "TheForestDedicatedServer.exe"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": true,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "the-front",
+      "displayName": "The Front Dedicated Server",
+      "appId": 2334200,
+      "aliases": [
+        "The Front",
+        "The Front Linux Dedicated Server",
+        "tfserver",
+        "ProjectWar"
+      ],
+      "transport": "none",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "the-isle",
+      "displayName": "The Isle Dedicated Server",
+      "appId": 412680,
+      "aliases": [
+        "The Isle",
+        "The Isle: Evrima",
+        "Evrima",
+        "The Isle Evrima Dedicated Server"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "tower-unite",
+      "displayName": "Tower Unite Dedicated Server",
+      "appId": 439660,
+      "aliases": [
+        "Tower Unite",
+        "TU",
+        "Dedicated Condo",
+        "Tower Unite Condo Server"
+      ],
+      "transport": "none",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "unreal-tournament-2004",
+      "displayName": "Unreal Tournament 2004 Dedicated Server",
+      "appId": 13230,
+      "aliases": [
+        "Unreal Tournament 2004",
+        "Unreal Tournament 2004: Editor's Choice Edition",
+        "UT2004",
+        "UT2k4",
+        "ut2k4server"
+      ],
+      "transport": "none",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "unturned",
+      "displayName": "Unturned Dedicated Server",
+      "appId": 1110390,
+      "aliases": [
+        "Unturned",
+        "Unturned 3",
+        "U3",
+        "Unturned Headless Server"
+      ],
+      "transport": "stdin",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "v-rising",
+      "displayName": "V Rising Dedicated Server",
+      "appId": 1829350,
+      "aliases": [
+        "V Rising",
+        "VRising",
+        "VRisingServer",
+        "VRising Dedicated Server"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": true,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "valheim",
+      "displayName": "Valheim Dedicated Server",
+      "appId": 896660,
+      "aliases": [
+        "Valheim",
+        "valheim_server"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "vein",
+      "displayName": "VEIN Dedicated Server",
+      "appId": 2131400,
+      "aliases": [
+        "VEIN",
+        "Vein",
+        "VEIN Server"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": true,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "vintage-story",
+      "displayName": "Vintage Story Server",
+      "appId": null,
+      "aliases": [
+        "Vintage Story",
+        "VintagestoryServer",
+        "VS"
+      ],
+      "transport": "stdin",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "windrose",
+      "displayName": "Windrose Dedicated Server",
+      "appId": 4129620,
+      "aliases": [
+        "Windrose",
+        "windrose"
+      ],
+      "transport": "none",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "wolfenstein-enemy-territory",
+      "displayName": "Wolfenstein: Enemy Territory",
+      "appId": null,
+      "aliases": [
+        "W:ET",
+        "ET",
+        "Enemy Territory",
+        "Wolfenstein Enemy Territory",
+        "Wolfenstein: Enemy Territory Dedicated Server",
+        "ET: Legacy",
+        "etlegacy"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": true,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "wurm-unlimited",
+      "displayName": "Wurm Unlimited Dedicated Server",
+      "appId": 402370,
+      "aliases": [
+        "Wurm Unlimited",
+        "WU",
+        "WurmServerLauncher"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "xonotic",
+      "displayName": "Xonotic",
+      "appId": null,
+      "aliases": [
+        "Xonotic Dedicated Server",
+        "xonotic-dedicated",
+        "DarkPlaces"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "zombie-panic-source",
+      "displayName": "Zombie Panic! Source Dedicated Server",
+      "appId": 17505,
+      "aliases": [
+        "Zombie Panic! Source",
+        "Zombie Panic Source",
+        "ZPS",
+        "zps"
+      ],
+      "transport": "rcon",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
     }
   ]
 }

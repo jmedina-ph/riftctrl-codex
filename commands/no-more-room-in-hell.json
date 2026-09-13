@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "slug": "no-more-room-in-hell",
+  "game": {
+    "displayName": "No More Room in Hell Dedicated Server",
+    "appId": 317670,
+    "aliases": [
+      "No More Room in Hell",
+      "NMRiH",
+      "NMRIH",
+      "nmrih"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 27015,
+    "portSetting": "hostport",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:1:12345678",
+    "pattern": "STEAM_[0-9]:[01]:[0-9]+"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kick {playerName}",
+    "ban": "banid {duration} {playerId}",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*(?<accountId>\\d+)\\s+(?:\\d+\\s+)?\"(?<name>.*)\"\\s+(?<playerId>STEAM_[0-9]:[01]:[0-9]+)",
+    "skipLinePattern": "^(hostname|version|udp/ip|steamid|account|os|type|map|players|edicts|tags|#end|#\\s*userid)"
+  },
+  "banList": {
+    "paths": [
+      "nmrih/cfg/banned_user.cfg",
+      "nmrih/banned_user.cfg"
+    ],
+    "lineIdPattern": "banid\\s+[0-9.]+\\s+(STEAM_[0-9]:[01]:[0-9]+)",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://steamdb.info/app/317670/",
+      "title": "No More Room in Hell Dedicated Server - AppID 317670 - SteamDB",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://linuxgsm.com/servers/nmrihserver/",
+      "title": "No More Room in Hell Linux Game Server - LinuxGSM (appid 317670)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/GameServerManagers/Game-Server-Configs/blob/master/NoMoreRoominHell/server.cfg",
+      "title": "Game-Server-Configs/NoMoreRoominHell/server.cfg - stock server.cfg (rcon_password, exec banned_user.cfg 'banlist based on user steam ID', writeid, writeip)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://zap-hosting.com/guides/docs/nmrih-rcon/",
+      "title": "No More Room In Hell: RCON - ZAP-Hosting Docs (rcon_password, status, kick <playername>, banid <duration> <SteamID>, say <message>)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://legionhosting.net/kb/no-more-room-in-hell/no-more-room-in-hell-admin-commands",
+      "title": "No More Room in Hell Admin Commands - Legion Hosting (kick <player_name>, kickid <user_id>, banid <minutes> <user_id>, removeid, writeid, status, say)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://wiki.teamfortress.com/wiki/List_of_useful_console_commands",
+      "title": "List of useful console commands - Official TF2 Wiki (banid <minutes> <steamid>, 0 = permanent; kick <name>; status)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/alliedmodders/sourcemod/master/core/PlayerManager.cpp",
+      "title": "SourceMod core/PlayerManager.cpp - CPlayer::Kick builds \"kickid %d %s\" from the numeric userid, not a Steam ID",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/alliedmodders/sourcemod/master/core/logic/smn_banning.cpp",
+      "title": "SourceMod core/logic/smn_banning.cpp - issues \"banid %d %s\", \"removeid %s\", \"addip %d %s\", then \"writeid\"/\"writeip\"",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Console_Command_List/K",
+      "title": "Console Command List/K - Valve Developer Community (kick: \"Kick a player by slot, userid or name\"; no kickid entry exists on this list)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Source_Dedicated_Server",
+      "title": "Source Dedicated Server - Valve Developer Community (27015 carries game transmission, pings and RCON; changeable with -port)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://zap-hosting.com/guides/docs/dedicated-windows-nmrih/",
+      "title": "No More Room In Hell Dedicated Server Windows Setup - ZAP-Hosting Docs (srcds -game nmrih, nmrih/cfg/server.cfg, appid 317670)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://wiki.nomoreroominhell.com/Dedicated_Server_Setup",
+      "title": "Dedicated Server Setup - No More Room in Hell official wiki (27015 UDP for gameplay, RCON on 27015 TCP; changelevel, map, kick)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": "2026-09-12",
+  "notes": "Stock Source-engine SRCDS (Source SDK 2013 Multiplayer, 32-bit binary, launched as srcds with -game nmrih); no mod or plugin is required for any command here and none of them are NMRiH-specific. RCON is Valve Source RCON over TCP on the same port the game uses for UDP: the official NMRiH wiki states that gameplay needs only 27015 UDP and that 'the remote console (RCON) for the server runs on 27015 (TCP)', and Valve's Source Dedicated Server page lists 27015 as carrying 'game transmission, pings and RCON', changeable with -port on startup (hostport as a cvar). There is no separate RCON enable or RCON port setting - RCON is enabled purely by putting rcon_password in nmrih/cfg/server.cfg, which is exactly what the stock LinuxGSM server.cfg for this game does (re-verified in the Game-Server-Configs repo: rcon_password, exec banned_user.cfg, exec banned_ip.cfg, writeid, writeip). status doubles as info and as the roster: it prints 'hostname:/version:/udp/ip:/map:/players:' header lines and then one '#  <userid> \"<name>\" STEAM_x:y:z <connected> <ping> <loss> <state> <adr>' line per player, so playerParse is regex rather than csv (names contain spaces and sometimes quotes). Some builds insert an extra numeric slot column between the userid and the quoted name, hence the optional '(?:\\d+\\s+)?' group; the userid is captured as accountId because the kickid variant below takes it. Steam IDs render with universe digit 0 on some builds and 1 on others, so the pattern accepts either. KICK - CORRECTED ON REVIEW. kick is recorded as the documented name form 'kick <playername>': the official NMRiH wiki shows 'kick <name>' ('Kick a player right away'), ZAP-Hosting's RCON page shows 'kick <playername>', Legion Hosting shows 'kick <player_name>', and Valve's console command list describes kick as 'Kick a player by slot, userid or name'. An earlier draft of this file recorded 'kickid <SteamID> <reason>'; that identifier form could not be supported by any source. kickid is real, but every source that documents it uses the numeric status userid, not a Steam ID: SourceMod's CPlayer::Kick emits literally 'kickid %d %s' where %d is the userid and %s the message, and Legion Hosting documents 'kickid <user_id>' (with no message argument). Valve's Console Command List/K has no kickid entry at all, and no NMRiH-specific source documents kickid accepting a uniqueid. The schema has no placeholder for the status userid, so the name form is recorded even though it resolves by slot, userid or name and is therefore less precise for automation; an operator wanting an id-exact kick should read the userid out of status and send 'kickid <userid> <reason>' directly. BAN. banid takes MINUTES FIRST and then the Steam ID, and 0 minutes means permanent - agreed independently by the official TF2 wiki ('banid <minutes> <steamid> - Bans a player's Steam ID for the specified number of minutes. 0 minutes is a permanent ban.'), ZAP-Hosting ('banid <duration> <SteamID>'), Legion Hosting ('banid <minutes> <user_id>') and SourceMod's 'banid %d %s'. It has no reason argument, so ban carries no {reason}. banid only adds the id to the in-memory ban list - it does NOT disconnect an already-connected player, so send the kick as well - and the ban does NOT survive a restart until writeid is run, which rewrites banned_user.cfg. removeid unbans live but likewise needs writeid to persist; SourceMod pairs banid with writeid and removeid with writeid for precisely this reason. The stock server.cfg execs banned_user.cfg and banned_ip.cfg at boot and then calls writeid and writeip, so bans only reload across restarts if those exec lines are present, and that same config comments banned_user.cfg as the 'Server banlist based on user steam ID' - which is why playerId is the Steam ID: it is the identifier the engine's own ban list is keyed on and the one banid and removeid take. Ban-file lines look like 'banid 0 STEAM_0:1:12345678'; older engines write the minutes as a float ('banid 0.000000 ...'), hence '[0-9.]+' in lineIdPattern. Config lives in nmrih/cfg/, and writeid is documented as writing banned_user.cfg without stating a folder, so nmrih/cfg/banned_user.cfg is listed first with the mod-root nmrih/banned_user.cfg as fallback. No motd command exists - the MOTD is the file named by the motdfile cvar (nmrih/motd.txt) - so motd is deliberately omitted rather than guessed. IP bans use the parallel addip/removeip/writeip and banned_ip.cfg and are not mapped here because the identifier type differs. ALSO REMOVED ON REVIEW: an earlier claim that the engine accepts a trailing literal 'kick' argument to banid ('banid <minutes> <id> kick'); no source checked for this file documents it. CAUTION on one source: the ZAP Windows setup guide is otherwise consistent on appid 317670, '-game nmrih' and the nmrih/cfg/server.cfg path, but it contains obvious copy-paste errors from other games (it starts the server on the Counter-Strike map 'de_dust' and tells players to connect on port 2456, which is Valheim's); only its appid, -game value and config path were relied on."
+}

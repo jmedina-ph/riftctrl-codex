@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "slug": "insurgency",
+  "game": {
+    "displayName": "Insurgency Dedicated Server",
+    "appId": 237410,
+    "aliases": [
+      "Insurgency",
+      "Insurgency (2014)",
+      "Insurgency 2014",
+      "INS"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 27015,
+    "portSetting": "-port",
+    "enableSetting": "-usercon",
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_1:1:12312314",
+    "pattern": "STEAM_[0-9]:[01]:[0-9]+"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kickid {playerId} {reason}",
+    "ban": "banid {duration} {playerId} kick",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*\\d+\\s+\"(?<name>.*?)\"\\s+(?<playerId>STEAM_[0-9]:[01]:[0-9]+)",
+    "skipLinePattern": "^(hostname|version|udp/ip|os|type|map|players|edicts|#\\s*userid)"
+  },
+  "banList": {
+    "paths": [
+      "insurgency/cfg/banned_user.cfg"
+    ],
+    "lineIdPattern": "(STEAM_[0-9]:[01]:[0-9]+)",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Console_Command_List",
+      "title": "Console Command List - Valve Developer Community",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Rcon",
+      "title": "Rcon - Valve Developer Community",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/app/222880/discussions/2/364042703853182968/",
+      "title": "How can you Permanently ban someone? :: Insurgency Server Admin Support",
+      "kind": "forum",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/app/222880/discussions/2/558747922495963916/",
+      "title": "How to ban/switch/kick people on own server? :: Insurgency Server Admin Support",
+      "kind": "forum",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=345661185",
+      "title": "Insurgency Windows Dedicated Server (updated 8.2.2017)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=396835353",
+      "title": "Insurgency Console Commands",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=3464078763",
+      "title": "Insurgency Dedicated Server Guide for 2025",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/StevenNLWu/Insurgency2014ServerGuide/blob/master/README.md",
+      "title": "Insurgency2014ServerGuide README",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Insurgency (2014) is a Source SDK 2013 game, so this is plain Valve Source RCON carried on the game port over TCP: srcds must be launched with -usercon and a non-empty rcon_password must be set (insurgency/cfg/server.cfg). There is no separate RCON port - it follows -port, 27015 by default. info and listPlayers are both 'status' because Source has no dedicated player-list command; bot slots print BOT in place of a Steam ID in status output and are deliberately dropped by playerParse. kickid accepts either the numeric userid from status or the STEAM_ uniqueid; the Steam ID is recorded because userids are reassigned as players reconnect. banid's first argument is MINUTES with 0 meaning permanent, and the trailing literal 'kick' is what also removes the player immediately - banid on its own only adds the entry to the in-memory ban list. Neither banid nor removeid persists on its own: 'writeid' must be run to rewrite insurgency/cfg/banned_user.cfg, and server.cfg normally carries 'exec banned_user.cfg' to reload it at boot. No command sets the MOTD - it is the file insurgency/motd.txt - so motd is omitted. IP bans are a parallel set (addip/removeip/writeip, insurgency/cfg/banned_ip.cfg) and are not modelled here. Hosting-provider pages (Citadel Servers, Pingperfect, Streamline Servers) were checked and carry no usable command text, only rcon_password setup, so nothing here rests on them."
+}

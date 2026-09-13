@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "slug": "foundry",
+  "game": {
+    "displayName": "FOUNDRY: Dedicated Server",
+    "appId": 2915550,
+    "aliases": [
+      "FOUNDRY",
+      "Foundry"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://dedicated.foundry-game.com/",
+      "title": "FOUNDRY Dedicated Server Information (official, Channel 3 Entertainment)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://legionhosting.net/kb/foundry/foundry-admin-and-server-management",
+      "title": "Foundry Admin and Server Management - Legion Hosting",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://xgamingserver.com/blog/how-to-configure-a-foundry-dedicated-server/",
+      "title": "How to Configure a Foundry Dedicated Server - XGamingServer",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamdb.info/app/2915550/",
+      "title": "FOUNDRY: Dedicated Server - AppID 2915550 (Tool, parent FOUNDRY 983870)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/erkle64/FoundryCommands",
+      "title": "erkle64/FoundryCommands - adds chat commands to FOUNDRY",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Recorded as 'none' because no command channel could be found. The developer's own dedicated-server page (dedicated.foundry-game.com, Channel 3 Entertainment) documents only download, launch, join and an app.cfg of settings - server_name, server_password, server_world_name, pause_server_when_empty, autosave_interval, server_is_public, server_port (default 3724), server_query_port (default 27015), mapseed, server_persistent_data_override_folder, server_max_players - and mentions no admin list, no console input, no RCON and no HTTP API. Of the two hosting knowledge bases, only Legion Hosting covers moderation at all: it says the host kicks from the in-game player list, that there is an in-game ban option 'when available' with bans tracked by Steam ID, and that the control-panel console is output-only monitoring (connection events, save confirmations, errors) rather than a command interface. XGamingServer is corroboration for the config surface only - it repeats the same app.cfg keys and the same two ports (server_port=3724, server_query_port=27015) and says nothing about consoles, RCON, admin lists or kick/ban; an earlier draft of this record wrongly cited it as a second independent source for the moderation picture. No source disagrees, and no source offers any text a manager could send. The only 'commands' anywhere in the ecosystem are from the third-party FoundryCommands mod (/give, /tp, /time), a client-side mod rather than a server admin channel, so nothing from it is recorded. Confidence is 'low' deliberately: this is an argument from absence of documentation for an Early Access title, the dedicated server may read stdin for a graceful shutdown (untested), and hosting docs say server features may expand - re-check on patch notes. Steam query on server_query_port (default 27015) can still enumerate players read-only but cannot command anything. If a command channel does appear, Steam ID is the likely moderation identifier, since that is what Legion Hosting says in-game bans are tracked by. appId is the dedicated server tool 2915550 (SteamDB: type Tool, parent app FOUNDRY 983870)."
+}

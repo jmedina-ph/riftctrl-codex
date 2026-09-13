@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "slug": "astro-colony",
+  "game": {
+    "displayName": "Astro Colony Dedicated Server Linux",
+    "appId": 2934900,
+    "aliases": [
+      "Astro Colony",
+      "Astro Colony Dedicated Server",
+      "AstroColony"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://docs.google.com/document/d/11sC1F2HdSymO44Hklg3nfrO5D66YIs7rEUrGV1GjpDM/edit",
+      "title": "Astro Colony Dedicated Server documentation (Terad Games, linked by the developer on Steam)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/1614550/discussions/0/6369856944152116857/",
+      "title": "How do the dedicated servers work? - developer reply linking the official documentation",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/Raziel7893/WindowsGSM.AstroColony",
+      "title": "WindowsGSM.AstroColony plugin - start/stop and ServerSettings.ini only, no console interface",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/kapdon/astrocolony-server",
+      "title": "astrocolony-server Docker image - generates ServerSettings.ini from AC_* env vars, no console",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://legionhosting.net/kb/astro-colony/astro-colony-admin-commands?language=english",
+      "title": "Legion Hosting \"Astro Colony Admin Commands\" - documents only startup variables, no commands",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "No command channel found. The developer's own dedicated-server documentation describes admin powers as in-game UI actions for accounts listed in AdminList (saving the game under a custom name, loading a game, uploading a savegame to the server) and lists \"kicking unwanted player\" as \"coming soon\"; it documents no console commands, no RCON and no admin HTTP API. Administration is entirely file/launch-parameter based: ServerSettings.ini under Astro Colony's UE Saved/Config/<Platform>Server directory, section [/Script/ACFeature.EHServerSubsystem], with keys ServerPassword, Seed, MapName, MaxPlayers, ShouldLoadLatestSavegame, AdminList (comma-separated Steam64 IDs), SharedTechnologies, OxygenConsumption, AutosaveInterval, AutosavesCount, FreeConstruction, Sandbox, UnlimitedResourceStack; ports 7777 game and 27015 query (-QueryPort=). The Unreal dedicated server binary shows only an engine log window - no game moderation commands are exposed on it, so stdin was not recorded as a transport. Confidence is low because every source is an absence of evidence rather than an explicit \"there is no console\" statement, and because the official document's \"kicking unwanted player (coming soon)\" note means a kick feature may since have shipped (it would be an in-game admin UI action, not a remote command). Hosting knowledge bases that publish pages titled \"Astro Colony Admin Commands\" (Legion Hosting) in fact list only panel startup variables - treat any blog claiming chat or console commands for this game as unverified. Steam publishes two dedicated-server apps: 2662210 (Astro Colony Dedicated Server, Windows) and 2934900 (Astro Colony Dedicated Server Linux, recorded here); parent game is app 1614550."
+}

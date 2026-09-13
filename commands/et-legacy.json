@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "slug": "et-legacy",
+  "game": {
+    "displayName": "ET: Legacy",
+    "appId": null,
+    "aliases": [
+      "ETL",
+      "etlegacy",
+      "ET Legacy",
+      "ET: Legacy Dedicated Server",
+      "etlded",
+      "Wolfenstein: Enemy Territory"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 27960,
+    "portSetting": "net_port",
+    "enableSetting": null,
+    "passwordSetting": "rconpassword"
+  },
+  "playerId": {
+    "label": "Client slot number",
+    "example": "3",
+    "pattern": "[0-9]{1,2}"
+  },
+  "commands": {
+    "info": "serverinfo",
+    "listPlayers": "status",
+    "kick": "kick {playerId}",
+    "ban": "ban {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^\\s*(?<playerId>\\d{1,3})\\s+-?\\d+\\s+(?:DEMO|CNCT|ZMBI|\\d+)\\s+(?<name>.*\\S)\\s+\\d+\\s+\\S+\\s+\\d+\\s+\\d+\\s+\\d+\\s*$",
+    "skipLinePattern": "^(?:cpu server|avg response|server time|internal time|map |num score ping|-{3,})"
+  },
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/etlegacy/etlegacy/master/src/server/sv_ccmds.c",
+      "title": "etlegacy src/server/sv_ccmds.c - engine console commands (status, serverinfo, say, cleartempbans) and removal of kick/banUser/banClient",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/etlegacy/etlegacy/master/src/game/g_svcmds.c",
+      "title": "etlegacy src/game/g_svcmds.c - legacy mod console command table (kick, clientkick, ban, addip, removeip, listip, cp, qsay) and Svcmd_Kick_f timeout default 300",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/etlegacy/etlegacy/master/src/game/g_referee.c",
+      "title": "etlegacy src/game/g_referee.c - G_PlayerBan implementation (ban <clientname> adds the client IP to the filter list)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/etlegacy/etlegacy/master/src/game/g_cmds.c",
+      "title": "etlegacy src/game/g_cmds.c - G_ClientNumbersFromString / G_ClientNumberFromString target resolution (numeric slot first, then unique substring name match)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/etlegacy/etlegacy/master/src/server/sv_main.c",
+      "title": "etlegacy src/server/sv_main.c - SVC_RemoteCommand, 'rcon <pass> <command>' connectionless packet and sv_rconPassword check",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/etlegacy/etlegacy/master/src/server/sv_init.c",
+      "title": "etlegacy src/server/sv_init.c - sv_rconPassword = Cvar_Get(\"rconPassword\", \"\", CVAR_TEMP)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/etlegacy/etlegacy/master/src/qcommon/qcommon.h",
+      "title": "etlegacy src/qcommon/qcommon.h - PORT_SERVER 27960, the default net_port",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://etlegacy.readthedocs.io/en/latest/cvars.html",
+      "title": "ET: Legacy documentation - List of CVARs (net_port, g_banIPs, g_filterBan)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/etlegacy/etlegacy/master/misc/etmain/etl_server.cfg",
+      "title": "etlegacy shipped example server config (set rconpassword, net_port 27960, server_motd0-5)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://wolffiles.de/etmanual/en/Tech%20Help/Information/Server%20Setup.htm",
+      "title": "Enemy Territory manual - Server Setup & Advanced Commands (rcon usage, status columns, kick by client number)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://legionhosting.net/kb/wolfenstein-enemy-territory/wolfenstein-enemy-territory-admin-commands?language=english",
+      "title": "Wolfenstein: Enemy Territory Admin Commands (rcon status/kick/clientkick/ban/say/cp; also lists banClient/unban/banlist, which ET: Legacy does not register)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/spooz/etlegacy-server/master/etl_server.cfg",
+      "title": "Third-party ET: Legacy server config using set rconpassword and net_port 27960",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "RCON is the Quake III lineage protocol, NOT Source RCON: a single connectionless UDP datagram 0xFFFFFFFF + \"rcon <password> <command>\" sent to the game port, with the reply printed back as a print packet (SVC_RemoteCommand, sv_main.c). There is no enable switch and no separate RCON port - it answers on net_port (default PORT_SERVER 27960, qcommon.h) whenever the password cvar is non-empty; the engine registers it as Cvar_Get(\"rconPassword\", \"\", CVAR_TEMP) in sv_init.c, but Quake III cvar lookup is case-insensitive and both the shipped and third-party etl_server.cfg write it as \"set rconpassword\", which is the spelling recorded here. Because it is CVAR_TEMP it must be set in the server cfg or on the command line. The engine rate-limits bad and repeated rcon packets (SVC_RateLimitAddress/SVC_RateLimit under sv_protect), and its own FIXME flags that big replies such as status overflow the 240-byte rcon redirection buffer across many out-of-band packets, so read the roster defensively. A dedicated etlded server also has a real stdin console; rcon is recorded here because it is the remote channel. COMMAND OWNERSHIP: the engine's SV_AddOperatorCommands registers status, serverinfo, systeminfo, say (dedicated servers only), cleartempbans, map, devmap, map_restart, killserver, heartbeat, dumpuser, fieldinfo, sectorlist, gameCompleteStatus and uptime; kick, clientkick and ban are NOT engine commands - they are game-module commands supplied by the bundled \"legacy\" mod (src/game/g_svcmds.c consoleCommandTable), and ET: Legacy explicitly removes the original ET engine's kick/banUser/banClient in SV_RemoveOperatorCommands. Running a different mod (etpub, silEnT, NoQuarter, etmain of another vintage) changes that half of the set; most competitive mods also add a shrubbot-style !kick/!ban layer that this file does not cover. TARGETING: kick, clientkick and ban all resolve their argument through G_ClientNumberFromString (g_cmds.c), a wrapper over G_ClientNumbersFromString that accepts a numeric client slot first (Q_isanumber, bounds-checked against level.maxclients and requiring the slot be CON_CONNECTED or CON_CONNECTING) and otherwise does a colour-stripped, lowercased SUBSTRING match on netnames, refusing unless exactly one player matches - so the slot number from column 1 of status is the only unambiguous id, which is what playerId is. MAX_CLIENTS is 64, so slots are 0-63. KICK SIDE EFFECT: usage is \"kick <player name> [timeout]\" and the timeout DEFAULTS TO 300, so a bare kick also temp-bans that address for 300 seconds (in-memory table of MAX_TEMPBAN_ADDRESSES = MAX_CLIENTS = 64 entries, cleared with cleartempbans); use \"kick <slot> 0\" for a kick with no temp ban and \"kick all\" to clear the server. Bots are kicked with timeout forced to 0. BAN: \"ban <clientname>\" only works on a currently connected client - G_PlayerBan reads that client's ip from userinfo and appends it to the g_banIPs IP-filter list (AddIPBan); it takes no reason and no duration, refuses bots, is an IP/mask ban rather than a GUID ban, and does NOT itself drop the client, so pair it with a kick. UNBAN: omitted on purpose - there is no unban-by-player command; the reverse operations are \"removeip <ip-mask>\" and \"listip\", which take an IP mask rather than a player id, plus cleartempbans for the engine temp-ban table. banList is likewise omitted: the persistent ban set lives in the g_banIPs cvar (space-separated masks, reloaded by G_ProcessIPBans), not in a ban file at a fixed path. MOTD: omitted - ET: Legacy has no motd command; the join-screen MOTD is the six cvars server_motd0..server_motd5, set from the server cfg. SAY: on a dedicated server say is the engine's SV_ConSay_f and is broadcast as chat prefixed with \"console: \"; \"cp <message>\" (centre print) and \"qsay\" are the other broadcast forms. STATUS OUTPUT: header is \"num score ping name ... lastmsg address qport rate lastConnectTime\" and each row is printf'd as %3i %5i then DEMO/CNCT/ZMBI or %4i, then the name left-padded, then lastmsg, address, qport, rate, lastConnectTime - note that current ET: Legacy has NO guid column (original ET 2.60b printed one), score can be negative, and the name column keeps its ^x colour codes, so strip them before display. DISAGREEMENT: hosting knowledge bases written for original Wolf:ET (e.g. legionhosting) list banClient, unban and banlist as rcon commands; grepping both the engine command table and the legacy mod consoleCommandTable shows ET: Legacy registers none of them, and only the kick/clientkick/ban/status/say/cp overlap is trustworthy. ET: Legacy is a standalone free client, not a Steam app, hence appId null; it is normally installed alongside Wolfenstein: Enemy Territory 2.60b assets."
+}

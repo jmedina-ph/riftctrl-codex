@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "slug": "mindustry",
+  "game": {
+    "displayName": "Mindustry Dedicated Server",
+    "appId": 1127400,
+    "aliases": [
+      "Mindustry",
+      "Mindustry Server",
+      "server-release.jar"
+    ]
+  },
+  "transport": "stdin",
+  "stdin": {
+    "note": "The headless server (java -jar server-release.jar) reads one command per line from its own console. With a TTY it uses a JLine line reader showing a '> ' prompt; with no TTY it falls back to a plain Scanner on System.in, so a pipe works too. Command output goes to stdout prefixed '[MM-dd-yyyy HH:mm:ss] [I] ' with ANSI colour. Run 'help' for the live command list. An optional line-based TCP console exists: 'config socketInput true' plus socketInputPort (default 6859) and socketInputAddress (default localhost); it takes the same command text and returns output with colour codes stripped and no timestamp/level prefix, but it has NO authentication, so it must stay bound to localhost."
+  },
+  "playerId": {
+    "label": "UUID",
+    "example": "PfEqnHS4AeU=",
+    "pattern": "[A-Za-z0-9+/]{11}="
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "players",
+    "kick": "kick {playerName}",
+    "ban": "ban id {playerId}",
+    "unban": "unban {playerId}",
+    "say": "say {message}",
+    "motd": "config motd {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "\\[[AP]\\](?:\\x1b\\[[0-9;]*m|\\s)*(?<name>.+?)(?:\\x1b\\[[0-9;]*m)*\\s+/\\s+ID:(?:\\x1b\\[[0-9;]*m|\\s)*(?<playerId>[A-Za-z0-9+/=]{8,24})(?:\\x1b\\[[0-9;]*m)*\\s+/\\s+IP:",
+    "skipLinePattern": "(Players:|No players are currently in the server)"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/Anuken/Mindustry/blob/master/server/src/mindustry/server/ServerControl.java",
+      "title": "Mindustry ServerControl.java - server console command registry",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/Anuken/Mindustry/blob/master/core/src/mindustry/net/Administration.java",
+      "title": "Mindustry Administration.java - Config keys (motd, socketInput, socketInputPort) and ban storage",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://mindustrygame.github.io/wiki/servers/",
+      "title": "Servers - Mindustry Wiki (official)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://legionhosting.net/kb/mindustry/mindustry-admin-and-commands",
+      "title": "Mindustry Admin and Commands - Legion Hosting knowledgebase",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://supercraft.host/wiki/mindustry/admin_commands/",
+      "title": "Mindustry Admin Commands and Permissions Guide - Supercraft",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/dantecatalfamo/mindustry-remote",
+      "title": "mindustry-remote - controls the Mindustry console over socketInput",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Vanilla Mindustry has no RCON and no HTTP admin API; the console is the only channel (plus the optional local socketInput TCP port, which is the same command text). IDENTIFIER MISMATCH, the important hazard here: 'ban'/'unban'/'admin'/'whitelist'/'info' key on the 12-character base64 UUID (8 random bytes, base64-encoded, e.g. PfEqnHS4AeU=), but 'kick' takes ONLY a name and matches Player.name() exactly (case-sensitive), while 'players' and 'status' print plainName() with colour markup stripped. A player called '[#ff0000]Bob' is listed as 'Bob' and 'kick Bob' answers 'Nobody with that name could be found...'. There is no kick-by-UUID in vanilla. 'ban' has three forms: 'ban id <uuid>' (recorded here, works for offline players), 'ban name <name>' (case-insensitive, online players only, errors 'No matches found.') and 'ban ip <ip>'. Bans carry no duration and no reason, and the kick reason is fixed (KickReason.kick), so {duration} and {reason} are unsupported. 'unban <ip/ID>' accepts a UUID or an IP, never a name. Bans are stored in Core.settings (config/settings.bin) under 'player-data'/'ip-bans', not a text ban list, so no banList is recorded; 'bans' prints them. Both 'kick' and 'say' require a hosted game: kick answers 'Not hosting a game yet. Calm down.' and say answers 'Not hosting. Host a game first.' until 'host <map> [mode]' has been run. 'config motd <message>' sets Administration.Config.motd, 'The message displayed to people on connection.' (default 'off'); config joins the rest of the line into one value and a literal \\n in it becomes a newline. Related but separate: 'subnet-ban', 'name-ban', 'dos-ban', 'pardon' (votekick only). SOURCE DISAGREEMENT, both third-party lists are wrong about kick: Legion Hosting's KB says 'kick [player]' works 'by name or ID' and 'players' lists 'IDs', and Supercraft documents 'kick [name] [reason]'; the registry shows kick is '<username...>', name-only, with no reason argument. Both hosting pages also omit 'config motd', which is attested only by the first-party source (Administration.java Config.motd plus the generic 'config' command), so that one entry rests on one source even though the rest do not. Command names and the syntax of 'say'/'status'/'players'/'ban'/'unban'/'config' agree across the source registry and both third-party lists, and mindustry-remote independently corroborates the socketInput TCP console."
+}

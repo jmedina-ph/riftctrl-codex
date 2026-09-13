@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "slug": "zombie-panic-source",
+  "game": {
+    "displayName": "Zombie Panic! Source Dedicated Server",
+    "appId": 17505,
+    "aliases": [
+      "Zombie Panic! Source",
+      "Zombie Panic Source",
+      "ZPS",
+      "zps"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 27015,
+    "portSetting": "-port",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "User ID",
+    "example": "2",
+    "pattern": "[0-9]+"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kickid {playerId} {reason}",
+    "ban": "banid {duration} {playerId} kick",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*(?<playerId>\\d+)\\s+\"(?<name>.*?)\"\\s+(?<accountId>\\[U:\\d+:\\d+\\]|STEAM_[0-9]:[0-9]:[0-9]+)",
+    "skipLinePattern": "^#\\s*userid\\b"
+  },
+  "banList": {
+    "paths": [
+      "zps/cfg/banned_user.cfg",
+      "zps/banned_user.cfg"
+    ],
+    "lineIdPattern": "banid\\s+[0-9.]+\\s+(\\S+)",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://steamdb.info/app/17505/",
+      "title": "Zombie Panic! Source Dedicated Server - AppID 17505",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://linuxgsm.com/servers/zpsserver/",
+      "title": "Zombie Panic! Source Linux Game Server - LinuxGSM",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/master/lgsm/config-default/config-lgsm/zpsserver/_default.cfg",
+      "title": "LinuxGSM zpsserver _default.cfg (appid 17505, -game zps, port 27015)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1286427014",
+      "title": "Zombie Panic! Source - How to operate your server as an Administrator",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/17500/discussions/0/810938810866972608/",
+      "title": "Zombie Panic! Source - How can I use commands? (rcon_password / rcon <command>)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Console_Command_List",
+      "title": "Console Command List - Valve Developer Community",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/222880/discussions/2/364042703853182968/",
+      "title": "Source engine banid usage: banid <minutes> <userid | uniqueid> { kick }",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://totalcsgo.com/commands/banid",
+      "title": "banid Command Help & Examples (Source engine)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Source-engine dedicated server (srcds, mod dir 'zps', LinuxGSM start line '-game zps ... -port 27015'). RCON is stock Valve Source RCON on the game port (27015 TCP by default; the port comes from the -port launch argument, there is no separate RCON port) and is switched on simply by setting rcon_password in zps/cfg/server.cfg. Confidence is low because no ZPS-specific document lists the commands recorded here: they are the stock srcds engine commands (status/kickid/banid/removeid/say) documented by Valve's own wiki and corroborated by Source-engine command references, and the exact status line layout is inferred from Source SDK 2013 rather than observed on ZPS. playerId is the per-session userid printed by status, NOT a Steam ID: both kickid and banid accept it, and banid resolves it to the account id when it writes the ban, which is why it is the safer target for a tool that lists players and acts immediately. banid does not disconnect the player by itself, hence the trailing 'kick' argument; a ban only survives a restart after 'writeid', and the engine appends it to cfg/banned_user.cfg as 'banid <minutes> <id>'. No live unban is recorded under commands because removeid takes the Steam ID, not the userid - it is recorded as banList.liveUnban instead, and must also be followed by 'writeid'. ZPS 3.x additionally ships its own admin system (zps/data/adminsystem/adminsystem.json, flags a-z incl. 'i' for rcon) with its own commands: 'status_full' (prints !entindex, #id, name, steamid64, team), 'admin kick #22 \"Trolling on the server\"', 'admin ban #22 \"60\" \"Trolling again\"' (duration in minutes) and 'admin unban U:1:38199539' (SteamID3 without brackets). Those are documented for ZPS specifically but target three different identifier forms and depend on an admin entry, so they were not used as the primary set; they are the fallback if the engine commands are found to be blocked. status on ZPS prints SteamID3 ([U:1:38199539]) per that admin guide; the parse pattern also accepts the older STEAM_x:y:z form. There is no motd command - the MOTD is the motd.txt file (motdfile cvar)."
+}

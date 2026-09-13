@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "slug": "soulmask",
+  "game": {
+    "displayName": "Soulmask Dedicated Server",
+    "appId": 3017300,
+    "aliases": [
+      "Soulmask",
+      "WS",
+      "WSServer"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 19000,
+    "portSetting": "-rconport",
+    "enableSetting": "-rconpsw",
+    "passwordSetting": "-rconpsw"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "76561198000000000",
+    "pattern": "7656119[0-9]{10}"
+  },
+  "commands": {
+    "info": "ServerFPS",
+    "listPlayers": "List_OnlinePlayers",
+    "ban": "Update_ServerPermissionList 1 1 {playerId}",
+    "unban": "Update_ServerPermissionList 1 0 {playerId}",
+    "say": "SayToSystemChannel {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "(?<playerId>7656119[0-9]{10})[\\s|,]+(?<name>[^|,]+?)\\s*(?:[|,]|$)"
+  },
+  "banList": {
+    "paths": [
+      "WS/Saved/BlackAccountList.txt",
+      "Saved/BlackAccountList.txt"
+    ],
+    "lineIdPattern": "(7656119[0-9]{10})",
+    "liveUnban": "Update_ServerPermissionList 1 0 {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://saraserenity.net/soulmask/remote_console.php",
+      "title": "Soulmask Remote Console Commands (Sara Serenity)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://saraserenity.net/soulmask/dedicated_server_guide.php",
+      "title": "Soulmask Dedicated Server Guide (Sara Serenity)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://saraserenity.net/soulmask/server_permissions.php",
+      "title": "Soulmask Server Permissions (Sara Serenity)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://help.bisecthosting.com/hc/en-us/articles/41801508958107-How-to-Setup-RCON-on-a-Soulmask-Server",
+      "title": "How to Setup RCON on a Soulmask Server (BisectHosting)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.gamehostbros.com/guides/games/soulmask/rcon",
+      "title": "How To Use RCON On Soulmask (Game Host Bros)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://xgamingserver.com/docs/soulmask/rcon",
+      "title": "RCON and Remote Commands for Soulmask Servers (XGamingServer)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://www.survivalservers.com/wiki/index.php?title=Soulmask_Server_Setup_Guide",
+      "title": "Soulmask Server Setup Guide (Survival Servers wiki)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://docs.berrybyte.net/games/soulmask/banning-and-unbanning-players",
+      "title": "How to Ban and Unban Players on a Soulmask Server (berrybyte)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://shockbyte.com/billing/knowledgebase/1228/How-to-Ban-Players-from-your-Soulmask-Server.html",
+      "title": "How To Ban Players From Your Soulmask Server (Shockbyte)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/CubeCoders/AMPTemplates/main/soulmask.kvp",
+      "title": "CubeCoders AMP Soulmask template (soulmask.kvp)",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/master/lgsm/config-default/config-lgsm/smserver/_default.cfg",
+      "title": "LinuxGSM smserver _default.cfg",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": "2026-09-12",
+  "notes": "Soulmask has TWO consoles. The RCON listener is enabled only by -rconpsw=<password> and binds to -rconport (default 19000); the server guide also warns that if neither MULTIHOME nor -rconaddr is set, RCON stays disabled regardless of the password. Separately the server exposes a plain telnet 'Echo' console on -EchoPort, which only binds to loopback (127.0.0.1). Both LinuxGSM and CubeCoders AMP drive Soulmask through the Echo console instead of RCON: AMP's template sets App.AdminMethod=TelnetRCON with App.AdminPortRef=EchoPort, and LinuxGSM's smserver _default.cfg sets telnetport=18888 and passes only -EchoPort, never -rconport or -rconpsw. flavour is recorded as 'source' because BisectHosting drives the -rconport listener with rcon-cli (Source protocol); this is the weakest claim in this record - XGamingServer and Game Host Bros both call the feature 'RCON (TELNET)' in identical wording, so they are one lineage and not a second confirmation. THERE IS NO RCON KICK COMMAND. Every command list derived from the server's own 'help' output (Sara Serenity, BisectHosting, Game Host Bros, XGamingServer) lacks kick and ban entirely; Legion Hosting's knowledgebase claims 'kick [PlayerName]', 'ban [PlayerName]' and 'broadcast [message]' but no other source lists them and they contradict the help output, so they are treated as fabricated and not recorded. Banning is the account blacklist: verified permission types are 0 Account Whitelist (mask 1, WhiteAccountList.txt), 1 Account Blacklist (mask 2, BlackAccountList.txt), 2 IP Whitelist (mask 4, WhiteIPList.txt), 3 IP Blacklist (mask 8, BlackIPList.txt), 4 Mute (mask 16, BanSpeek.txt). The blacklist must be switched on first with 'Set_ServerPermissionEnable 1 1' (alias ssp) or persistently with -serverpm=2, otherwise the ban is stored and ignored. Because each list has its OWN file, BlackAccountList.txt holds Steam IDs only (IP bans go to BlackIPList.txt), so keying its lines on SteamID64 is safe. Sara's permissions page also states that editing the file while the server is running has no effect, which is why liveUnban is an RCON call rather than a file edit. UNVERIFIED (re-checked, still unresolved): Update_ServerPermissionList (alias usp) is documented only as 'PermissionType [int] bRemoveOrAdd [int] Data [string] - Adds or removes an item from a server permission list specified by index'; neither the remote-console page nor the permissions page states which value adds and which removes, and the permissions page carries no worked usp example at all, so 1 = add and 0 = remove is INFERRED from the parameter name and must be checked against List_ServerPermissionList (lsp) before being trusted. The in-game admin-console equivalents, documented with explicit verbs and agreeing on type 1, are 'AddServerPermissionList 1 <SteamID>' and 'RemoveServerPermissionList 1 <SteamID>' (berrybyte, Shockbyte, Sparked Host), enabled with 'gm EnableServerPermissionList 1 1'. UNVERIFIED: no sample of List_OnlinePlayers (alias lp) output could be found; sources describe its columns only as '| Steam Account | Player Name | Current Body ID |', so playerParse anchors on the SteamID64 and takes the next field as the name - confirm before relying on it. info is mapped to ServerFPS because Soulmask has no general status command. say = SayToSystemChannel (alias say), which appears on Sara Serenity and BisectHosting but NOT in XGamingServer's command table. Confidence stays low: the detailed command tables trace back to one lineage (the help output transcribed by Sara Serenity, reproduced verbatim by BisectHosting down to the command index numbers), the second lineage is thinner, and the ban flag polarity and player-list format are both unconfirmed."
+}

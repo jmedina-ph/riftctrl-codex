@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "slug": "stationeers",
+  "game": {
+    "displayName": "Stationeers Dedicated Server",
+    "appId": 600760,
+    "aliases": [
+      "Stationeers",
+      "rocketstation",
+      "rocketstation_DedicatedServer"
+    ]
+  },
+  "transport": "stdin",
+  "stdin": {
+    "note": "The dedicated server (rocketstation_DedicatedServer) is a headless Unity process that reads admin commands from its own console/standard input. Commands are typed bare, with no prefix and no leading slash. Keep stdin attached: the official guide warns that launching with -logFile redirects console output to a file and then 'you can not input into the console'. The in-game F3 console reaches these same commands only via the serverrun prefix (serverrun kick <clientId>), which requires ServerAuthSecret to match on client and server; that prefix must NOT be used when writing to the server's own stdin."
+  },
+  "playerId": {
+    "label": "Client ID (Steam ID)",
+    "example": "76561198012345678",
+    "pattern": "[0-9]{5,20}"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "clients",
+    "kick": "kick {playerId}",
+    "ban": "ban {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^\\s*(?<name>\\S.*?)\\s*[\\(\\[]?(?<playerId>[0-9]{9,20})[\\)\\]]?"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/rocket2guns/StationeersDedicatedServerGuide",
+      "title": "Stationeers Dedicated Server Guide 2022 (rocket2guns / Rocketwerkz)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://stationeers-wiki.com/ConsoleCommands",
+      "title": "ConsoleCommands - Stationeers Community Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://stationeers-wiki.com/Dedicated_Server_Guide",
+      "title": "Dedicated Server Guide - Stationeers Community Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://help.bisecthosting.com/hc/en-us/articles/41325666048027-Stationeers-Console-Commands",
+      "title": "Stationeers Console Commands - BisectHosting",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/matjam/stationeersrcon",
+      "title": "matjam/stationeersrcon - CLI for the legacy Stationeers RCON",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "No RCON. The 2022 official dedicated-server guide still says of console input 'This will be improved in future when we add something like RCON', and neither the guide nor the community wiki documents an RCON port, password or enable setting. Two legacy artefacts disagree and are believed obsolete: matjam/stationeersrcon (2018) drives an RCON with status/save/shutdown/notice/ban <steamId> <timeout>/unban/kick/clearall/hungerRate, and Didstopia/stationeers-server describes 'a built-in web-interface for RCON' on port 27500 with default password 'stationeers'. Both predate the June-2022 dedicated-server rewrite, after which the developers stated old guides are no longer relevant; none of the current commands above (notably notice, unban, timeout arguments) appear in the post-2022 command set. UNBAN: there is no unban command. 'ban <clientId>' appends the clientId to a blacklist file under the SavePath configured in settings.xml; to lift a ban you remove that line from the file and run 'ban refresh' to reload the blacklist without restarting. The blacklist filename is not stated by any source checked, so no banList block is published rather than guessing a path. PLAYER ID: every source calls the kick/ban argument 'clientId' and none states its format. matjam's legacy CLI spelled the same argument <steamID>, and a persistent blacklist file implies a stable identifier, so a SteamID64 is the working assumption and the pattern is left deliberately permissive; this is the single least certain field in the file and is why confidence is low. PLAYER PARSE: 'clients' ('Lists all currently connected clients', server-only) is documented by the community wiki but no source shows its output, so linePattern is a best-effort guess at a 'name then long numeric id' line and must be treated as unverified. Hosting-company pages disagree sharply and are judged wrong: Legion Hosting lists players, unban, banlist, quit, settime, weather, clearweather and unpause, none of which appear in the game's own help output as transcribed on the community wiki. The command text itself (status, clients, kick, ban, say) is corroborated by the official guide and the community wiki independently."
+}

@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "slug": "minetest",
+  "game": {
+    "displayName": "Luanti",
+    "appId": null,
+    "aliases": [
+      "Minetest",
+      "Luanti Server",
+      "Minetest Server",
+      "luantiserver",
+      "minetestserver"
+    ]
+  },
+  "transport": "stdin",
+  "stdin": {
+    "note": "Luanti's dedicated server has no command channel unless it is started with the ncurses interactive terminal: 'luantiserver --terminal' (man page: 'Display an interactive terminal over ncurses during execution'). The binary must be compiled with ncurses (USE_CURSES) or the flag is ignored with 'Cmd arg --terminal passed, but compiled without ncurses. Ignoring.'. It needs a real TTY; a piped stdin is never read, and without --terminal the process reads no input at all. The terminal types as the player named by the 'name' setting in minetest.conf: a line beginning with '/' runs as that player's chat command, a bare line is broadcast to everyone as a chat message from that name. That admin account must already exist (it is created by logging in once from a client) and hold the kick/ban/server privileges, or commands answer 'You don't have permission to run this command (missing privileges: ...)' (luanti-org/luanti issue #6775, still open)."
+  },
+  "playerId": {
+    "label": "Username",
+    "example": "Player_1",
+    "pattern": "[A-Za-z0-9_-]{1,20}"
+  },
+  "commands": {
+    "info": "/status",
+    "kick": "/kick {playerId} {reason}",
+    "ban": "/ban {playerId}",
+    "unban": "/unban {playerId}",
+    "say": "{message}",
+    "motd": "/set motd {message}"
+  },
+  "banList": {
+    "paths": [
+      "worlds/world/ipban.txt",
+      "world/ipban.txt",
+      ".minetest/worlds/world/ipban.txt",
+      ".luanti/worlds/world/ipban.txt"
+    ],
+    "lineIdPattern": "\\|\\s*([A-Za-z0-9_-]{1,20})\\s*$",
+    "liveUnban": "/unban {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/luanti-org/luanti/blob/master/builtin/game/chat.lua",
+      "title": "Luanti builtin/game/chat.lua - registration of /status, /kick, /ban, /unban, /set",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://docs.luanti.org/for-players/server-commands/",
+      "title": "Server Commands - Luanti Documentation (official)",
+      "kind": "official",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://wiki.minetest.org/Server_commands",
+      "title": "Server commands - Minetest Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/luanti-org/luanti/blob/master/src/terminal_chat_console.cpp",
+      "title": "Luanti src/terminal_chat_console.cpp - terminal typeChatMessage(), bare lines become chat, '/' lines become commands",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/luanti-org/luanti/blob/master/src/server/ban.cpp",
+      "title": "Luanti src/server/ban.cpp - ipban.txt format 'ip|name'",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://linuxcommandlibrary.com/man/luantiserver",
+      "title": "luantiserver man page - --terminal option",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/luanti-org/luanti/issues/6775",
+      "title": "Server terminal will not take any server command unless you login first - luanti issue #6775",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "Minetest was renamed Luanti in 2024; the server binary followed (minetestserver -> luantiserver) and both names are still in the wild. Core has no RCON and no HTTP admin API; moderation is chat commands, run either by an in-game admin or from the ncurses terminal (see stdin.note). NO listPlayers IS RECORDED ON PURPOSE: core registers no player-list command. Server::getStatusString() puts the roster inside one prose line, '# Server: version: 5.x | game: ... | uptime: ... | max lag: ...s | clients: Alice, Bob', and none of the csv/regex/json playerParse modes can split one comma-separated line into rows, so recording a pattern here would silently return a single wrong row. Read the names out of /status text instead. '/ban <name>' bans the player's IP and requires the player to be ONLINE ('Player is not online.'); with no argument it prints the ban list as 'ip|name, ip|name'. Because bans are IP-based, a banned player returning on a new IP is not blocked, and '/ban' cannot pre-ban an offline account (this is what the xban2 and sban mods exist to fix). '/unban' accepts a name or an IP. '/kick <name> [<reason>]' has no duration and no ban; HAZARD: it parses its argument with the Lua pattern '([^ ]+) (.+)', so a kick sent with an EMPTY reason leaves a trailing space and the name lookup fails with 'Failed to kick player' - send a non-empty reason or drop the {reason} token. Ban file is <worldpath>/ipban.txt, one 'ip|name' line per ban, written by BanManager; the paths listed are the world-directory spellings seen in run-in-place and packaged installs, so resolve the real world path first ('worlds/<worldname>/ipban.txt'). 'motd' is a setting, not a command: '/set motd <message>' changes it live (it is what /status prints and what players see on join) but /set does not rewrite minetest.conf, so the change is lost on restart. CONFIDENCE IS LOW DELIBERATELY: /status, /kick, /ban, /unban and /set are corroborated by the engine source and the official docs, but docs.luanti.org and wiki.minetest.org carry word-for-word the same text and count as one published source, and the two most fragile entries rest on source reading alone - 'say' as a bare terminal line (terminal_chat_console.cpp) is documented nowhere and broadcasts as '<adminname> message' rather than a server announcement, and a {message} beginning with '/' would be run as a command instead of broadcast; '/set motd' is composed from two separately documented pieces rather than published as the motd procedure. Promote to high only after running these against a live server."
+}

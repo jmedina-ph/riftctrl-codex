@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "slug": "counter-strike-1-6",
+  "game": {
+    "displayName": "Counter-Strike 1.6 Dedicated Server",
+    "appId": 90,
+    "aliases": [
+      "Counter-Strike",
+      "CS 1.6",
+      "CS1.6",
+      "cstrike",
+      "Half-Life Dedicated Server",
+      "HLDS",
+      "ReHLDS"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 27015,
+    "portSetting": "port",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:1:12345678",
+    "pattern": "STEAM_[0-9]:[01]:[0-9]+"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kick # {playerId} {reason}",
+    "ban": "banid {duration} {playerId} kick",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*\\d+\\s+\"(?<name>[^\"]*)\"\\s+\\d+\\s+(?<playerId>STEAM_[0-9]:[01]:[0-9]+)",
+    "skipLinePattern": "^#\\s+name\\s+userid"
+  },
+  "banList": {
+    "paths": [
+      "cstrike/banned.cfg",
+      "banned.cfg"
+    ],
+    "lineIdPattern": "^banid\\s+\\S+\\s+(STEAM_[0-9]:[01]:[0-9]+)",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/dreamstalker/rehlds/blob/master/rehlds/engine/sv_main.cpp",
+      "title": "ReHLDS engine sv_main.cpp - SV_BanId_f, Host_Kick_f, SV_RemoveId_f, SV_WriteId_f, SV_Rcon",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://github.com/dreamstalker/rehlds/blob/master/rehlds/engine/host_cmd.cpp",
+      "title": "ReHLDS engine host_cmd.cpp - Host_Status_f output format",
+      "kind": "code",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://counter-strike-boost.com/tutorials/rcon-commands-list",
+      "title": "Essential RCON Commands Every CS 1.6 Admin Needs",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=729345010",
+      "title": "Counter-Strike: 1.6 Dedicated Server (SteamCMD)",
+      "kind": "community",
+      "retrievedAt": "2026-09-12"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-12",
+  "verifiedAt": null,
+  "notes": "CS 1.6 runs on the GoldSrc Half-Life Dedicated Server (SteamCMD app 90, mod dir 'cstrike'). RCON is NOT Source RCON: it is a connectionless UDP text protocol on the same UDP port as the game (default 27015), preceded by a 'challenge rcon' handshake, then '\\xFF\\xFF\\xFF\\xFFrcon <challenge> <password> <command>' - SV_Rcon/SV_Rcon_Validate in sv_main.cpp read Cmd_Argv(1) as the challenge and Cmd_Argv(2) as the password - hence flavour 'custom'. There is no separate RCON port or enable switch: setting the rcon_password cvar (usually in cstrike/server.cfg) turns RCON on, and the port is the server port set with -port/+port. Command text is taken from the engine's own usage strings: 'Usage:  banid <minutes> <uniqueid or #userid> { kick }' with 'Use 0 minutes for permanent', 'usage:  kick < name > | < # userid > [reason]', 'Usage:  removeid <uniqueid | #slotnumber>'. Pass {duration} in MINUTES and 0 for permanent. COM_Parse emits ':' as its own token, so a Steam ID arrives split across several argv slots: Host_Kick_f reassembles it as Cmd_Argv(2):Cmd_Argv(4):Cmd_Argv(6) only when the id follows a bare '#' ('kick # STEAM_0:1:12345678'), and then skips 4 extra tokens to find the reason; a Steam ID with no '#' is compared against player NAMES and matches nobody. SV_BanId_f and SV_RemoveId_f reassemble the same way and need no '#' (banid accepts at most 8 argv slots, which 'banid 0 <steamid> kick' exactly fills; the '#' in removeid is a ban-list SLOT number, not a userid). Bans are in-memory until 'writeid' is run. writeid REWRITES the file named by the bannedcfgfile cvar (default banned.cfg, i.e. cstrike/banned.cfg) from scratch - it opens it \"wt\" and is not an append - and it emits ONLY permanent entries, as 'banid 0.0 STEAM_0:1:12345678' lines; a ban with {duration} greater than 0 is never persisted and dies with the server, so only 'banid 0 <id> kick' survives a restart. IP bans go to listipcfgfile (default listip.cfg) via addip/writeip and are not covered here. A durable ban is 'banid 0 <id> kick' then 'writeid', a durable unban is 'removeid <id>' then 'writeid' - the schema allows one command string per field, so the follow-up writeid must be issued separately. No MOTD command exists; the MOTD is the file named by the motdfile cvar (default motd.txt). status output is 'hostname/version/tcp-ip/map/players' then the header '#      name userid uniqueid frag time ping loss adr' and one '#%2i %8s %i %s' row per client, the %8s being the name wrapped in quotes - which is what linePattern matches; fakeclients print 'BOT' instead of a Steam ID and are therefore skipped. DISAGREEMENT: several hosting knowledge bases (e.g. gamesclan.net) list 'rcon ban <player name or STEAM id>'; there is no 'ban' command in GoldSrc - that entry is wrong. Commands listed here are vanilla engine commands; AMX Mod X (amx_kick, amx_ban) is a plugin and is not assumed. Confidence 'high': the engine source and an independent community reference agree on status, banid, removeid, writeid and say. The kick-by-SteamID form rests on the engine source alone - the community page shows only 'kick #<userid>' and 'kick \"<name>\"' - but it was read directly out of Host_Kick_f rather than inferred."
+}

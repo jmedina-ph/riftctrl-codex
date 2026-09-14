@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "slug": "multi-theft-auto",
+  "game": {
+    "displayName": "Multi Theft Auto: San Andreas Server",
+    "appId": null,
+    "aliases": [
+      "MTA",
+      "MTA:SA",
+      "MTA:SA Server",
+      "Multi Theft Auto",
+      "Multi Theft Auto: San Andreas",
+      "mta-server",
+      "mta-server64"
+    ]
+  },
+  "transport": "stdin",
+  "stdin": {
+    "note": "Commands are typed into the MTA server's console window, i.e. the stdin of mta-server / mta-server64; no TTY is required when stdin is a pipe. 'say', 'whois' and 'ver' are built into the server core; 'kick' and 'ban' are registered by the bundled [admin] resource, which must be running (start admin). The console acts as the user 'Console', which the shipped acl.xml puts in the ACL group 'Console' together with the Moderator, SuperModerator, Admin and RPC ACLs, so it may run them without logging in. Console output lines are prefixed with a [HH:MM:SS] timestamp."
+  },
+  "playerId": {
+    "label": "Username",
+    "example": "Benny_Lava",
+    "pattern": "\\S{1,22}"
+  },
+  "commands": {
+    "info": "ver",
+    "listPlayers": "whois *",
+    "kick": "kick {playerId} {reason}",
+    "ban": "ban {playerId} {reason} {duration}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^(?:\\[[^\\]]*\\]\\s*)?(?<playerId>(?<name>\\S+)) - (?:\\d{1,3}(?:\\.\\d{1,3}){3}):\\d{1,5}\\s*$",
+    "skipLinePattern": "whois:"
+  },
+  "banList": {
+    "paths": [
+      "mods/deathmatch/banlist.xml"
+    ],
+    "lineIdPattern": "ip=\"(\\d{1,3}(?:\\.\\d{1,3}){3})\"",
+    "liveUnban": "unbanip {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://wiki.multitheftauto.com/wiki/Server_Commands",
+      "title": "Server Commands - Multi Theft Auto: Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.multitheftauto.com/wiki/Resource:Admin",
+      "title": "Resource:Admin - Multi Theft Auto: Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.multitheftauto.com/wiki/Server_Manual",
+      "title": "Server Manual - Multi Theft Auto: Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/multitheftauto/mtasa-blue/blob/master/Server/mods/deathmatch/logic/CConsoleCommands.cpp",
+      "title": "mtasa-blue CConsoleCommands.cpp (server console command implementations)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/multitheftauto/mtasa-blue/blob/master/Server/mods/deathmatch/logic/CRegisteredCommands.cpp",
+      "title": "mtasa-blue CRegisteredCommands.cpp (console dispatch to resource commands, ACL check)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/multitheftauto/mtasa-resources/blob/master/%5Badmin%5D/admin/conf/commands.xml",
+      "title": "mtasa-resources [admin]/admin/conf/commands.xml (command handlers and argument types)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/multitheftauto/mtasa-resources/blob/master/%5Badmin%5D/admin/server/admin_commands.lua",
+      "title": "mtasa-resources [admin]/admin/server/admin_commands.lua (getPlayerWildcard, aCommand, aCommandToArgs)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/multitheftauto/mtasa-resources/blob/master/%5Badmin%5D/admin/server/admin_server.lua",
+      "title": "mtasa-resources [admin]/admin/server/admin_server.lua (kick/ban action handlers)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/multitheftauto/mtasa-blue/blob/master/Server/mods/deathmatch/logic/CBanManager.cpp",
+      "title": "mtasa-blue CBanManager.cpp (banlist.xml format)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/multitheftauto/mtasa-blue/blob/master/Server/mods/deathmatch/acl.xml",
+      "title": "mtasa-blue default acl.xml (Console group rights)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "MTA moderates by in-game nick: admin_commands.lua resolves the first argument of kick/ban with getPlayerWildcard() - an exact getPlayerFromName() match first, otherwise a case-insensitive substring match - so a partial nick works but an ambiguous one is refused with 'matches N players'. Nicks never contain spaces and MAX_PLAYER_NICK_LENGTH is 22. Argument gotcha from [admin]/admin/conf/commands.xml: kick is args='P,s' and ban is args='P,s,i', and the 's' conversion is a single word (only 's-' swallows the rest of the line), so a multi-word reason is truncated and, for ban, pushes the duration out of position. Send {reason} as ONE token. {duration} is SECONDS; 0 or a missing value means permanent. A three-argument console 'ban' bans the player's IP, not their serial: admin_server.lua calls banPlayer(player, true, false, false, ...), so the banlist.xml entry carries ip= (alongside nick=, reason=, banner=, time=, unban=) and the live undo is 'unbanip <ip>' - hence lineIdPattern captures the IP and banList.liveUnban's {playerId} is that captured IP, NOT the nick that kick and ban take. CORRECTED IN REVIEW: the wiki's fourth <[serial]> argument on ban is real from the console, not a wiki error. aCommandToArgs() converts only the argument types commands.xml declares and returns the rest of the table untouched, and aCommand() forwards arg[4] to the aPlayer event as bUseSerial, so ANY fourth token turns the ban into a SERIAL ban via addBan(nil, nil, getPlayerSerial(player), ...). That entry carries serial= instead of ip=, lineIdPattern will not match it and 'unbanip' will not undo it. Never send a fourth token, and keep {reason} one word so nothing can shift into that slot. This serial path is gated on command.ban, so the missing command.banserial right does not block it. The standalone 'banserial'/'unbanserial' handlers ARE denied: the shipped acl.xml defines no command.banserial or command.unbanserial right and aCommand checks hasObjectPermissionTo(..., false). For the same reason no motd command is recorded - 'setwelcome <message>' (args='s-') exists in the admin resource but there is no command.setwelcome right in the default ACL. After hand-editing banlist.xml run 'reloadbans'. listPlayers: CConsoleCommands::WhoIs accepts '*' and echoes one line per joined player as SString('%s - %s:%u', nick, ip, port), with 'whois: ...' used for its three error lines; the wiki documents 'whois <nick>' but not the '*' form, so that field rests on the source. The console transport for kick/ban likewise rests on the source rather than the wiki: CRegisteredCommands::ProcessCommand handles CLIENT_CONSOLE by pushing a CConsoleClient element and ACL-checks the command right against the user 'Console', and the shipped acl.xml puts user.Console in the group Console, which carries the SuperModerator ACL where command.kick and command.ban are access='true' (they are access='false' in Default). MTA has no RCON; the server also answers an ASE query on the game port + 123 (default 22126 for a 22003 server) and serves the admin resource's web panel over the HTTP port (default 22005), either of which can list players without touching the console."
+}

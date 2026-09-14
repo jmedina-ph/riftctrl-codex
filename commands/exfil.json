@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "slug": "exfil",
+  "game": {
+    "displayName": "Exfil Dedicated Server",
+    "appId": 3093190,
+    "aliases": [
+      "EXFIL",
+      "Exfil"
+    ]
+  },
+  "transport": "none",
+  "playerId": {
+    "label": "Steam ID",
+    "example": "76561198012345678",
+    "pattern": "7656119[0-9]{10}"
+  },
+  "sources": [
+    {
+      "url": "https://store.steampowered.com/app/860020/EXFIL/",
+      "title": "EXFIL on Steam (Tiny Leviathan)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/3093190/",
+      "title": "Exfil Dedicated Server (Steam app 3093190)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/860020/discussions/0/595139710753485578/",
+      "title": "Dedicated Server :: Exfil General Discussions",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/altNightHawk/Exfil_Server",
+      "title": "altNightHawk/Exfil_Server - Exfil Dedicated Server install script",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/altNightHawk/Exfil_Server/main/AdminSettings.JSON.sample",
+      "title": "AdminSettings.JSON.sample (AdminList / BanList)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/altNightHawk/Exfil_Server/main/install_exfil_server.sh",
+      "title": "install_exfil_server.sh - config paths and admin-role handling",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.g-portal.com/en/gameserver/exfil-server-hosting",
+      "title": "EXFIL server hosting - GPORTAL",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://qonzer.com/game-servers/exfil",
+      "title": "Dedicated EXFIL Server Hosting - Qonzer",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "No command channel found. The Exfil dedicated server (Steam app 3093190; game app 860020, Tiny Leviathan, Early Access) publishes no RCON port, no admin HTTP/REST API and no documented console command set. The only server-side moderation surface found is on-disk JSON config in <install>/Exfil/Saved/ServerSettings/: AdminSettings.JSON carries AdminList entries ({steamId, name, adminLevel: \"Admin\"|\"Moderator\"}) and BanList entries ({steamId, name, banEnd} where banEnd is a \"YYYY.MM.DD-HH.MM.SS\" timestamp); ServerSettings.JSON (AutoStartTimer, MinAutoStartPlayers, AddAutoStartTimeOnPlayerJoin) and DedicatedSettings.JSON (MaxPlayerCount, ServerName, ServerPassword) hold the rest. Kick/ban in practice is done in-game by a player holding Admin/Moderator level, or by editing AdminSettings.JSON and restarting - neither is a command a manager can send. banList is omitted for SHAPE, not location: AdminList and BanList live in the same file, so a line-oriented lineIdPattern keyed on \"steamId\" would pull every admin Steam ID out of AdminList and report admins as banned, and banList has no way to scope a pattern to one JSON array. The path itself IS confirmed - install_exfil_server.sh sets ADMIN_SETTINGS_FILE=<user home>/exfil-dedicated/Exfil/Saved/ServerSettings/AdminSettings.JSON - correcting the earlier claim that it could not be found. The community installer exposes only a game port (7777) and a Steam query port (27015) - no RCON or web-admin port. The developer (IrOnTaXi) answers dedicated-server questions with \"Jump in our discord and there is a section for people running servers\" rather than published docs, so an admin command set may exist there undocumented; re-check if Tiny Leviathan publishes server documentation. Confidence is low: this rests on one community install-script repo plus the absence of any console/RCON mention on hosting-provider pages, not on publisher documentation."
+}

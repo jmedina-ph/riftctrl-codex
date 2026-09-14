@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "slug": "ground-branch",
+  "game": {
+    "displayName": "GROUND BRANCH Dedicated Server",
+    "appId": 476400,
+    "aliases": [
+      "GROUND BRANCH",
+      "Ground Branch",
+      "GB",
+      "Ground Branch Dedicated Server"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://unofficialgroundbranchwiki.com/en/dedicated-servers/getting-started",
+      "title": "Dedicated Server - Getting Started | Unofficial Ground Branch Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1449083065",
+      "title": "GROUND BRANCH Guide: Dedicated Server Help",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2785561597",
+      "title": "GROUND BRANCH Guide: Build 1032 - Config Guide",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1482579703",
+      "title": "GROUND BRANCH Guide: VPS Server Setup",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.4netplayers.com/en/wiki/ground-branch/how-do-i-become-admin/",
+      "title": "How to Become an Admin in Ground Branch (admin group command list)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/476400/",
+      "title": "GROUND BRANCH Dedicated Server - AppID 476400",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://legionhosting.net/kb/ground-branch/ground-branch-admin-commands",
+      "title": "Ground Branch Admin Commands (disagreeing hosting-blog source)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://xgamingserver.com/docs/ground-branch/adding-admins",
+      "title": "How to Add Admins on Your Ground Branch Server (disagreeing hosting-blog source)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": "2026-09-13",
+  "notes": "Ground Branch (Blackfoot Studios, Unreal Engine 4) ships no RCON listener, no admin REST API and no server-side stdin command channel: the dedicated server is launched from DedicatedServer.bat / GroundBranchServer.sh and its console windows are log output, not a command pipe. Moderation is done by an authenticated admin CLIENT connected to the server, through the admin menu (Esc > Admin button, F8, or typing 'admin' in the in-game console) and through 'admin <command>' console/chat commands handled by the game's ZooKeeper admin system. Documented examples of that form are 'admin setup <password>' (claim SuperAdmin using the one-time password in AdminSetupPassword.txt), 'admin motd', 'admin resurrect', 'admin resurrect all' and 'admin resurrectnear' / 'admin resnear'. Permissions are granted per group in the server's Admin.ini as AdminGroups=(Name=\"Owner\",Commands=(\"all\")) plus Admins=(Name=\"<name>\",UniqueId=\"<SteamID64>\",ContactInfo=\"\",Group=\"<group>\"); the ZooKeeper command names a group may be given include say, kick, ban, kill, changemap, nextmap, startround, endround, restartround, toplayarea, toreadyroom, mute, resurrect, enablecheats, difficulty, timeofday and roundtime, and the full set is defined in DefaultZooKeeper.ini in the install. Those names are permission keys, not text a remote manager can send anywhere, so no commands are recorded here. Ban defaults live in Ban.ini (DefaultBanDuration, in minutes) and auto-bans in TeamKill.ini. DISAGREEMENT: two hosting knowledge bases publish remote-console command lists for this game. Legion Hosting gives 'listplayers', 'kick <playerID>', 'ban <steamID>', 'unban <steamID>', 'say <message>', 'changemap <mapName>', 'restartround', 'endround', 'setgamemode <mode>', 'setmaxplayers <count>' and 'setpassword <password>', and says they run 'through the in-game console (press `) or via RCON'. XGamingServer gives 'adminlogin <password>', 'listplayers', 'kick <playerID>', 'ban <playerID>', 'unban <playerID>', 'servertravel <map>', 'gamemode <mode>', 'say <message>', 'pause' and 'disconnect'. The two overlap on listplayers/kick/ban/unban/say but disagree on the rest - ban by Steam64 ID vs by player ID, changemap vs servertravel, setgamemode vs gamemode, adminlogin present in only one - and neither uses the bare 'admin <command>' form that the community wiki, the Steam dedicated-server guides and 4netplayers all document; XGamingServer also invents an 'adminlogin <password>' flow and cannot name the admin file it tells you to edit, where the documented path is Admin.ini plus 'admin setup <password>' from AdminSetupPassword.txt. Neither page states an RCON port, protocol or handshake. Both read as generic boilerplate and are recorded here only so a future revision knows they were considered and rejected; their partial agreement with each other is treated as hosting-blog echo, not independent corroboration. Confidence is low because 'no remote channel' rests on absence of evidence in the best available sources rather than on a developer statement."
+}

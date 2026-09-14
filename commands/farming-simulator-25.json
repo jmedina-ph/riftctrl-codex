@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "slug": "farming-simulator-25",
+  "game": {
+    "displayName": "Farming Simulator 25 Dedicated Server",
+    "appId": 2300320,
+    "aliases": [
+      "Farming Simulator 25",
+      "FS25",
+      "FS 25",
+      "LS25",
+      "Landwirtschafts-Simulator 25",
+      "GIANTS Dedicated Server"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://www.farmsimgame.com/Docs/Farming-Simulator-25/Dedicated-Servers/",
+      "title": "Farming Simulator 25 Dedicated Server Configuration (FSG Modding docs)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://help.bisecthosting.com/hc/en-us/articles/41777327648923-How-to-Kick-or-Ban-Players-on-a-Farming-Simulator-25-Server",
+      "title": "How to Kick or Ban Players on a Farming Simulator 25 Server",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://hub.tcno.co/games/farmingsim25/dedicated_server/",
+      "title": "Farming Simulator 25 Dedicated Server Guide (TroubleChute Hub)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/DJWoodZ/Farming-Simulator-Discord-Bot",
+      "title": "DJWoodZ/Farming-Simulator-Discord-Bot - polls the FS25/FS22 dedicated server XML feed endpoints",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.g-portal.com/wiki/en/how-do-i-become-an-admin-on-my-farming-simulator-25-server/",
+      "title": "How do I become an admin on my Farming Simulator 25 server? (GPORTAL Wiki)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.bisecthosting.com/blog/farming-simulator-25-console-commands-admin-enable-money-cheats",
+      "title": "Farming Simulator 25 Console Commands Guide",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "No remote command channel exists, so transport is \"none\". The FS25 dedicated server has no RCON, no stdin console and no write API. Its admin web interface (default http://<host>:8080, https on 8443; credentials from the <initial_admin> username/passphrase block in dedicatedServer.xml) has Home, Savegames, Mods, Log Files, Profile, Settings, Journal and Logout pages - it starts and stops the game and manages settings, mods, savegames and logs, but no consulted source shows a kick, ban or player-moderation control in it. Kick and ban are in-game only: a player enters the admin password in the Farm Management screen (reached with ESC), then uses the buttons \"Kick\", \"Block from server\" and \"Show Blocked Players\" -> \"Unblock\" on the player list; the GPORTAL wiki independently describes the same web-panel-sets-password / in-game-login model and names no typed command. There is no broadcast/say command at all. The Web API enabled on the Settings page is read-only and so is not recorded as a transport: the FSG docs list it as three links (XML, map image, savegame files), and the DJWoodZ bot's code pins the paths as GET http://<host>:8080/feed/dedicated-server-stats.xml?code=<web code> and /feed/dedicated-server-savegame.html?code=<web code>&file=careerSavegame; the stats feed carries connected player display names with no persistent player id, and the bot sends nothing back. The gs-prefixed console commands (gsMoneyAdd and friends) are a client-side developer/cheat console enabled with -cheats plus <controls>true</controls> in game.xml, and include no kick, ban, say or player-list command. appId is the game's 2300320: GIANTS publishes no separate Steam dedicated-server app, and dedicatedServer.exe ships inside the game install (TroubleChute states no separate download or licence key is needed; hosts that rent FS25 servers use the same binaries)."
+}

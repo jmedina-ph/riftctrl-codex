@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "slug": "call-of-duty-2",
+  "game": {
+    "displayName": "Call of Duty 2",
+    "appId": 2630,
+    "aliases": [
+      "CoD2",
+      "COD2",
+      "Call of Duty 2 Dedicated Server",
+      "Call of Duty(R) 2"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 28960,
+    "portSetting": "net_port",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Client Number",
+    "example": "3",
+    "pattern": "[0-9]{1,2}"
+  },
+  "commands": {
+    "info": "serverinfo",
+    "listPlayers": "status",
+    "kick": "clientkick {playerId}",
+    "ban": "banclient {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^\\s*(?<playerId>[0-9]+)\\s+-?[0-9]+\\s+[0-9]+\\s+(?<accountId>[0-9]+)\\s+(?<name>.*?)\\s+[0-9]+\\s*(?:[0-9]{1,3}\\.){3}[0-9]{1,3}:-?[0-9]+",
+    "skipLinePattern": "^\\s*(?:map:|num\\s+score|-{3,})"
+  },
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/BigBrotherBot/big-brother-bot/master/b3/parsers/cod.py",
+      "title": "BigBrotherBot b3/parsers/cod.py - CoD command map and status line regex",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BigBrotherBot/big-brother-bot/master/b3/parsers/cod2.py",
+      "title": "BigBrotherBot b3/parsers/cod2.py - Cod2Parser subclasses CodParser (version caveats for 1.0 and 1.2)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.zeroy.com/index.php/Call_of_Duty:_Rcon_Commands",
+      "title": "Call of Duty: Rcon Commands - COD Modding & Mapping Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.gamesclan.net/billing/knowledgebase/32/Call-of-Duty-2-Rcon-Commands.html",
+      "title": "Call of Duty 2 Rcon Commands - Gamesclan knowledgebase",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.anarchyrules.co.uk/cod2/server%20commands.html",
+      "title": "Call of Duty 2 Dvar & Console Command Server Information",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/dcrnko/cod2-rcon-commands",
+      "title": "dcrnko/cod2-rcon-commands",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/master/lgsm/config-default/config-lgsm/cod2server/_default.cfg",
+      "title": "LinuxGSM cod2server default config (port 28960, net_port)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "RCON here is the Quake 3 / id Tech 3 connectionless dialect, NOT Valve Source RCON: an out-of-band UDP datagram carrying 'rcon <password> <command>' sent to the game port, answered by a 'print' packet. Hence flavour 'custom'. It shares the game port (net_port, default 28960 per LinuxGSM's cod2server _default.cfg, which passes +set net_port ${port} with port=28960) - there is no separate RCON port and no enable switch; RCON is live as soon as rcon_password is set to a non-empty value, so enableSetting is null. playerId is the client/slot number in the first column of 'status'; BigBrotherBot reaches 'status' through its q3a AbstractParser (self.write('status') in getPlayerList) and parses the slot column with cod.py's _regPlayer, whose guid group is plain [0-9]+ for this engine generation. The slot is reassigned on every connection, so the runtime MUST re-read 'status' immediately before kicking or banning. Name-based forms exist (kick <name>, onlykick <name>, banuser <name>, tempbanuser <name>); 'kick' requires the name typed with its colour codes (^1 etc.) - exactly the silent-no-op failure this dataset warns about - while 'onlykick' does not. The number-based clientkick/banclient are recorded instead, and are what BigBrotherBot's cod.py sends ('kick': 'clientkick %(cid)s', 'ban': 'banclient %(cid)s'). banclient writes the player's GUID to ban.txt (anarchyrules, Gamesclan). Version caveat from BigBrotherBot's cod2.py: CoD2 1.0 has known player-authentication limitations and 1.2 emits 31-character PunkBuster ids, so GUID-based banning is unreliable on those builds - kicking by slot is unaffected. A live unban exists but keys on the player NAME, not the client number, so it cannot be expressed with the {playerId} token and is omitted rather than written wrongly; sources also disagree on its spelling (zeroy wiki, anarchyrules and BigBrotherBot's cod.py all say 'unbanuser <name>', while dcrnko/cod2-rcon-commands says 'unban <name>'; the Gamesclan CoD2 page documents no unban at all). banList is omitted because no source found documents the ban.txt line format, and a wrong lineIdPattern would leave bans in place while reporting success. tempbanclient/tempbanuser take no duration argument - length comes from the sv_kickBanTime dvar - so ban is recorded as the permanent form with no {duration}. No stock MOTD command: scr_motd is mod-supplied and anarchyrules notes it 'does not work with stock CoD2'. Independence and coverage, checked source by source: status, clientkick and banclient are each carried by four separate lines (BigBrotherBot's parser source, the zeroy modding wiki, the anarchyrules CoD2 page, the Gamesclan CoD2 knowledgebase), with dcrnko adding a fifth for status/clientkick though it omits banclient and lists only banuser; 'say' is carried by BigBrotherBot, anarchyrules, Gamesclan and dcrnko but NOT by the zeroy page; 'serverinfo' is carried by anarchyrules and zeroy but not by Gamesclan or dcrnko. Caution on lineage: the anarchyrules CoD2 page and the Gamesclan CoD4 page share byte-identical command descriptions ('Kicks a player by name from the server. (Must include Color Codes)'), so those two are one lineage across games; the Gamesclan CoD2 page uses different wording and is counted separately. Other hosting-company copies (Pingperfect, fshost) and the bgauduch/call-of-duty-2-docker-server readme reuse existing wording and add no independent weight."
+}

@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "slug": "brainbread-2",
+  "game": {
+    "displayName": "BrainBread 2 Dedicated Server",
+    "appId": 475370,
+    "aliases": [
+      "BrainBread 2",
+      "BB2",
+      "bb2server",
+      "brainbread2",
+      "BrainBread2"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 27015,
+    "portSetting": "hostport",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:1:12345678",
+    "pattern": "(?:STEAM_[0-5]:[01]:[0-9]+|\\[U:1:[0-9]+\\])"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kickid {playerId} {reason}",
+    "ban": "banid {duration} {playerId} kick",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*(?<accountId>[0-9]+)\\s+\"(?<name>.*)\"\\s+(?<playerId>STEAM_[0-5]:[01]:[0-9]+|\\[U:1:[0-9]+\\])",
+    "skipLinePattern": "^(?:hostname|version|udp/ip|steamid|account|map|players|edicts|tags|#\\s*userid)"
+  },
+  "banList": {
+    "paths": [
+      "brainbread2/cfg/banned_user.cfg",
+      "brainbread2/banned_user.cfg"
+    ],
+    "lineIdPattern": "^banid\\s+\\S+\\s+(STEAM_[0-5]:[01]:[0-9]+|\\[U:1:[0-9]+\\])",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://store.steampowered.com/news/app/346330/view/5219065345492938123",
+      "title": "BrainBread 2 Dedicated Server - AppID 475370 [RELEASED] - official Steam announcement",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/BerntA/BrainBread2/blob/master/game/server/bb2/GameBase_Server.cpp",
+      "title": "BrainBread 2 source - GameBase_Server.cpp: admin_kick_id forwards 'kickid %i \"%s\"' (USERID), admin_ban_id forwards 'banid %i %i' (minutes, USERID) then 'kickid' then 'writeid;writeip'; IsValidAdmin() returns false when UTIL_GetCommandClient() is null; admins.txt read from data/settings/admins.txt",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/alliedmodders/sourcemod/master/core/logic/smn_banning.cpp",
+      "title": "SourceMod smn_banning.cpp - issues 'banid %d %s' with a Steam auth string, 'removeid %s', 'addip/removeip', each followed by 'writeid'/'writeip' for permanent bans",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/alliedmodders/sourcemod/master/core/PlayerManager.cpp",
+      "title": "SourceMod PlayerManager.cpp - kicks with 'kickid %d %s' (USERID, unquoted message)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/master/lgsm/config-default/config-lgsm/bb2server/_default.cfg",
+      "title": "LinuxGSM bb2server _default.cfg - appid 475370, ./srcds_run, '-game brainbread2 -strictportbind -ip ${ip} -port ${port} ... +servercfgfile ${servercfg}', no -usercon",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://linuxgsm.com/servers/bb2server/",
+      "title": "BrainBread 2 Linux Game Server - LinuxGSM",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=730092251",
+      "title": "Setting up Dedicated BrainBread 2 Game server - Steam guide (brainbread2server\\brainbread2\\cfg\\server.cfg, port 27015)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/346330/discussions/2/350540974015006069/",
+      "title": "Rcon / Console Commands - BrainBread 2 Help & tips (dev Wuffesan: 'to use admin_ commands, you have to set yourself as an admin ... admins.txt file under data/server/'; thread does not confirm RCON itself)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.facepunch.com/gmod/game.KickID",
+      "title": "game.KickID - Garry's Mod Wiki (Source-engine kickid wrapper: 'UserID, SteamID or SteamID64 of the player to kick')",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Console_Command_List",
+      "title": "Console Command List - Valve Developer Community (lists kick, kickid, banid, removeid; one-line descriptions only, no parameter syntax)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/475370/",
+      "title": "BrainBread 2 Dedicated Server - AppID 475370 - SteamDB",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "BrainBread 2 (Reperio Studios, free standalone game appId 346330) ships a separate dedicated-server tool app, appId 475370 (the developer's own Steam announcement, SteamDB and LinuxGSM agree), which is plain srcds built on Source SDK 2013 Multiplayer: LinuxGSM's bb2server runs './srcds_run -game brainbread2 -strictportbind -ip <ip> -port 27015 ... +servercfgfile <cfg>'. The command channel is therefore stock Valve Source RCON (TCP) on the game port; hostport is the cvar, normally set with the -port launch argument, and RCON is enabled by setting rcon_password in brainbread2/cfg/server.cfg. No -usercon flag appears in LinuxGSM's start parameters or the Steam setup guide, and SDK 2013 servers do not require one - but note that no source found actually demonstrates an RCON session against BB2; the transport is inferred from it being unmodified srcds. Every command recorded is an ENGINE command: status, kickid, banid, removeid, writeid, say. BrainBread 2's own admin_kick_id, admin_ban_id, admin_changelevel, admin_spectate and admin_joinhuman are deliberately NOT recorded: GameBase_Server.cpp routes each through IsValidAdmin(), which begins 'if (!pClient || pClient->IsBot()) return false' on ToHL2MPPlayer(UTIL_GetCommandClient()), so issued over RCON - where there is no command client - they silently do nothing. Those same functions are the evidence that the engine commands are live on this build: admin_kick_id forwards 'kickid %i \"%s\"', admin_ban_id forwards 'banid %i %i' then 'kickid' then 'writeid;writeip', and the ban-list check forwards 'kickid %i You're on the ban list!' unquoted. SourceMod corroborates independently: smn_banning.cpp issues 'banid <minutes> <steam auth string>' and 'removeid <steam auth string>', each followed by 'writeid' when the ban is permanent, and PlayerManager.cpp kicks with 'kickid %d %s'. CONFIDENCE IS LOW FOR ONE SPECIFIC REASON: every primary source that actually kicks does so BY USERID ('kickid %i ...' in BrainBread 2, 'kickid %d %s' in SourceMod, and community command references describe kickid as taking a user ID), while this file templates kickid with a Steam ID. The Steam-ID form rests on the engine's documented 'userid or uniqueid' behaviour and on Garry's Mod's game.KickID ('UserID, SteamID or SteamID64'), neither of which was checked against this build; the Valve Console Command List entries are one-line descriptions with no parameter syntax and corroborate nothing about the forms. banid and removeid with a Steam ID ARE confirmed by two independent code sources. If kick misses, the userid is available as accountId from status and 'kickid <userid> <reason>' is the confirmed fallback. Until someone runs these against a live server (verifiedAt is still null), treat kick as the weak link. banid is 'banid <minutes> <userid|uniqueid> {kick}', 0 minutes = permanent, and has no reason argument natively, so {reason} is deliberately absent from the ban template; the trailing literal 'kick' makes it also disconnect the player. IMPORTANT: banid and removeid only change the in-memory list; run 'writeid' afterwards to rewrite brainbread2/cfg/banned_user.cfg, or the change is lost on restart (BrainBread 2's own ban command and SourceMod both do exactly this). One documented disagreement on quoting: BrainBread 2's source quotes the kick reason ('kickid %i \"%s\"') while SourceMod and BB2's own ban-list kick leave it unquoted, and srcds admins report that quoting makes the quotes show up literally in the message; the reason is recorded unquoted because kickid takes the remainder of the line either way. playerId is the Steam ID rather than the per-session userid because it is the Steam ID that banned_user.cfg persists and that removeid needs, and because the userid is not stable across reconnects - at the cost of the kick caveat above. The status uniqueid column was not observed on this specific SDK 2013 build, so the pattern accepts both the legacy STEAM_0:1:x form and the modern [U:1:x] form; it is wrapped in a non-capturing group so that anchoring it does not split the alternation. playerParse maps the userid column to accountId, which is the id BrainBread 2's own in-game admin commands use. The developer's Steam post gives the admins.txt path as data/server/, while current code reads data/settings/admins.txt. There is no motd command - Source serves brainbread2/motd.txt - so motd is omitted."
+}

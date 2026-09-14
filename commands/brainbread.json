@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "slug": "brainbread",
+  "game": {
+    "displayName": "BrainBread",
+    "appId": 90,
+    "aliases": [
+      "BB",
+      "BrainBread 1",
+      "brainbread",
+      "BrainBread Dedicated Server",
+      "Half-Life Dedicated Server (-game brainbread)"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 27015,
+    "portSetting": "hostport",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "User ID",
+    "example": "2",
+    "pattern": "[0-9]+"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kick #{playerId} \"{reason}\"",
+    "ban": "banid {duration} #{playerId} kick",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*\\d*\\s*\"(?<name>.*?)\"\\s+(?<playerId>\\d+)\\s+(?<accountId>\\S+)",
+    "skipLinePattern": "^#\\s+name\\s+userid"
+  },
+  "banList": {
+    "paths": [
+      "brainbread/banned.cfg",
+      "banned.cfg",
+      "valve/banned.cfg"
+    ],
+    "lineIdPattern": "banid\\s+[0-9.]+\\s+(\\S+)",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/IronOak-Studios/BrainBread",
+      "title": "IronOak-Studios/BrainBread - mod content repo (liblist.gam: game \"BrainBread\", version \"1.3.37\", gamedll_linux \"dlls/bb.so\"; server.cfg; compiled dlls/bb.so and dlls/bb.dll)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.ironoak.ch/BB/",
+      "title": "BRAINBREAD - IronOak Studios (official mod site; 2014 'BrainBread Server Fix' news post, no server-admin documentation)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/dreamstalker/rehlds/master/rehlds/engine/sv_main.cpp",
+      "title": "ReHLDS sv_main.cpp - Host_Kick_f 'usage: kick < name > | < # userid > [reason]', SV_BanId_f 'Usage: banid <minutes> <uniqueid or #userid> { kick }' + 'Use 0 minutes for permanent', SV_RemoveId_f 'Usage: removeid <uniqueid | #slotnumber>', SV_WriteId_f writes 'banid 0.0 <id>' to the bannedcfgfile cvar (default banned.cfg), SV_Rcon + rcon_password cvar",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/dreamstalker/rehlds/master/rehlds/engine/host_cmd.cpp",
+      "title": "ReHLDS host_cmd.cpp - Host_Status_f prints header '#      name userid uniqueid frag time ping loss adr' and rows '#%2i %8s %i %s'; registers status, say, kick",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/alliedmodders/amxmodx/master/plugins/admincmd.sma",
+      "title": "AMX Mod X admincmd.sma - server_cmd(\"kick #%d ^\"%s^\"\"), server_cmd(\"banid ^\"%s^\" %s;wait;writeid\"), server_cmd(\"removeid %s;writeid\")",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/GameServerManagers/LinuxGSM/issues/623",
+      "title": "LinuxGSM issue 623 (2016) - HL1 mod server scripts; BrainBread 1 runs on HLDS, rename dlls/bb_i386.so to bb.so to avoid 'LoadLibrary failed'",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/90/",
+      "title": "Half-Life Dedicated Server - AppID 90 - SteamDB (app type: Tool)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.moddb.com/mods/brainbread/downloads",
+      "title": "BrainBread mod for Half-Life - Downloads - ModDB",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "BrainBread (IronOak Studios) is a GoldSrc mod for Half-Life, not a standalone game - liblist.gam reads game \"BrainBread\", version \"1.3.37\", gamedll_linux \"dlls/bb.so\". It has no Steam app of its own, so appId 90 is the shared Half-Life Dedicated Server (HLDS) tool app it runs on, launched as 'hlds_run -game brainbread -port 27015'; Half-Life itself is appId 70. Because appId 90 is shared with every other HL1 mod, match on displayName, not appId. RCON here is the GoldSrc remote console - a challenge/response exchange carried in connectionless packets on the server's UDP game port (SV_Rcon in engine sv_main.cpp), NOT the Valve Source RCON TCP protocol - hence flavour 'custom'; a Source RCON client will not talk to it. It is enabled purely by setting the rcon_password cvar in brainbread/server.cfg; the shipped server.cfg sets hostname, sv_lan 0, sv_mapvote/sv_varvote and BB cvars (sv_zombiecount, sv_expperlevel, sv_savexp) but no rcon_password. portSetting is the engine cvar hostport, which the -port launch argument sets. Confidence is low because nothing BrainBread-specific documents these commands: IronOak publish no server-admin guide, the mod's only server-side additions are the sv_mapvote/sv_varvote voting driven by voteable_vars.txt, and the game logic ships as compiled dlls/bb.so and dlls/bb.dll, so the repo can neither confirm nor rule out mod-side admin commands. Every command recorded is therefore a stock GoldSrc engine command, with syntax read out of the ReHLDS engine reimplementation: kick prints 'usage: kick < name > | < # userid > [reason]' and banid prints 'Usage: banid <minutes> <uniqueid or #userid> { kick }' with 'Use 0 minutes for permanent'. AMX Mod X independently issues the same forms ('kick #<userid> \"<reason>\"', 'banid <minutes> <authid>;wait;writeid', 'removeid <id>;writeid'). duration is in MINUTES, 0 = permanent; the trailing literal 'kick' argument makes banid also disconnect the player. The kick reason is taken as the remainder of the command line, so the quotes in this template are printed literally in the 'Kicked by Console: \"<reason>\"' message; they are kept only because AMX Mod X quotes it the same way, and the kick itself succeeds either way. playerId is the per-session userid printed by status, not a Steam ID, because GoldSrc kick accepts only a name or a #userid - the userid is the one identifier that works for both kick and banid (banid resolves #userid to that client's uniqueid before storing the ban). IMPORTANT: a banid lives only in memory until 'writeid' is run, which rewrites the file named by the bannedcfgfile cvar (default banned.cfg, in the mod's gamedir) as lines 'banid 0.0 STEAM_0:1:12345678'; only PERMANENT bans are written, and IP bans go to listip.cfg via addip/writeip. unban is recorded under banList.liveUnban rather than commands.unban because removeid takes a uniqueid or a #slotnumber ('Usage: removeid <uniqueid | #slotnumber>'), i.e. the id read out of banned.cfg by lineIdPattern, not the session userid - and it too needs a following 'writeid' to persist. The status row is printf'd as '#%2i %8s %i %s' = slot, quoted name right-JUSTIFIED in 8 columns (so short names are padded with leading spaces, before the opening quote), userid, uniqueid; the parse pattern allows for that padding. uniqueid may read STEAM_ID_LAN, HLTV or VALVE_x:y:z on non-Steam clients, in which case the written ban line is meaningless. Older BrainBread distributions (the ModDB builds) ship dlls/bb_i386.so and crash HLDS on Linux with 'LoadLibrary failed'; IronOak's 2014 news post and LinuxGSM issue 623 both say to rename it to bb.so. The current repo already ships dlls/bb.so, so this applies to legacy downloads only. There is no motd command - GoldSrc serves brainbread/motd.txt, which the mod ships - so motd is omitted. Servers commonly also run AMX Mod X or Adminmod, which add amx_kick/amx_ban/amx_say; those are not recorded here because they are not part of the base mod."
+}

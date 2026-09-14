@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "slug": "cs2d",
+  "game": {
+    "displayName": "CS2D Dedicated Server",
+    "appId": 666220,
+    "aliases": [
+      "CS2D",
+      "Counter-Strike 2D",
+      "cs2d_dedicated"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 36963,
+    "portSetting": "sv_hostport",
+    "enableSetting": null,
+    "passwordSetting": "sv_rcon"
+  },
+  "playerId": {
+    "label": "Username",
+    "example": "Player",
+    "pattern": "[^\"]{1,20}"
+  },
+  "commands": {
+    "listPlayers": "listplayers",
+    "kick": "kick \"{playerId}\" \"{reason}\"",
+    "ban": "banname \"{playerId}\" {duration} \"{reason}\"",
+    "unban": "unban \"{playerId}\"",
+    "say": "sv_msg {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^\\s*\\d+[:.)]?\\s+(?<playerId>(?<name>\\S.*?))\\s*$"
+  },
+  "sources": [
+    {
+      "url": "https://www.cs2d.com/help.php?cmd=kick",
+      "title": "CS2D command reference: kick",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.cs2d.com/help.php?cmd=banname",
+      "title": "CS2D command reference: banname",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.cs2d.com/help.php?cmd=unban",
+      "title": "CS2D command reference: unban",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.cs2d.com/help.php?cmd=listplayers",
+      "title": "CS2D command reference: listplayers",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.cs2d.com/help.php?cmd=sv_msg",
+      "title": "CS2D command reference: sv_msg",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.cs2d.com/help.php?cmd=sv_rcon",
+      "title": "CS2D command reference: sv_rcon",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.cs2d.com/help.php?cmd=sv_hostport",
+      "title": "CS2D command reference: sv_hostport",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.cs2d.com/help.php?hook=rcon",
+      "title": "CS2D Lua hook: rcon",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.cs2d.com/serverhosting.php",
+      "title": "CS2D Server Hosting",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.unrealsoftware.de/forum_posts.php?post=411129",
+      "title": "Reading server response from RCon in PHP - Unreal Software forum",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "cs2d_dedicated has NO local console: the developer's hosting page states 'You can't control the server directly. You have to use RCon (remote control) or custom Lua scripts to do so.' RCON is CS2D's own protocol carried on the game's UDP port (default 36963, set by sv_hostport); it is not Source RCON. The password is set with sv_rcon - 'Set an empty password to remove it and disallow remote control (default)' - so there is no separate enable setting, and sv_rconusers can additionally restrict RCON to named U.S.G.N. account ids. The documented Lua 'rcon' hook (parameters cmds, id, ip, port) confirms RCON input is executed as ordinary console commands, and developer-forum threads on the packet format show the server returns command output to the caller, so listplayers is genuinely readable over this transport and not console-only. CS2D has NO command called 'ban' - the help system answers 'has not been found' for it. The four ban commands are banname <name> [duration] [reason], banip <ip> [duration] [reason], banusgn <id> [duration] [reason] and bansteam. banname is used here because it is the only one that keys on the same identifier kick and unban accept, but it bans the NICKNAME only, so a rename evades it; banip/banusgn/bansteam are the durable bans and need an identifier listplayers does not obviously supply. duration is in minutes with a documented range of -1 to 1440, where 0 = infinite ban and -1 = the mp_tempbantime default; the reference does not state which value applies when the optional argument is omitted, so callers should always pass one explicitly. unban <banmask> takes the nickname, IP or U.S.G.N. id exactly as banned and is case-sensitive ('If you banned Player and use unban player it will not work!'); no wildcard matching is done on removal. kick <player> accepts an ID OR a name - the numeric slot id is the more precise target, but it cannot be fed to banname or unban, which is why this file moderates by name throughout. sv_msg is documented as identical to msg and is sent unquoted because the parameter is free text (append @C to centre it, prefix a colour as (c)RRRGGGBBB). There is no status/serverinfo command (help.php?cmd=status also answers 'has not been found') and no motd command, so info and motd are omitted; listbans / bans dump the ban list but no ban-file path is published, so banList is omitted. WARNING on playerParse: no source publishes the actual console output format of listplayers - the help page only says 'The list also contains all player IDs' - so linePattern is a tolerant best effort over an 'id then name' line and is UNCONFIRMED. It yields no rows against output that does not begin with a number, but it does NOT fail closed in general: if the real output carries trailing columns (score, deaths, team) the trailing-greedy name capture would swallow them into playerId, so any parsed name must be treated as unverified before it is used as a moderation target. The quoting of arguments is also an assumption, taken from server.cfg usage such as sv_name \"My Server\"; the reference does not document a quoting rule, and a wrongly-quoted banname would record a ban that unban cannot match. Confidence is low: every command string here comes from one publisher (cs2d.com / unrealsoftware.de, the official Unreal Software reference and its forum), which is one source however many of its pages are cited, and the player-list parse is unverified."
+}

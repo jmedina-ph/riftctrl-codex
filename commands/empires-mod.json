@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "slug": "empires-mod",
+  "game": {
+    "displayName": "Empires Dedicated Server",
+    "appId": 460040,
+    "aliases": [
+      "Empires Mod",
+      "Empires",
+      "EmpiresMod",
+      "empires",
+      "em"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 27015,
+    "portSetting": "-port",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:1:12345678",
+    "pattern": "(?:STEAM_[0-9]:[01]:[0-9]+|\\[U:1:[0-9]+\\])"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kickid {playerId} {reason}",
+    "ban": "banid {duration} {playerId} kick",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*(?<accountId>\\d+)\\s+(?:\\d+\\s+)?\"(?<name>.*)\"\\s+(?<playerId>STEAM_[0-9]:[01]:[0-9]+|\\[U:1:[0-9]+\\])",
+    "skipLinePattern": "^(?:hostname|version|udp/ip|steamid|account|os|type|map|players|edicts|tags|#end|#\\s*userid)"
+  },
+  "banList": {
+    "paths": [
+      "empires/cfg/banned_user.cfg",
+      "empires/banned_user.cfg"
+    ],
+    "lineIdPattern": "^banid\\s+[0-9.]+\\s+(STEAM_[0-9]:[01]:[0-9]+|\\[U:1:[0-9]+\\])",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://wiki.empiresmod.com/Dedicated_Server_Setup",
+      "title": "Dedicated Server Setup - Empires Wiki (steamcmd +app_update 460040, srcds -game \"empires\" -console -toconsole -secure, TCP and UDP 27015, rcon_password \"remote command password ... anyone with this password can execute admin commands\")",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/master/lgsm/config-default/config-lgsm/emserver/_default.cfg",
+      "title": "LinuxGSM emserver/_default.cfg - appid 460040, engine \"source\", -game empires, port 27015, clientport 27005, servercfgdir ${systemdir}/cfg",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/460040/",
+      "title": "Empires Dedicated Server - AppID 460040 (type Tool, config gamedir \"empires\") - SteamDB",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://store.steampowered.com/app/17740/Empires_Mod/",
+      "title": "Empires Mod on Steam (game app 17740)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=189354886",
+      "title": "Complete HL2DM Console Commands/CVARs LIST - Source SDK 2013 baseline (kick \"Kick a player by name.\", kickid \"Kick a player by userid or uniqueid, with a message.\", banid, addip, listid, motdfile)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.jodyhatton.com/files/sourcededicatedserverconsolecommands.htm",
+      "title": "Source Dedicated Server Console Commands (cvarlist dump) - removeid \"Remove a user ID from the ban list.\", writeid \"Writes a list of permanently-banned user IDs to banned_user.cfg.\", writeip, listid, say, status, users",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Console_Command_List",
+      "title": "Console Command List - Valve Developer Community (banid, removeid, say, rcon_password, hostport)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/222880/discussions/2/364042703853182968/",
+      "title": "How can you Permanently ban someone? - engine usage string \"banid < minutes > < userid | uniqueid > { kick }\", 0 minutes = permanent, then writeid",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.empiresmod.com/Sourcemod",
+      "title": "Sourcemod - Empires Wiki (\"Sourcemod allows you to extend Empires without having access to the C++ code\"; no built-in Empires admin command set is documented)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://xgamingserver.com/configs/em",
+      "title": "Empires Mod Server Config - XGamingServer (rcon_password, emp_sv_* gameplay cvars; keyed on the short name \"em\", not the game folder)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Empires is a free standalone Source mod whose server is plain SRCDS on the Source SDK 2013 Multiplayer base; the developers' own wiki gives the whole setup - \"steamcmd.exe +login anonymous +app_update 460040 validate +quit\" and \"srcds.exe -game \\\"empires\\\" -console -toconsole -secure +map con_district402 +maxplayers 64\" - and lists no admin console commands at all, because there are none that are Empires-specific. Everything under commands is engine-level Source. GAME FOLDER: \"empires\", agreed by the Empires wiki launch line, SteamDB's config gamedir for app 460040, and LinuxGSM's emserver start parameters. DISAGREEMENT: XGamingServer's Empires config page is keyed on \"em\"; that is LinuxGSM's short server name, not the game directory, and treating it as the game directory would put server.cfg and banned_user.cfg in a folder the server never reads. TRANSPORT: Valve Source RCON over TCP on the game port. The wiki's port list is \"UDP 27005\" (client) and \"TCP and UDP 27015\" - the TCP half of 27015 is RCON - and the only RCON setting documented is rcon_password (\"Set this to a secure password, and do not share it freely. Anyone with this password can execute admin commands on your server.\"), placed in empires/cfg/server.cfg. There is no enable switch and no separate RCON port: setting rcon_password is what turns RCON on, and -port moves game and RCON together. LIST/INFO: status doubles as both - hostname:/version:/udp/ip:/map:/players: header lines followed by one \"#  <userid> \\\"<name>\\\" STEAM_x:y:z <connected> <ping> <loss> <state> <adr>\" row per player, so playerParse is regex, not csv (names contain spaces and quotes). Some builds print an extra numeric slot column between the userid and the quoted name, hence the optional group; the userid is captured as accountId because kickid also accepts it. KICK: kickid takes a userid OR a uniqueid plus a free-text message (\"Kick a player by userid or uniqueid, with a message\" in the SDK 2013 command list), so the Steam ID form is used - it is exact where the alternative, plain \"kick <name>\", matches loosely by name. Do not quote the reason; the trailing message is free text and quoting it is reported to break the command on Source. Note that Valve's own Console_Command_List page has no kickid entry and describes kick as \"Kick a player by slot, userid or name\" (GoldSrc-era wording); it is cited here only for banid, removeid and say, not for the kick/kickid distinction. BAN: \"banid < minutes > < userid | uniqueid > { kick }\" - minutes first, 0 = permanent, and the trailing literal \"kick\" is what ejects a still-connected player, since banid alone only adds the id to the list. banid has no reason argument, so ban carries no {reason}. PERSISTENCE: banid and removeid are in-memory only. writeid rewrites empires/cfg/banned_user.cfg and \"exec banned_user.cfg\" at boot reloads it, so send writeid after every banid or removeid or the change is lost at restart. IP bans use the parallel addip/removeip/writeip against banned_ip.cfg and are not mapped because the identifier type differs. MOTD: no command - the MOTD is the file named by the motdfile cvar (empires/motd.txt) - so motd is omitted rather than guessed. SourceMod is widely installed on Empires servers - the developers document it themselves - and adds sm_kick/sm_ban with reasons; those require the addon and are deliberately not recorded as the stock interface. Not verified against a live server. INDEPENDENT RE-CHECK 2026-09-13: confidence lowered from high to low; no command string was changed, because each one was re-confirmed on a primary page, but the evidence does not clear the two-independent-source bar for the file as a whole. Confirmed directly: the Empires wiki does give \"steamcmd.exe +login anonymous +app_update 460040 validate +quit\", \"srcds.exe -game \\\"empires\\\" -console -toconsole -secure +map con_district402 +maxplayers 64\", the port list \"UDP 27005\" and \"TCP and UDP 27015\", and rcon_password with the quoted warning - and it documents NO kick, ban, status or say command anywhere. LinuxGSM emserver/_default.cfg independently gives appid 460040, engine \"source\", -game empires, port 27015, clientport 27005. Valve's Source Dedicated Server page states \"27015 TCP/UDP (game transmission, pings and RCON)\" and Valve's Rcon page states \"Server must have cvar rcon_password set as non-empty string\", independently confirming both the transport and the absence of an enable switch. banid, removeid, listid, say and status are carried by the srcds cvarlist dump and Valve's Console Command List, and the engine usage string \"banid < minutes > < userid | uniqueid > { kick }\" with \"Use 0 minutes for permanent\" is corroborated by the TF2 wiki's \"banid <minutes> <steamid> - Bans a player's Steam ID for the specified number of minutes. 0 minutes is a permanent ban.\" WHY LOW. (1) No source of any kind documents any command being run on an Empires server. The whole command set is an inference from \"Empires runs stock SRCDS\" - an inference that is itself well evidenced, but an inference. (2) commands.kick is single-sourced even at the engine level: only the SDK 2013 cvarlist dump says kickid takes a uniqueid and a trailing message. Valve's Console Command List and the srcds cvarlist dump contain no kickid entry at all and describe only \"kick - Kick a player by slot, userid or name.\" Unlike Dystopia, no Empires-specific page even mentions kickid, so nothing ties it to this build. Keep kickid {playerId} {reason} - nothing contradicts it, and banid's own \"userid | uniqueid\" wording matches - but treat it as unproven and fall back to kick with the name from status if it silently no-ops. (3) SteamDB (app 460040) could not be opened during this re-check, so the gamedir \"empires\" rests on the wiki launch line and LinuxGSM, which is still two independent sources. ACCOUNTID CAVEAT: on builds that print two numeric columns it is not established which is the userid, so do not feed accountId to kickid without checking a real status line. Transport, playerId, info, listPlayers, ban, unban, say and the ban-file handling stand exactly as written."
+}

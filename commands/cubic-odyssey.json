@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "slug": "cubic-odyssey",
+  "game": {
+    "displayName": "Cubic Odyssey Dedicated Server",
+    "appId": 3858450,
+    "aliases": [
+      "Cubic Odyssey",
+      "CubicOdysseyServer",
+      "Cubic Odyssey Dedicated Server (Beta Version)"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://store.steampowered.com/news/app/3400000/view/511845698831909349",
+      "title": "Cubic Odyssey - Dedicated Servers Are Here (official news, 13 Oct 2025)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://store.steampowered.com/news/app/3400000/view/525350155171397988",
+      "title": "Cubic Odyssey - An Update on Dedicated Servers! (official news)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/3400000/discussions/0/597414725121294176/",
+      "title": "How to setup a dedicated server (Cubic Odyssey discussions)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/3400000/discussions/0/600792156684284481/",
+      "title": "Dedicated Server (Cubic Odyssey discussions)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/Raziel7893/WindowsGSM.CubicOdyssey",
+      "title": "WindowsGSM.CubicOdyssey plugin",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://legionhosting.net/kb/cubic-odyssey/cubic-odyssey-server-admin-guide",
+      "title": "Cubic Odyssey Server Admin Guide (Legion Hosting KB)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "No command channel found for the Cubic Odyssey Dedicated Server (Steam app 3858450, listed as a Tool named \"Cubic Odyssey Dedicated Server (Beta Version)\"; the game itself is app 3400000). The server is configured only by config/server_config.txt (serverName, serverPassword, maxPlayers, galaxySeed, allowRelaying, privateServer, startingPort/endingPort, enableLogging, enableCrashDumps) and start parameters such as -Port, -MaxPort, -MaxNumPlayers, -Password, -Gamemode; its console window only prints status and the DS-XXXXXX lobby code players connect with. Nothing in the developer's dedicated-server announcements, the two long community setup threads, the WindowsGSM plugin (which implements no query or RCON path), or the hosting-panel knowledge bases documents RCON, a REST/HTTP admin API, or typed console commands. One forum poster asserts a dedicated-server owner 'can replace the stolen items and ban them', but gives no mechanism and no command text; treat that as an unsupported claim rather than evidence of a ban command. Config changes need a restart (one thread claims a SteamCMD reinstall is needed for them to take). Confidence is low on purpose: the authoritative documents are help/server_manual.txt and help/server_help.txt inside the server install, which are not published online and could not be read remotely - re-check this file against them before relying on it. The server app has been on Steam as a beta tool since 30 July 2025 and was announced to players on 13 October 2025, so admin tooling is an obvious gap the developer may fill; re-check after game updates."
+}

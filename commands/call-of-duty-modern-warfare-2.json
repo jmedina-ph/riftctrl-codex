@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "slug": "call-of-duty-modern-warfare-2",
+  "game": {
+    "displayName": "Call of Duty: Modern Warfare 2 (2009)",
+    "appId": 10180,
+    "aliases": [
+      "MW2",
+      "Call of Duty: Modern Warfare 2",
+      "Call of Duty 6",
+      "CoD6",
+      "IW4"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://bit-tech.net/news/gaming/pc/modern-warfare-2-has-no-dedicated-servers/1/",
+      "title": "Modern Warfare 2 has no dedicated servers",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.escapistmagazine.com/no-dedicated-servers-for-modern-warfare-2-pc-fans-freak-out/",
+      "title": "No Dedicated Servers for Modern Warfare 2 PC",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.theregister.com/2009/10/20/cod_mw2/",
+      "title": "Call of Duty PC gamers peeved as dedicated servers ditched",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/10180/",
+      "title": "Call of Duty: Modern Warfare 2 (AppID 10180) - SteamDB",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/10190/",
+      "title": "Call of Duty: Modern Warfare 2 (2009) - Multiplayer (AppID 10190) - SteamDB",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/RaidMax/IW4M-Admin/master/Plugins/ScriptPlugins/ParserIW4x.js",
+      "title": "IW4M-Admin ParserIW4x.js (third-party IW4x client only)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "No command channel exists for this title. Infinity Ward removed dedicated servers from the PC version before launch and replaced them with IWNet peer-to-peer matchmaking: no server browser, no LAN, no server binary. bit-tech (Oct 2009) quotes Infinity Ward's Robert Bowling directly: 'You are completely reliant on IW.NET. There are no server lists. There are no dedicated servers.' The Escapist quotes Bowling on cross-platform parity as the rationale, and The Register reports the IWNet replacement without quoting him; the three outlets agree on the fact, only bit-tech carries that quote. Steam ships only the game (10180) and its multiplayer component (10190, 'Call of Duty: Modern Warfare 2 (2009) - Multiplayer', app type Game); there is no '- Dedicated Server' tool app, in contrast to Modern Warfare 3, which has one (42750, app type Tool). No later re-release restored dedicated servers. A match is hosted by a player's client, so there is no console, no RCON and no admin API to reach. RIFT//CTRL should drop straight to the host-level floor. Caveat, deliberately NOT recorded as this game's transport: third-party clients that re-add dedicated servers to MW2 (AlterIWnet, IW4x, Plutonium IW4) do speak the Quake3-style UDP rcon used by the rest of the Call of Duty line. IW4M-Admin's IW4x parser sends 'clientkick {num} \"{reason}\"', 'tempbanclient {num} \"{reason}\"' and 'sayraw {message}' on default rcon port 28960, and B3's cod6 parser sends 'clientkick', 'unbanuser' and 'say'. Those are mod clients, not Activision's product, so they do not make retail MW2 commandable; if a user is actually running IW4x, treat it as a separate target. If the 2022 title 'Call of Duty: Modern Warfare II' was meant instead, the answer is the same: it also ships no dedicated server and no admin console."
+}

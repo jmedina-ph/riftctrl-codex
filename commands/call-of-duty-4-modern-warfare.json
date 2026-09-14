@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "slug": "call-of-duty-4-modern-warfare",
+  "game": {
+    "displayName": "Call of Duty 4: Modern Warfare",
+    "appId": 7940,
+    "aliases": [
+      "CoD4",
+      "COD4",
+      "CoD4 MW",
+      "Call of Duty 4",
+      "Call of Duty 4: Modern Warfare Dedicated Server",
+      "Call of Duty(R) 4: Modern Warfare(R)"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 28960,
+    "portSetting": "net_port",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Client Number",
+    "example": "3",
+    "pattern": "[0-9]{1,2}"
+  },
+  "commands": {
+    "info": "serverinfo",
+    "listPlayers": "status",
+    "kick": "clientkick {playerId}",
+    "ban": "banclient {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^\\s*(?<playerId>[0-9]+)\\s+-?[0-9]+\\s+[0-9]+\\s+(?<accountId>[0-9a-fA-F]+)\\s+(?<name>.*?)\\s+[0-9]+\\s*(?:[0-9]{1,3}\\.){3}[0-9]{1,3}:-?[0-9]+",
+    "skipLinePattern": "^\\s*(?:map:|num\\s+score|-{3,})"
+  },
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/BigBrotherBot/big-brother-bot/master/b3/parsers/cod4.py",
+      "title": "BigBrotherBot b3/parsers/cod4.py - CoD4 command map and status line regex with sample output",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.zeroy.com/index.php/Call_of_Duty:_Rcon_Commands",
+      "title": "Call of Duty: Rcon Commands - COD Modding & Mapping Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.zeroy.com/index.php/Call_of_Duty_4:_FAQS",
+      "title": "Call of Duty 4: FAQS - COD Modding & Mapping Wiki (ban.txt is created in main or fs_game)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.4netplayers.com/en/wiki/call-of-duty-4/rcon-commands/",
+      "title": "RCON Commands CoD 4 - 4Netplayers wiki",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.gamesclan.net/billing/knowledgebase/33/Call-of-Duty-4-Rcon-Commands.html",
+      "title": "Call of Duty 4 Rcon Commands - Gamesclan knowledgebase",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/CubeCoders/AMPTemplates/main/call-of-duty4mwserver.cfg",
+      "title": "CubeCoders AMP call-of-duty4mwserver.cfg (set net_port 28960, set rcon_password, set sv_kickBanTime)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/master/lgsm/config-default/config-lgsm/cod4server/_default.cfg",
+      "title": "LinuxGSM cod4server default config (port 28960, net_port)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Same IW/id Tech 3 lineage as Call of Duty 2, so RCON is the Quake 3 connectionless dialect, NOT Valve Source RCON: an out-of-band UDP datagram carrying 'rcon <password> <command>' to the game port, answered by a 'print' packet. Hence flavour 'custom'. It shares the game port (net_port, default 28960 - the CubeCoders AMP template literally contains 'set net_port \"28960\"' and 'set rcon_password \"\"', and LinuxGSM's cod4server config passes +set net_port ${port} with port=28960); there is no separate port and no enable switch - setting a non-empty rcon_password turns it on - so enableSetting is null. playerId is the client/slot number in the first column of 'status'; BigBrotherBot issues 'status' through its q3a AbstractParser and parses the slot column. The slot is reassigned on every connection, so re-read 'status' immediately before kicking or banning. Name-based forms exist (kick <name>, onlykick <name>, banuser <name>, tempbanuser <name>); 'kick' needs the name typed with its colour codes (^1 etc.) - the silent-no-op case this dataset warns about - so the number-based clientkick/banclient are recorded, which is also what BigBrotherBot's cod4.py sends ('kick': 'clientkick %(cid)s', 'ban': 'banclient %(cid)s'; it keeps the name form separately as 'kickbyfullname': 'kick %(cid)s'). banclient writes the player's 32-hex-character GUID to ban.txt, created in the main or fs_game directory (zeroy CoD4 FAQ, patch 1.4 note). A live 'unbanuser <name>' exists (zeroy wiki, Gamesclan, and BigBrotherBot's 'unban': 'unbanuser %(name)s') but keys on player NAME, not the client number, so it cannot be expressed with the {playerId} token and is omitted rather than written wrongly. banList is omitted because no source found documents the ban.txt line format; a wrong lineIdPattern would silently leave bans in force. tempbanclient/tempbanuser take no duration argument - length comes from the sv_kickBanTime dvar (4Netplayers says so explicitly; the AMP template ships 'set sv_kickBanTime \"300\"') - so ban is the permanent form with no {duration}. motd is omitted, but not because scr_motd is mod-only: it is a stock CoD4 dvar and the CubeCoders AMP stock server.cfg sets it ('set scr_motd \"^4Welcome to COD4!\"'). It is omitted because it is a dvar set in config or via 'set', not a runtime message command, and changing it does not deliver a message to players already connected. The status GUID column is 32 hex characters here (BigBrotherBot's cod4.py _regPlayer uses [0-9a-f]+ and its embedded sample output shows 32-char ids), unlike the short numeric GUID matched by cod.py for CoD2, which is why playerParse differs between the two files; the regex was re-tested against that sample and matches every real line in it. Independence and coverage, checked source by source: status, clientkick, banclient and say are each carried by three separate lines - BigBrotherBot's cod4 parser source, the 4Netplayers wiki, and the Gamesclan hosting-KB lineage - and the zeroy Rcon Commands page adds a fourth for status/clientkick/banclient but does NOT document 'say'. serverinfo rests on two lines only, zeroy and the Gamesclan lineage; 4Netplayers does not list it. Lineage caution: the Gamesclan CoD4 page is byte-identical in wording to the anarchyrules CoD2 page ('Kicks a player by name from the server. (Must include Color Codes)'), and Pingperfect, fshost and MirzaLeka/COD4-Scripting repeat the same text, so that whole family counts as ONE source, not five. The zeroy Rcon Commands page is a generic cross-title page (it is filed under Call of Duty 7 and states the console commands are very similar in all CoD editions), so it corroborates but is not CoD4-specific."
+}

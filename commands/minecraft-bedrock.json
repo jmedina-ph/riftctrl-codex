@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "slug": "minecraft-bedrock",
+  "game": {
+    "displayName": "Minecraft: Bedrock Edition Dedicated Server",
+    "appId": null,
+    "aliases": [
+      "Bedrock Dedicated Server",
+      "BDS",
+      "Minecraft Bedrock Edition",
+      "Minecraft Bedrock Server",
+      "bedrock_server",
+      "MCBE"
+    ]
+  },
+  "transport": "stdin",
+  "stdin": {
+    "note": "bedrock_server (Windows) / bedrock_server (Linux) reads commands from its own console; type the command and press Enter, with no leading slash. There is no RCON and no admin HTTP API, so the process must be started under a wrapper that keeps stdin attached (screen, tmux, systemd with a FIFO, docker run -i, or a supervisor). Command output is written to stdout interleaved with the server log."
+  },
+  "playerId": {
+    "label": "Gamertag",
+    "example": "Steve",
+    "pattern": "[A-Za-z0-9 ._-]{1,16}"
+  },
+  "commands": {
+    "listPlayers": "list",
+    "kick": "kick {playerId} {reason}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "\\s*(?<playerId>(?<name>[^,:\\r\\n]+?))\\s*(?:,|$)",
+    "skipLinePattern": "^\\s*$"
+  },
+  "sources": [
+    {
+      "url": "https://learn.microsoft.com/en-us/minecraft/creator/documents/bedrockserver/getting-started?view=minecraft-bedrock-stable",
+      "title": "Getting Started with Bedrock Dedicated Server - Microsoft Learn (console command entry, allowlist add/remove)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://web.c9h.org/~cjac/tmp/bedrock_server_how_to.html",
+      "title": "Third-party mirror of Mojang's bundled 'How to use the dedicated server' (bedrock_server_how_to.html) - personal webspace, not a first-party URL",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/minecraft/creator/reference/content/commandsreference/examples/commands/kick?view=minecraft-bedrock-stable",
+      "title": "kick Command - Microsoft Learn",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/minecraft/creator/reference/content/commandsreference/examples/commands/say?view=minecraft-bedrock-stable",
+      "title": "say Command - Microsoft Learn",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/minecraft/creator/reference/content/commandsreference/examples/commands/list?view=minecraft-bedrock-stable",
+      "title": "list Command - Microsoft Learn (in-game command; no output format given)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://minecraft.fandom.com/wiki/Bedrock_Dedicated_Server",
+      "title": "Bedrock Dedicated Server - Minecraft Wiki (lists 'Add Remote console (RCON)' as a missing feature)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://minecraft.wiki/w/Commands/allowlist",
+      "title": "/allowlist - Minecraft Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.digminecraft.com/game_commands/ban_command.php",
+      "title": "How to Use the Ban Command in Minecraft (Bedrock: not supported)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.digminecraft.com/game_commands/list_command.php",
+      "title": "How to Use the List Command in Minecraft (Bedrock supported; shows 'There are 2/20 players online: Axe2Grind, DigMinecraft')",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/OracleE3/BedrockServerConsoleLauncher",
+      "title": "BedrockServerConsoleLauncher - supported BDS console command list (kick/stop/save/allowlist/permission/op/deop/changesetting; no list, no ban)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://bedrock-server-manager.readthedocs.io/en/3.5.7/cli/commands.html",
+      "title": "Bedrock Server Manager - send-command (example: send-command MyServer say Hello world)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "BDS has NO ban and NO unban command - ban/pardon are Java Edition only, confirmed by Mojang's bedrock_server_how_to.html (which documents kick, stop, save, whitelist/allowlist, permission, op, deop, changesetting and no ban) and independently by digminecraft's edition table. commands.ban and commands.unban are therefore omitted rather than guessed; the practical ban is to enable the allow list (allow-list=true in server.properties) and run 'allowlist remove <name>' then 'kick <name> <reason>'. That is a whitelist, not a ban file, so no banList block is recorded. BDS has NO RCON and no REST admin API - the Minecraft Wiki lists 'Add Remote console (RCON)' among its missing features and Microsoft Learn's Getting Started page says 'When the server is running, you can enter commands on the console' - so transport is stdin. The subcommand was renamed whitelist -> allowlist in 1.16.100; Mojang's shipped how-to still says 'whitelist' while Learn and the wiki say 'allowlist', and older builds and some panels accept both. kick accepts a gamertag OR an XUID ('kick <player name or xuid> <reason>'); gamertags may contain spaces, hence the permissive pattern - quote the name or pass the XUID. The pattern is deliberately loose; real gamertags are roughly 3-12 characters. No motd command exists; server-name in server.properties is the closest equivalent. CONFIDENCE IS LOW FOR TWO REASONS, both about listPlayers. (1) 'list' is documented by Microsoft Learn and digminecraft as an IN-GAME command; it appears in neither Mojang's dedicated-server how-to nor BedrockServerConsoleLauncher's supported-console-command list, and the two wrapper projects cited here only ever demonstrate 'say' and 'gamerule' on the console - so 'list' working on the BDS console is plausible but unattested. (2) The response format is unconfirmed on the console: digminecraft shows a SINGLE line, 'There are 2/20 players online: Axe2Grind, DigMinecraft', while BDS is widely reported to print the header and then the names on the following line. playerParse was rewritten to survive both layouts - names exclude ':' so the 'There are N/M players online:' header can never match, and no header-skip is needed (the previous skipLinePattern would have thrown away the names whenever they shared the header line, returning an empty roster). Re-check 'list' against a live BDS console before relying on the roster; kick, say and the stdin transport are each independently attested and would support a higher rating once listPlayers is confirmed. SOURCE CAVEAT: the bedrock_server_how_to.html link is a third-party mirror on personal webspace, not a first-party Mojang/Microsoft URL, so it is recorded as community rather than official."
+}

@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "slug": "battlefield-vietnam",
+  "game": {
+    "displayName": "Battlefield Vietnam Dedicated Server",
+    "appId": null,
+    "aliases": [
+      "Battlefield Vietnam",
+      "Battlefield: Vietnam",
+      "BFV",
+      "BF:V",
+      "bfvietnam"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": null,
+    "portSetting": null,
+    "enableSetting": "admin.enableRemoteConsole",
+    "passwordSetting": null
+  },
+  "playerId": {
+    "label": "Player ID",
+    "example": "3",
+    "pattern": "[0-9]{1,3}"
+  },
+  "commands": {
+    "listPlayers": "game.listPlayers",
+    "kick": "admin.kickPlayer {playerId}",
+    "ban": "admin.banPlayer {playerId}",
+    "say": "admin.serverMessage \"{message}\""
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^\\s*(?:Id:\\s*)?(?<playerId>[0-9]+)\\s*[-:]?\\s*(?:Name:\\s*)?(?<name>\\S.*?)\\s*$",
+    "skipLinePattern": "^\\s*$|^\\s*[Ii][Dd]\\b.*[Nn]ame"
+  },
+  "banList": {
+    "paths": [
+      "mods/bfvietnam/settings/banlist.con",
+      "mods/bfvietnam/Settings/BanList.con"
+    ],
+    "lineIdPattern": "([0-9]{1,3}(?:\\.[0-9]{1,3}){3})",
+    "liveUnban": "admin.removeAddressFromBanList {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://tweakguides.pcgamingwiki.com/BFV_7.html",
+      "title": "TweakGuides Battlefield Vietnam Tweak Guide - Console Commands (PCGamingWiki mirror)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://gamefaqs.gamespot.com/pc/915255-battlefield-vietnam/faqs/29383",
+      "title": "Battlefield Vietnam - Console Commands FAQ (KenZoe)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.gamesclan.net/billing/knowledgebase/28/BF-Vietnam-Rcon-Commands.html",
+      "title": "BF Vietnam Rcon Commands - Gamesclan knowledgebase",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.bf-games.net/forum/topic/8732-battlefield-vietnam-server-kommandos/",
+      "title": "Battlefield Vietnam Server Kommandos - BF-Games.net",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://forum.helloclan.eu/threads/10699/",
+      "title": "BFV dedicated server tutorial Linux (bvsmd / Remote Manager, mods/bfvietnam/settings)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Refractor 2, same console vocabulary as BF1942. No Source RCON: the remote channel is the game's own remote console, enabled with admin.enableRemoteConsole <username> <password> and turned off with admin.disableRemoteConsole; an in-game admin can instead authenticate with admin.enableRemoteAdmin <password> and send admin.execRemoteCommand \"<command>\". The wire protocol is proprietary and undocumented, hence flavour \"custom\". Argument-form disagreement on the enable command: TweakGuides and Gamesclan both give admin.enableRemoteConsole [username] [password], while the KenZoe FAQ presents it as a 0/1 toggle (\"remoteconsole 1/0 = admin.enableRemoteConsole\"). Probe both. defaultPort is null on purpose: no source found states a port for BFV, and a targeted search for one turned up nothing. BF1942's equivalent console defaults to TCP 4711 and BFV's enable command is documented without a port argument, so 4711 is a plausible but UNCONFIRMED guess - probe rather than assume. Note also that a Refractor 2 server accepts these same commands typed at its own console, so a local console path may exist alongside the remote one. In practice most BFV hosts administered the server through BVSM/BVRM (the Battlefield Vietnam Server Manager daemon bvsmd plus the Windows Remote Manager client), configured by mods/bfvietnam/settings/servermanager.con and useraccess.con (the HelloClan Linux tutorial copies servermanager.con, useraccess.con and playermenu.con into that directory and runs ./bvsmd -path ...); that is a separate product with its own protocol and is not modelled here. Moderation id is the per-session numeric player id from game.listPlayers; admin.kickPlayerByName <name> exists for kick only (TweakGuides), and there is no ban-by-name, so the numeric id is recorded. admin.serverMessage is the server-side (yellow) broadcast and is used for say - note that TweakGuides lists admin.serverMessage with no argument syntax and the KenZoe FAQ only glosses it as \"message\", so the quoted-string argument form here is carried over from BF1942's documented admin.servermessage \"<message>\" and is unconfirmed for BFV. game.sayAll [String] is documented as global chat and is the alternative. game.setServerWelcomeMessage is documented for BF1942 but is NOT PRESENT in the BFV command list, so no motd is recorded. UNVERIFIED: the exact text layout of game.listPlayers output could not be sourced, so playerParse.linePattern is a guess widened to accept both a bare leading numeric id and an \"Id:\"-prefixed form; confirm against a live server before relying on the roster. Bans are stored as IP addresses and CD-key hashes, so unban is expressed as banList.liveUnban (admin.removeAddressFromBanList <ip>) rather than a commands.unban taking a session id, and the {playerId} substituted there is the IP captured by lineIdPattern. The banlist.con filename is carried over from BF1942 and only the mods/bfvietnam/settings directory is sourced, so the paths are candidates, not confirmed. Confidence is low: kick, ban, listPlayers and serverMessage agree across three independent community sources (TweakGuides, the KenZoe FAQ, Gamesclan), but the transport port is entirely unattested, the say argument form is inherited rather than sourced, and no developer documentation survives."
+}

@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "slug": "medal-of-honor-allied-assault",
+  "game": {
+    "displayName": "Medal of Honor: Allied Assault Dedicated Server",
+    "appId": null,
+    "aliases": [
+      "MOHAA",
+      "MoH:AA",
+      "Medal of Honor Allied Assault",
+      "mohaa_lnxded",
+      "OpenMoHAA"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 12203,
+    "portSetting": "net_port",
+    "enableSetting": null,
+    "passwordSetting": "rconPassword"
+  },
+  "playerId": {
+    "label": "Client number",
+    "example": "3",
+    "pattern": "[0-9]{1,2}"
+  },
+  "commands": {
+    "info": "serverinfo",
+    "listPlayers": "status",
+    "kick": "clientkick {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^\\s*(?<playerId>\\d+)\\s+-?\\d+\\s+(?:\\d+|CNCT|ZMBI)\\s+(?<name>.+?)\\s+\\d+\\s+\\S+:\\d+\\s+\\d+\\s+\\d+\\s*$",
+    "skipLinePattern": "^\\s*(map:|num\\s+score|-{3,})"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/openmoh/openmohaa/blob/main/code/server/sv_ccmds.c",
+      "title": "OpenMoHAA sv_ccmds.c - SV_AddOperatorCommands, SV_Kick_f, SV_Ban_f, SV_Status_f, SV_ConSay_f",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/openmoh/openmohaa/blob/main/code/server/sv_main.c",
+      "title": "OpenMoHAA sv_main.c - SVC_RemoteCommand ('rcon' out-of-band packet, sv_rconPassword)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/openmoh/openmohaa/blob/main/code/server/sv_init.c",
+      "title": "OpenMoHAA sv_init.c - Cvar_Get(\"rconPassword\"), sv_banFile default serverbans.dat",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/openmoh/openmohaa/blob/main/code/qcommon/qcommon.h",
+      "title": "OpenMoHAA qcommon.h - PORT_SERVER 12203",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://docs.openmohaa.org/md_docs_2markdown_203-configuration_201-configuration.html",
+      "title": "OpenMoHAA: Configuration and commands (ban command set; no rcon/net_port material)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://pinpoint10.tripod.com/id2.html",
+      "title": "MOHAA rcon commands reference (rcon clientkick/kick/status/say, rconpassword, set net_port)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.gamesclan.net/billing/knowledgebase/54/Medal-of-Honor-Rcon-Commands.html",
+      "title": "Medal of Honor Rcon Commands - Gamesclan knowledgebase",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://icculus.org/pipermail/mohaa/2003-September/003011.html",
+      "title": "[mohaa] server setup - icculus.org mohaa list (seta rconpassword, 'Opening IP socket: localhost:12203')",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://legionhosting.net/kb/medal-of-honor/medal-of-honor-allied-assault-admin-and-commands",
+      "title": "Medal of Honor Allied Assault Admin and Commands (kick by client number; 'limited built-in ban functionality')",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "id Tech 3 lineage: rcon is the Quake III connectionless UDP form (a 0xFFFFFFFF-prefixed 'rcon <password> <command>' datagram sent to the game port), NOT Valve Source RCON - hence flavour 'custom'. Verified in engine source: SVC_RemoteCommand handles the out-of-band 'rcon' packet, sv_rconPassword is registered as Cvar_Get(\"rconPassword\", \"\", CVAR_TEMP), and PORT_SERVER is 12203 with the port cvar net_port. There is no separate rcon port and no enable switch: rcon is live as soon as rconPassword is non-empty (server.cfg carries 'seta rconpassword \"...\"'; a 2003 icculus mohaa list post shows that line plus 'Opening IP socket: localhost:12203'). Spearhead/Breakthrough default to 12203 as well but are often moved. Commands are written as typed at the server console; an rcon client prepends 'rcon <password>' itself, so do not include the literal word 'rcon'. kick: the engine registers both 'kick <player name|all>' (by name, quoted if it contains spaces) and 'clientkick <client number>' (legacy alias of kicknum); clientkick is recorded because MOHAA names carry ^-colour codes and spaces, and the client number comes straight out of status - a community rcon reference documents 'rcon clientkick [client number]' and a hosting KB documents kick by client number. Client numbers are per-session and are reused, so re-read status immediately before acting. BAN: no ban command is recorded, deliberately. banUser <player name> and banClient <client number> exist on stock servers but merely send the address to the id/EA 'authorize' master server, dead for years, while the console still prints '<name> was banned from coming back' - a silent no-op. The working local ban, 'banaddr (ip[/subnet] | clientnum [subnet] [reason])', which writes sv_banFile (default <gamedir>/serverbans.dat, line format '<isexception> <ip> <subnet>[:reason]') alongside bandel/listbans/rehashbans/flushbans, is an ioquake3-derived addition present only in OpenMoHAA and similar modern rebuilds: it returns 'unknown command' on the 2002 retail 1.11/1.12 binaries this entry primarily describes, and the only documentation for it is the OpenMoHAA project itself (source plus its own docs page, one source), so it does not meet the two-independent-source bar and is omitted rather than shipped as a base-game ban. Hosting knowledge bases agree: they list status/kick/say/map with no ban syntax, one stating the base game has 'limited built-in ban functionality'. Operators on OpenMoHAA builds can use banaddr <clientnum>; unban is not expressible against playerId in any case, since bandel takes a ban-list index or IP. motd omitted: g_motd is a cvar ('seta g_motd \"...\"'), not a broadcast command, and community references note it does not push anything to connecting clients. say broadcasts as 'console: <message>' and is registered only on dedicated servers. playerParse follows SV_Status_f: a 'map: <name>' line, a header row (num score ping name lastmsg address qport rate), a dashed rule, then one row per client, with CNCT/ZMBI in the ping column for connecting/zombie clients; column widths are padded and vary by build, so the pattern is whitespace-tolerant. The name capture group is spelled 'name' rather than 'playerName' - check against the dataset schema. Bot and loopback clients print an address with no :port and therefore do not match linePattern - acceptable, since only real networked clients are moderated. Server-mod caveat: MOHAA Reborn and similar admin mods replace all of this with ad_* commands (ad_status, ad_kick, ad_banname, ad_say), which stock servers do not have; hosting-panel articles frequently list those as if they were base-game commands."
+}

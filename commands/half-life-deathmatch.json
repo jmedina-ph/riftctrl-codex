@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "slug": "half-life-deathmatch",
+  "game": {
+    "displayName": "Half-Life Dedicated Server",
+    "appId": 90,
+    "aliases": [
+      "Half-Life: Deathmatch",
+      "Half-Life Deathmatch",
+      "HLDM",
+      "HLDS",
+      "Half-Life 1 Deathmatch",
+      "valve"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 27015,
+    "portSetting": "port",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:1:12345678",
+    "pattern": "STEAM_[0-9]:[01]:[0-9]+"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kick #{playerId}",
+    "ban": "banid {duration} {playerId} kick",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*\\d+\\s+\"(?<name>.*)\"\\s+(?<accountId>\\d+)\\s+(?<playerId>STEAM_[0-9]:[01]:[0-9]+)",
+    "skipLinePattern": "^(?:hostname|version|tcp/ip|ipx|map|players|#\\s+name|\\d+ users)"
+  },
+  "banList": {
+    "paths": [
+      "valve/banned.cfg",
+      "banned.cfg"
+    ],
+    "lineIdPattern": "^banid\\s+[0-9.]+\\s+(STEAM_[0-9]:[01]:[0-9]+)",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/dreamstalker/rehlds/blob/master/rehlds/engine/sv_main.cpp",
+      "title": "ReHLDS engine source - SV_BanId_f, Host_Kick_f, SV_RemoveId_f, SV_WriteId_f, SV_Rcon",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/dreamstalker/rehlds/blob/master/rehlds/engine/host_cmd.cpp",
+      "title": "ReHLDS engine source - Host_Status_f output format and Host_Say",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://sr-team.clan.su/K_stat/hlcommandsfull.html",
+      "title": "Half-Life console commands and variables (full list) - banid syntax",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Console_Command_List",
+      "title": "Console Command List - Valve Developer Community",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Half-Life_Dedicated_Server",
+      "title": "Half-Life Dedicated Server - Valve Developer Community",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/pushrax/node-rcon",
+      "title": "node-rcon - GoldSrc RCON is UDP with a challenge, Source RCON is TCP",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://hlsat.com/",
+      "title": "HL-SAT - GoldSrc connectionless UDP RCON and status output",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/90/",
+      "title": "Half-Life Dedicated Server - AppID 90",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Classic GoldSrc Half-Life Deathmatch, i.e. the stock 'valve' mod run by the Half-Life Dedicated Server tool (app 90, hlds.exe / hlds_run -game valve). This file is NOT Half-Life Deathmatch: Source (app 360), which speaks the TCP Source RCON protocol instead. GoldSrc RCON is its own thing: connectionless UDP datagrams on the game port (default 27015, set with -port/+port), with a 'challenge rcon' round trip before every command, guarded by the rcon_password cvar - hence flavour 'custom'. There is no enable setting; RCON is live as soon as rcon_password is non-empty. Engine command forms taken from the ReHLDS reimplementation of the original engine: 'usage:  kick < name > | < # userid > [reason]', 'Usage:  banid <minutes> <uniqueid or #userid> { kick }  Use 0 minutes for permanent', 'Usage:  removeid <uniqueid | #slotnumber>'. {duration} for ban is MINUTES and 0 means permanent. The GoldSrc console tokenizer splits ':' into its own token, and Host_Kick_f, SV_BanId_f and SV_RemoveId_f all reassemble a STEAM_x:y:z argument from those pieces - so the id must be passed UNQUOTED. 'kick #STEAM_0:1:12345' works, but 'kick \"#STEAM_0:1:12345\"' does not, because the quoted form is one token and the reassembly then produces a broken id. If a deployment prefers names, 'kick \"<name>\"' is the older documented form and matches the player name exactly (case-insensitive). banid only changes the in-memory filter list; run 'writeid' afterwards to persist it, which rewrites banned.cfg (cvar bannedcfgfile, default banned.cfg, in the mod directory) with one 'banid 0.0 <uniqueid>' line per permanent ban - temporary bans are deliberately not written. Likewise removeid needs a following 'writeid' to survive a restart. IP bans are a separate list (addip/removeip/listip, persisted with writeip to listip.cfg) and are not covered by banList here. 'status' is the roster source; over RCON the address column is present because rcon commands execute with console source. Bots and HLTV proxies print BOT or an hltv: field instead of a STEAM_ id and are dropped by linePattern. 'say' broadcasts as '<hostname> message' and the engine truncates the message at 63 characters. Sources agree on all four core operations; the only point where published guides are thinner than the engine is the Steam-ID form of kick, which is confirmed in engine code but usually documented only as name or # userid."
+}

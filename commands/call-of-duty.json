@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "slug": "call-of-duty",
+  "game": {
+    "displayName": "Call of Duty (2003)",
+    "appId": 2620,
+    "aliases": [
+      "Call of Duty",
+      "Call of Duty Dedicated Server",
+      "CoD",
+      "CoD1",
+      "Call of Duty 1"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 28960,
+    "portSetting": "net_port",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Client number",
+    "example": "3",
+    "pattern": "[0-9]{1,2}"
+  },
+  "commands": {
+    "info": "serverinfo",
+    "listPlayers": "status",
+    "kick": "clientkick {playerId}",
+    "ban": "banclient {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^\\s*(?<playerId>[0-9]+)\\s+-?[0-9]+\\s+[0-9]+\\s+(?<accountId>[0-9]+)\\s+(?<name>.*?)\\s+[0-9]+\\s+(?:[0-9]{1,3}\\.){3}[0-9]{1,3}",
+    "skipLinePattern": "^\\s*(?:num\\s+score|-{3,}|map:)"
+  },
+  "banList": {
+    "paths": [
+      "main/ban.txt",
+      "ban.txt"
+    ],
+    "lineIdPattern": "^\\s*([0-9]+)"
+  },
+  "sources": [
+    {
+      "url": "https://wiki.zeroy.com/index.php/Call_of_Duty:_Rcon_Commands",
+      "title": "COD Modding & Mapping Wiki - Call of Duty: Rcon Commands",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.gamesclan.net/billing/knowledgebase/35/Call-of-Duty-Rcon-Commands.html",
+      "title": "Gamesclan knowledgebase - Call of Duty Rcon Commands",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://tacodewolff.nl/legacy/call-of-duty/rcon-commands/",
+      "title": "Call of Duty RCON commands (wording closely tracks the zeroy wiki - treat as the same lineage)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/BigBrotherBot/big-brother-bot/blob/master/b3/parsers/cod.py",
+      "title": "BigBrotherBot b3/parsers/cod.py - command table and status parser for Call of Duty",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.anarchyrules.co.uk/cod2/server%20commands.html",
+      "title": "Call of Duty 2 Dvar & Console Command Server Information (same engine dialect, net_port 28960, rcon_Password)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.opferlamm-clan.de/cod2-kicken-bannen-und-bann-liste-erstellen.html",
+      "title": "CoD2: Kicken, Bannen und Bann-Liste erstellen (ban.txt line format)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://store.steampowered.com/app/2620/",
+      "title": "Call of Duty (2003) on Steam - app id 2620",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Covers the original Call of Duty (2003) dedicated server (CoDMP.exe / cod_lnxded run with +set dedicated 2); the same command dialect carries through the id-Tech-3-derived CoD titles (United Offensive, CoD2, CoD4, World at War), which is why sources for those games agree with the CoD1 ones here. RCON is the Quake 3 connectionless UDP scheme, NOT Valve Source RCON: send a single UDP datagram of 0xFF 0xFF 0xFF 0xFF followed by 'rcon <password> <command>' to the server's game port (net_port, default 28960) and read the 0xFF 0xFF 0xFF 0xFF 'print' reply - hence flavour 'custom'. There is no enable switch; RCON is live as soon as rcon_password is set to a non-empty value in the server config (the dvar is written rcon_password, spelled rcon_Password in the anarchyrules dvar list, and the engine treats dvar and command names case-insensitively). In an in-game client console these same commands are typed as '/rcon status' etc.; over the wire only the command text in this file is sent, so no /rcon prefix is recorded. Player identity: kick and ban here take the CLIENT NUMBER (the 'num' column of status, 0..sv_maxclients-1), which is reassigned as players join and leave, so always re-run listPlayers immediately before acting. Name-taking variants exist ('kick <name>', 'banUser <name>', 'tempBanUser <name>') but are unreliable because CoD names carry ^-colour codes that must be typed exactly. The second identifier in the status output is the CD-key GUID (accountId in playerParse); banclient writes that GUID to ban.txt, which is why the ban list is keyed on it. No unban command is recorded: the live command is 'unbanUser <player name>', which takes a name and not the client number (attested by the zeroy wiki, tacodewolff and BigBrotherBot alike), so feeding it a playerId would silently unban nobody - unban by editing ban.txt (lines are 'GUID' or 'GUID Name'; the file sits in main/ next to the server binary on Windows and under the homepath, e.g. ~/.callofduty/main/, on Linux) and restarting, or run unbanUser by hand with the exact name. 'tempBanClient <id>'/'tempBanUser <name>' exist on this engine but take no duration argument (the length is fixed by the engine, ~1 hour), so no {duration} ban form is recorded; BigBrotherBot's CoD parsers likewise fall back to clientkick for temporary bans. Source disagreement, all cosmetic: the zeroy wiki and tacodewolff write the camel-case forms banClient/banUser/tempBanClient/unbanUser while BigBrotherBot's parser sends lowercase banclient/unbanuser; the engine's command lookup is case-insensitive, and lowercase is recorded here because it is what an established admin tool actually sends. gamesclan's CoD1 page lists status, say, map, map_restart, map_rotate, clientkick, banclient and a set of scr_ dvars, omitting the tempban and unban forms that zeroy documents; that is an omission rather than a contradiction. Confidence high: clientkick, banclient, status and say are each attested by at least two independent sources (the zeroy CoD modding wiki, an unrelated hosting knowledgebase at gamesclan, and BigBrotherBot's parser source, whose _commands table sends exactly 'clientkick %(cid)s', 'banclient %(cid)s' and 'say %(message)s'). One caveat on 'serverinfo': it is documented by zeroy and by tacodewolff, but tacodewolff's wording is close to verbatim zeroy, so treat that pair as one lineage - serverinfo is a standard id-Tech-3 console command and is not load-bearing for moderation, which is why the file's confidence is not reduced for it."
+}

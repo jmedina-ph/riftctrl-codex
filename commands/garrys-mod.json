@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "slug": "garrys-mod",
+  "game": {
+    "displayName": "Garry's Mod Dedicated Server",
+    "appId": 4020,
+    "aliases": [
+      "Garry's Mod",
+      "GMod",
+      "gmod",
+      "Garrys Mod",
+      "srcds"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 27015,
+    "portSetting": "-port",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:0:49333982",
+    "pattern": "STEAM_[0-9]:[01]:[0-9]+"
+  },
+  "commands": {
+    "info": "stats",
+    "listPlayers": "status",
+    "kick": "kickid {playerId} {reason}",
+    "ban": "banid {duration} {playerId} kick",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*(?<accountId>[0-9]+)\\s+\"(?<name>.*)\"\\s+(?<playerId>STEAM_[0-9]:[01]:[0-9]+)",
+    "skipLinePattern": "^(hostname|version|udp/ip|os|type|map|tags|players|edicts|account|sourcetv|replay|#\\s*userid)"
+  },
+  "banList": {
+    "paths": [
+      "garrysmod/cfg/banned_user.cfg"
+    ],
+    "lineIdPattern": "banid\\s+[0-9.]+\\s+(STEAM_[0-9]:[01]:[0-9]+)",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/nillerusr/source-engine/blob/master/engine/host_cmd.cpp",
+      "title": "Source engine host_cmd.cpp - status and kickid implementation",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/nillerusr/source-engine/blob/master/engine/sv_filter.cpp",
+      "title": "Source engine sv_filter.cpp - banid, removeid, writeid, banned_user.cfg",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/nillerusr/source-engine/blob/master/engine/net_ws.cpp",
+      "title": "Source engine net_ws.cpp - RCON listener bound to the game server port",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.facepunch.com/gmod/Downloading_a_Dedicated_Server",
+      "title": "Downloading and Hosting a Dedicated Server - Garry's Mod Wiki",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://help.sparkedhost.com/en/article/how-to-use-rcon-garrys-mod-ubyc66/",
+      "title": "How to Use RCON - Garry's Mod (rcon_password in garrysmod/cfg/server.cfg)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://xgamingserver.com/blog/how-to-ban-players-from-your-garrys-mod-server/",
+      "title": "How to ban players from your Garry's Mod Server",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=190816224",
+      "title": "How to get your (and other players) SteamID - example GMod status row",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Garry's Mod is a Source dedicated server (srcds, app 4020), so these are base engine commands, not addon commands - they work with no admin mod installed. Transport is the standard Valve Source RCON protocol; engine code (net_ws.cpp) binds the RCON listener to the SAME port as the game server socket, so RCON is TCP on the game port, 27015 by default, changed with the -port launch argument. rcon_password is a cvar, normally set in garrysmod/cfg/server.cfg; a non-empty value is what enables RCON, there is no separate enable switch. Exact engine usage strings: 'kickid < userid | uniqueid > { message }', 'banid < minutes > < userid | uniqueid > { kick }', 'removeid < slot | uniqueid >'. DISAGREEMENT: some hosting guides publish 'banid DURATION STEAMID REASON' (e.g. supercraft.host) - that is wrong; banid takes no reason, and the optional third argument must be the literal word 'kick' or the banned player stays connected, which is why it is hard-coded here. {duration} is MINUTES and 0 means permanent. The kick reason is deliberately unquoted: kickid takes the rest of the line verbatim, so quotes typed around the message are shown to the player as literal quote characters. Bans are in-memory until 'writeid' is run - it rewrites garrysmod/cfg/banned_user.cfg as lines of the form 'banid 0 STEAM_0:1:12345678' (permanent bans only; timed bans are never written). So a ban that must survive a restart is 'banid ... kick' followed by 'writeid', and an unban is 'removeid ...' followed by 'writeid'. status output was confirmed against a real GMod capture: header '# userid name uniqueid connected ping loss state adr' then rows like '# 78 \"DarkLightning321\" STEAM_0:0:49333982 43:33 61 0 active'. GMod renders SteamIDs in the STEAM_0 form; the pattern also accepts STEAM_1 because some hosting docs quote that universe digit. Bots print 'BOT' and joining players 'STEAM_ID_PENDING' as uniqueid - both are skipped by linePattern on purpose. No console command sets the MOTD (GMod uses garrysmod/settings/motd.txt or an sv_loadingurl page), so motd is omitted. Addon admin mods (ULX, DarkRP) add their own ulx kick/ban commands; those are NOT recorded here because they are not present on a stock server."
+}

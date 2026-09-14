@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "slug": "dystopia",
+  "game": {
+    "displayName": "Dystopia Dedicated Server",
+    "appId": 17585,
+    "aliases": [
+      "Dystopia",
+      "Dystopia Mod",
+      "dys",
+      "dystopia"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 27015,
+    "portSetting": "-port",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:1:12345678",
+    "pattern": "(?:STEAM_[0-9]:[01]:[0-9]+|\\[U:1:[0-9]+\\])"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kickid {playerId} {reason}",
+    "ban": "banid {duration} {playerId} kick",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*(?<accountId>\\d+)\\s+(?:\\d+\\s+)?\"(?<name>.*)\"\\s+(?<playerId>STEAM_[0-9]:[01]:[0-9]+|\\[U:1:[0-9]+\\])",
+    "skipLinePattern": "^(?:hostname|version|udp/ip|steamid|account|os|type|map|players|edicts|tags|#end|#\\s*userid)"
+  },
+  "banList": {
+    "paths": [
+      "dystopia/cfg/banned_user.cfg",
+      "dystopia/banned_user.cfg"
+    ],
+    "lineIdPattern": "^banid\\s+[0-9.]+\\s+(STEAM_[0-9]:[01]:[0-9]+|\\[U:1:[0-9]+\\])",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/dysemjay/dys-server-guide/blob/master/guide.md",
+      "title": "Dystopia 1.4.1 dedicated server setup guide - status, kick <name>, kickid <userid>, say <string>, banid <time> <SteamID or UserID> [kick], removeid, writeid, listid, rcon_password, -port (TCP = RCON)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/17580/discussions/0/152390014785349924/",
+      "title": "Dystopia 1.4.1 Server Setup Guide: Hosted on GitHub :: Dystopia General Discussions",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/GameServerManagers/Game-Server-Configs/blob/master/Dystopia/server.cfg",
+      "title": "Game-Server-Configs/Dystopia/server.cfg - rcon_password, exec banned_user.cfg (\"Server banlist based on user steam ID\"), exec banned_ip.cfg, writeid, writeip",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/master/lgsm/config-default/config-lgsm/dysserver/_default.cfg",
+      "title": "LinuxGSM dysserver/_default.cfg - appid 17585, engine \"source\", -game dystopia, port 27015, servercfgdir ${systemdir}/cfg",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://linuxgsm.com/servers/dysserver/",
+      "title": "Dystopia Linux Game Server - LinuxGSM (appid 17585)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/17585/",
+      "title": "Dystopia Dedicated Server - AppID 17585 (type Tool) - SteamDB",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=189354886",
+      "title": "Complete HL2DM Console Commands/CVARs LIST - Source SDK 2013 baseline (kick \"Kick a player by name.\", kickid \"Kick a player by userid or uniqueid, with a message.\", banid, addip, listid, motdfile)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.jodyhatton.com/files/sourcededicatedserverconsolecommands.htm",
+      "title": "Source Dedicated Server Console Commands (cvarlist dump) - removeid \"Remove a user ID from the ban list.\", writeid \"Writes a list of permanently-banned user IDs to banned_user.cfg.\", writeip, listid, say, status, users",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Console_Command_List",
+      "title": "Console Command List - Valve Developer Community (banid, removeid, say, rcon_password, hostport)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/222880/discussions/2/364042703853182968/",
+      "title": "How can you Permanently ban someone? - engine usage string \"banid < minutes > < userid | uniqueid > { kick }\", 0 minutes = permanent, then writeid",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Dystopia is a free standalone Source mod and its server is plain SRCDS with the game folder \"dystopia\" - no mod-specific admin layer exists, so every command here is engine-level. Engine baseline is Source SDK 2013 Multiplayer: the Dystopia 1.4.1 setup guide installs app 244310 (Source SDK 2013 Server) and then the game content from app 17580 with \"-beta Previous\", while LinuxGSM and SteamDB use the separate dedicated-server tool app 17585, which is what game.appId records. TRANSPORT: Valve Source RCON over TCP on the same port the game uses for UDP. The guide is explicit - \"-port <number> Default: 27015 ... TCP is used for RCON, UDP is used for general game traffic\" - so there is no separate RCON port; -port (or hostport) moves both. There is no enable switch: RCON is live as soon as rcon_password is set in dystopia/cfg/server.cfg, which both the guide and the LinuxGSM Game-Server-Configs server.cfg do. sv_rcon_minfailures / sv_rcon_maxfailures / sv_rcon_banpenalty / sv_rcon_whitelist_address / sv_rcon_log only tune auto-banning of failed RCON logins; they do not gate RCON. LIST/INFO: status doubles as both - it prints hostname:/version:/udp/ip:/map:/players: header lines then one \"#  <userid> \\\"<name>\\\" STEAM_x:y:z <connected> <ping> <loss> <state> <adr>\" row per player, hence regex parsing rather than csv (names contain spaces and quotes). Some builds insert a second numeric slot column between userid and the quoted name, hence the optional group; the userid is captured as accountId because kickid also accepts it. KICK: recorded as kickid with the Steam ID. DISAGREEMENT WORTH KNOWING - the Dystopia guide documents kickid narrowly as \"kickid <userid>  Kick a player from the server by UserID\" and documents plain \"kick <Name of player>\" (case-insensitive name match) separately; the SDK 2013 engine command list this build runs on describes kickid as \"Kick a player by userid or uniqueid, with a message\", i.e. a Steam ID is accepted and a free-text reason is the trailing argument. kickid was chosen over kick because the Steam ID is exact where a name match is not, and because the same identifier then serves ban and unban. If a target survives a kickid by Steam ID on some older build, fall back to \"kick <name>\" using the name from status. Do not quote the reason - on Source the trailing message is taken as free text and quoting it is reported to break the command. BAN: the guide gives \"banid <time> <SteamID or UserID of player> [kick]\" - minutes first, 0 means permanent, and the optional trailing literal \"kick\" is what actually ejects a still-connected player; the same usage string \"banid < minutes > < userid | uniqueid > { kick }\" is quoted independently on the Source server forums. banid takes no reason argument, so {reason} is deliberately absent from ban. The guide also warns banid \"will not work if sv_lan is set to 1\". PERSISTENCE: banid and removeid change only the in-memory list. writeid rewrites dystopia/cfg/banned_user.cfg (completely overwriting it) and the server must \"exec banned_user.cfg\" at boot to reload it - both the guide's and LinuxGSM's server.cfg do exec banned_user.cfg / banned_ip.cfg and call writeid / writeip. So: banid, then writeid, or the ban dies at restart; removeid, then writeid, likewise. listid prints the current banned Steam IDs. IP bans use the parallel addip/removeip/writeip against banned_ip.cfg and are not mapped here because the identifier type differs. SAY: server-side \"say <string>\" prints to global chat as \"Console\" and, unlike the client-side version, includes any quotation marks literally in the printed message - so pass {message} unquoted. A known Dystopia bug crashes the server on an empty-string say, but the guide states it manifests only through the CLIENT-side say/say_team path, not server-side say; still, never send an empty {message}. MOTD: no command exists - the MOTD is the file named by the motdfile cvar (dystopia/motd.txt) - so motd is omitted rather than guessed. mp_allowvoting_kick, mp_votekick_bantime and mp_punishvotes are player-initiated votes, not admin commands, and are not mapped. Steam IDs render with universe digit 0 on some builds and 1 on others and newer builds may print the [U:1:n] form, so both are accepted. SourceMod is commonly installed on Dystopia servers and adds sm_kick/sm_ban; those are addons and are deliberately not recorded as the stock interface. Not verified against a live server. INDEPENDENT RE-CHECK 2026-09-13: confidence lowered from high to low; no command string was changed, because every one of them was re-confirmed on a primary page. The dysemjay guide really does give status, \"kick - Kicks a player from the server by name. Note that the name matching is case insensitive.\", \"kickid - Kick a player from the server by UserID.\", \"banid - Ban the account specified a given SteamID or UserID for <time> minutes. If the kick argument is added, the account will also be kicked if connected.\", \"removeid - Remove a Steam ID from the ban list.\", \"writeid\", \"listid\", say and \"-port ... TCP is used for RCON, UDP is used for general game traffic\". The srcds cvarlist dump and Valve's Console Command List both carry banid/removeid/listid/say/rcon_password/hostport, Valve's Source Dedicated Server page states \"27015 TCP/UDP (game transmission, pings and RCON)\", Valve's Rcon page states \"Server must have cvar rcon_password set as non-empty string\", the Game-Server-Configs Dystopia server.cfg really does carry rcon_password, exec banned_user.cfg, exec banned_ip.cfg, writeid and writeip, and the banid usage string \"banid < minutes > < userid | uniqueid > { kick }\" with \"Use 0 minutes for permanent\" is corroborated by the TF2 wiki's \"banid <minutes> <steamid> - Bans a player's Steam ID for the specified number of minutes. 0 minutes is a permanent ban.\" TWO THINGS FAIL THE TWO-INDEPENDENT-SOURCE BAR, hence low. (1) commands.kick: only ONE source anywhere says kickid takes a Steam ID and a trailing message - the SDK 2013 cvarlist dump (\"Kick a player by userid or uniqueid, with a message\"). The game's own guide scopes kickid to a UserID, and neither Valve's Console Command List nor the srcds cvarlist dump contains a kickid entry at all; both describe only \"kick - Kick a player by slot, userid or name.\" kickid {playerId} {reason} is kept because nothing contradicts it outright and banid's own \"userid | uniqueid\" argument wording matches, but treat it as unproven and fall back to kick with the name from status if it silently no-ops. (2) The Steam discussion at app/17580 is NOT independent evidence: it is the guide's author announcing that same GitHub guide, so it echoes source 1 rather than corroborating it. ACCOUNTID CAVEAT: on builds that print two numeric columns it is not established which is the userid, so do not feed accountId to kickid without checking a real status line. Transport, playerId, info, listPlayers, ban, unban, say and the ban-file handling are each backed by two or more independent sources and stand exactly as written."
+}

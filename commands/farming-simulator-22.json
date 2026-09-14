@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "slug": "farming-simulator-22",
+  "game": {
+    "displayName": "Farming Simulator 22 Dedicated Server",
+    "appId": 1248130,
+    "aliases": [
+      "Farming Simulator 22",
+      "FS22",
+      "FS 22",
+      "LS22",
+      "Landwirtschafts-Simulator 22",
+      "GIANTS Dedicated Server"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://help.bisecthosting.com/hc/en-us/articles/41535106034459-How-to-Kick-or-Ban-Players-on-a-Farming-Simulator-22-Server",
+      "title": "How to Kick or Ban Players on a Farming Simulator 22 Server",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.4netplayers.com/en/wiki/farming-simulator-22/how-to-become-admin/",
+      "title": "How to become Admin in FS22",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/DJWoodZ/FS22-Discord-Bot",
+      "title": "DJWoodZ/FS22-Discord-Bot - polls the dedicated server XML feed endpoints",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://zap-hosting.com/guides/docs/vserver-windows-fs-22/",
+      "title": "Farming Simulator 2022 Dedicated Server Windows Setup",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://cdn.focus-home.com/Manual/fs2013/dedicatedServer_FR.pdf",
+      "title": "GIANTS Software Dedicated Server Software Documentation (FS2013-era; earlier generation of the same web interface)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "No remote command channel exists, so transport is \"none\". The GIANTS dedicated server exposes no RCON, no stdin console (dedicatedServer.exe runs the game headless and no consulted source documents any console input) and no write API. The admin web interface (default http://<host>:8080, credentials from the <initial_admin> username/passphrase block in dedicatedServer.xml) starts and stops the game and manages settings, mods, savegames and log files; no consulted source shows a kick or ban control anywhere in it. Kick and ban are in-game only: a player types the admin password in the Farm Manager screen, then uses the buttons \"Kick\", \"Block from server\" and \"Show Blocked Players\" -> \"Unblock\" on the player list (BisectHosting; the 4netplayers wiki independently puts admin login in the same Farm Manager screen and names no typed command). There is no broadcast/say command at all. The only machine-readable channel is read-only and is therefore not recorded as a transport: GET http://<host>:8080/feed/dedicated-server-stats.xml?code=<web code> returns server status plus the names of connected players (display names only, no persistent player id), and /feed/dedicated-server-savegame.html?code=<web code>&file=careerSavegame returns savegame data; the DJWoodZ bot polls exactly these two paths and sends nothing back. The gs-prefixed console commands (gsMoneyAdd and friends) are a client-side developer/cheat console enabled in game.xml and contain no kick, ban, say or player-list command. Source caveats: the GIANTS manual cited is the FS2013-era dedicated-server documentation, used only as evidence that this web interface has always been start/stop plus mods, saves and a main-menu player list, not as a page-by-page reference for FS22; and the ZAP-Hosting guide covers installation and calls the web interface \"self-explanatory\" without enumerating its features. appId is the game's 1248130: dedicatedServer.exe ships inside the game install and GIANTS publishes no separate Steam dedicated-server app."
+}

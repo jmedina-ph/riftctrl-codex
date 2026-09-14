@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "slug": "no-one-survived",
+  "game": {
+    "displayName": "No One Survived Dedicated Server",
+    "appId": 2329680,
+    "aliases": [
+      "No One Survived",
+      "NoOneSurvivedDedicatedServer",
+      "NoOneSurvivedServer",
+      "NOS",
+      "WRSH"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://store.steampowered.com/news/app/1963370/view/3714965613435374564",
+      "title": "No One Survived - Deployment instructions for Windows Server dedicated servers (Cat Play Studio)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/pelican-eggs/games-steamcmd/main/no_one_survived/egg-no-one-survived.json",
+      "title": "Pelican egg: No One Survived (app 2329680)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/1963370/discussions/0/3908619762515650052/",
+      "title": "Steam discussion: Admin commands",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/1963370/discussions/0/6197556602754360366/",
+      "title": "Steam discussion: admin panel (SHIFT-ALT-O) and blacklisting",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/1963370/discussions/0/4364627964245608224/",
+      "title": "Steam discussion: blacklist doesn't work in multiplayer (blacklist.json)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/1963370/discussions/0/3880473965436583531/",
+      "title": "Steam discussion: Dedicated Server Admin Console (console is client-side, host-dependent)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "No command channel of any kind. The dedicated server is the Windows-only Unreal binary WRSHServer.exe (Steam app 2329680, store name NoOneSurvivedDedicatedServer), started by StartServer.bat and configured entirely by WRSH/Saved/Config/WindowsServer/Game.ini ([ServerSetting] SaveName, ServerName, NeedPassword, Password, MaxPlayers, NumOfZombieSpawn, Region, AdminPassword, plus further gameplay modifiers in the developer's guide) and Engine.ini for ports. The developer's own deployment announcement is a complete setup guide and documents no RCON, no HTTP/admin API and no console command set; the independently authored Pelican egg for app 2329680 was fetched and confirms this directly - its startup line is 'wine WRSHServer.exe -server -log -Port={{SERVER_PORT}} -QueryPort={{QUERY_PORT}}', it maps only the Game.ini/Engine.ini keys above, defines no RCON port or password variable among its 17 variables, and its stop value is '^^C' (Ctrl+C) rather than a quit command, which is what you would expect of a server with no stdin command reader. Moderation is done from inside the game client, not from the server: a player who authenticates with Game.ini AdminPassword opens an in-game admin overlay with Shift+Alt+O and uses its blacklist screen, and community reports say the developer deliberately cut the admin overlay's feature set down on dedicated servers relative to solo/listen-hosted games. Bans land in a blacklist.json on the server that admins also edit by hand (reported to be wiped by a steamcmd validate, and to have a bug where adding through the overlay clears existing entries); no source publishes that file's path relative to the install root or its line format, so no banList block is recorded here rather than guessing one. No source documents which identifier the blacklist keys on - the only description found is a player referring to 'name and player ID' - so no playerId is asserted. There is no listPlayers equivalent: connected players are visible only in-game or by reading the server log. Counter-signal checked and rejected: hosting knowledge-base pages (e.g. legionhosting.net/kb/no-one-survived/no-one-survived-admin-commands) publish a generic AdminLogin/Kick/Ban/Unban/ListPlayers/Broadcast/TeleportTo/GiveItem command list with no source, and hedge that 'RCON support depends on the game version'; the list matches no primary source, is described on the page itself as in-game console input, and should not be promoted to a transport. RIFT//CTRL should stop probing and use the host-level floor for this game."
+}

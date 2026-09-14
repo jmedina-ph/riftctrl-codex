@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "slug": "dota-2",
+  "game": {
+    "displayName": "DotA 2 Dedicated Server",
+    "appId": 580,
+    "aliases": [
+      "Dota 2",
+      "DOTA 2",
+      "dota 2 beta",
+      "Dota 2 Dedicated Server"
+    ]
+  },
+  "transport": "stdin",
+  "stdin": {
+    "note": "The dedicated server runs with a console window. Valve's community guide starts it as 'srcds.exe -console -game dota +map dota' (Windows) or './srcds_run -game dota +map dota' (Linux); FireDaemon's KB and TimZaman/dotaservice start it as '-dedicated -game dota +map dota', dotaservice via dota.sh. dotaservice records that this console takes typed commands ('restart' restarts the game, 'quit' exits), so a command channel exists - but that the channel is the process's stdin is inferred from how srcds_run/dota.sh are driven, not stated by any source found. Valve publishes no admin command reference for it."
+  },
+  "sources": [
+    {
+      "url": "https://help.steampowered.com/en/wizard/HelpWithGame/?appid=580",
+      "title": "Steam Support - DotA 2 Dedicated Server (app 580)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/580/",
+      "title": "SteamDB - app 580 named 'DotA 2 Dedicated Server'",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=547453287",
+      "title": "Steam Guide - Creating dedicated server for Dota 2 (steamcmd app 570; 'srcds.exe -console -game dota +map dota')",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://kb.firedaemon.com/support/solutions/articles/4000086947-dota-2",
+      "title": "FireDaemon KB - Run Dota 2 Dedicated Server as a Windows Service (app 570; '-dedicated -game dota +map dota')",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://forum.ragezone.com/threads/starting-the-server-dota-2.1040670/",
+      "title": "RaGEZONE - Starting the server DotA 2 (pre-Reborn server.cfg with rcon_password)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/TimZaman/dotaservice/blob/master/NOTES.md",
+      "title": "dotaservice NOTES.md - modern dota.sh -dedicated launch flags; console 'restart'/'quit'",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/psychonic/d2fixups",
+      "title": "psychonic/d2fixups - Metamod:Source plugin for Dota 2 dedicated servers (archived 2022)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "No commands are recorded on purpose. The server exists and has a console - app 580 is named 'DotA 2 Dedicated Server' by Valve, and every guide found starts a '-game dota' process and talks to it through that console - but no source, Valve's or otherwise, documents a list-players, kick, ban or broadcast command for it, and inventing plausible Source-engine ones would be a guess. Cautions. (1) The launch line differs by source: the Steam community guide shows 'srcds.exe -console -game dota +map dota' with no -dedicated, while FireDaemon and dotaservice show '-dedicated -game dota +map dota'; dotaservice drives dota.sh rather than srcds_run, so 'srcds' naming is the pre-Reborn spelling. (2) Dota 2 moved from Source 1 to Source 2 with Reborn in 2015; every page showing a server.cfg with rcon_password (the RaGEZONE thread) and every Metamod/SourceMod route (psychonic/d2fixups, archived 2022) predates or was broken by that move, so transport is recorded as the console, not rcon - a Source RCON listener on the current build is unconfirmed. (3) Moderation on a Dota 2 server is not a console job: matches are lobbies whose membership the Game Coordinator controls, so the lobby host kicks through the in-game UI. (4) appId is the dedicated-server app 580 as Valve names it, but the server FILES install from app 570 ('dota 2 beta') and FireDaemon's steamcmd line needs a real login, not anonymous - 580 is not what SteamCMD downloads. Treat this file as 'console exists, command text unknown', not as 'unsupported'; the host-level floor is the right fallback."
+}

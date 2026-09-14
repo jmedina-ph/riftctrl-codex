@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "slug": "base-defense",
+  "game": {
+    "displayName": "Base Defense Dedicated Server",
+    "appId": 817300,
+    "aliases": [
+      "Base Defense",
+      "bdef",
+      "B-Def"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 27015,
+    "portSetting": "-port",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:1:23456789",
+    "pattern": "STEAM_[0-9]:[01]:[0-9]+"
+  },
+  "commands": {
+    "info": "stats",
+    "listPlayers": "status",
+    "kick": "kick #{playerId}",
+    "ban": "banid {duration} {playerId} kick",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*\\d+\\s+\"(?<name>.*)\"\\s+(?<accountId>\\d+)\\s+(?<playerId>STEAM_[0-9]:[01]:[0-9]+)",
+    "skipLinePattern": "^#\\s+name\\s+userid\\s+uniqueid"
+  },
+  "banList": {
+    "paths": [
+      "bdef/banned.cfg",
+      "banned.cfg"
+    ],
+    "lineIdPattern": "^banid\\s+\\S+\\s+(STEAM_[0-9]:[01]:[0-9]+)",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://store.steampowered.com/app/632730/Base_Defense/",
+      "title": "Base Defense on Steam - 'This community-made mod requires that you own Half-Life'",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/817300/info/",
+      "title": "Base Defense Dedicated Server (App 817300), parent app 632730",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/master/lgsm/config-default/config-lgsm/bdserver/_default.cfg",
+      "title": "LinuxGSM bdserver _default.cfg - appid 817300, engine 'goldsrc', executable './hlds_run', systemdir 'bdef', port 27015",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/dreamstalker/rehlds/master/rehlds/engine/sv_main.cpp",
+      "title": "ReHLDS engine sv_main.cpp - SV_BanId_f, SV_RemoveId_f, SV_WriteId_f, Host_Kick_f, rcon_password, bannedcfgfile",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/dreamstalker/rehlds/master/rehlds/engine/host_cmd.cpp",
+      "title": "ReHLDS engine host_cmd.cpp - Host_Status_f, Host_Say_f, Host_Stats_f, command table",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/alliedmodders/amxmodx/master/plugins/admincmd.sma",
+      "title": "AMX Mod X admincmd.sma - issues kick #userid, banid <minutes> <authid>, removeid, writeid to HLDS",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.moddb.com/mods/b-def/downloads/base-defense-install",
+      "title": "Base Defense Install (ModDB) - install path needs a 'bdef' folder",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Base Defense is a GoldSrc (Half-Life 1) mod by PLut; Steam tool app 817300 is HLDS running the 'bdef' game directory, so every command here is engine-level HLDS, not mod-specific. That engine binding is DOCUMENTED, not inferred: LinuxGSM's bdserver/_default.cfg pins appid 817300 with engine='goldsrc', executable='./hlds_run', systemdir '<serverfiles>/bdef', startparameters '-game bdef ... -port 27015', stopmode 9 (GoldSrc); the Steam store page ('requires that you own Half-Life') and the ModDB installer's 'bdef' folder agree. No source documents Base Defense's server ADMINISTRATION specifically, so the command text is the generic HLDS surface. RCON is GoldSrc's own connectionless UDP challenge-response on the game's UDP port (default 27015), NOT the Source TCP RCON packet format, hence flavour 'custom'; SV_Rcon_Validate rejects everything while rcon_password is empty, so setting it is the only enable switch, and the port follows the -port launch argument. {duration} on ban is MINUTES, 0 = permanent ('banid <minutes> <uniqueid or #userid> { kick }' / 'Use 0 minutes for permanent'). banid/removeid change only the running server's in-memory filter list; run 'writeid' afterwards to persist, and note SV_WriteId_f writes ONLY permanent entries (banTime == 0) as 'banid 0.0 <id>' lines - a timed ban is never written to the file. The file is the 'bannedcfgfile' cvar, default banned.cfg in the game dir, and it must be exec'd (usually from server.cfg) at startup for bans to survive a restart; 'removeid' likewise needs a following 'writeid' to stick. kick's documented usage is 'kick < name > | < # userid >'; ReHLDS Host_Kick_f's '#' branch compares the argument against SV_GetClientIDString as well as the userid, so 'kick #STEAM_0:1:23456789' resolves a Steam ID - that form is used here so kick, ban and unban share one durable identifier, but it is UNDOCUMENTED by Valve and attested only in ReHLDS (a reimplementation, not the stock binary app 817300 ships); AMX Mod X, the independent corroborator, uses 'kick #<userid>' instead. This single-source kick form, plus the fact that nothing has been run against a live Base Defense server, is why confidence stays low even though status/stats/say/banid/removeid/writeid are attested twice over. Players on a LAN/insecure server report VALVE_ ids or 'HLTV'/'BOT' instead of STEAM_ ids; those rows will not match the parse pattern and cannot be banid'd by uniqueid. 'stats' prints the 'CPU In Out Uptime Users FPS Players' line; 'status' prints hostname, version, map and the player table under the header '#      name userid uniqueid frag time ping loss adr', each row formatted '#%2i \"name\" <userid> <uniqueid> ...'. 'say' works only on a dedicated server, broadcasts as '<hostname> message', and the engine truncates the message at 63 characters. No motd command is recorded here: the engine's 'motd' command only prints motd.txt to the server console, it does not set or broadcast anything."
+}

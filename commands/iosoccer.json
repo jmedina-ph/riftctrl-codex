@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "slug": "iosoccer",
+  "game": {
+    "displayName": "IOSoccer Dedicated Server",
+    "appId": 673990,
+    "aliases": [
+      "IOSoccer",
+      "IOS",
+      "iosoccer",
+      "iosserver",
+      "IOS Soccer"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 27015,
+    "portSetting": "hostport",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:1:12345678",
+    "pattern": "(?:STEAM_[0-9]:[01]:[0-9]+|\\[U:[0-9]:[0-9]+\\])"
+  },
+  "commands": {
+    "info": "stats",
+    "listPlayers": "status",
+    "kick": "kick \"{playerName}\"",
+    "ban": "banid {duration} {playerId} kick",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*(?<accountId>\\d+)\\s+\"(?<name>[^\"]*)\"\\s+(?<playerId>STEAM_[0-9]:[01]:[0-9]+|\\[U:[0-9]:[0-9]+\\])",
+    "skipLinePattern": "^#\\s*userid\\s+name"
+  },
+  "banList": {
+    "paths": [
+      "iosoccer/cfg/banned_user.cfg"
+    ],
+    "lineIdPattern": "^banid\\s+[0-9.]+\\s+(STEAM_[0-9]:[01]:[0-9]+|\\[U:[0-9]:[0-9]+\\])",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://steamdb.info/app/673990/info/",
+      "title": "SteamDB - IOSoccer Dedicated Server (App 673990), type Tool, Source Engine, parent app IOSoccer 673560",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/master/lgsm/config-default/config-lgsm/iosserver/_default.cfg",
+      "title": "LinuxGSM iosserver _default.cfg - appid=673990, engine=source, -game iosoccer -port 27015",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://linuxgsm.com/servers/iosserver/",
+      "title": "LinuxGSM - IOSoccer Linux Game Server",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamah.com/iosoccer-dedicated-server-guide/",
+      "title": "IOSoccer: Dedicated Server Guide - srcds -game iosoccer -port 27015, rcon_password in cfg/server.cfg",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.alliedmods.net/Setting_up_a_Source_Dedicated_Server_(Windows)",
+      "title": "AlliedModders Wiki - Setting up a Source Dedicated Server (Windows): SteamCMD install and srcds launch flags (-console, -game, +map) ONLY; this page documents no admin/RCON commands",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.tjansson.dk/2008/08/setting-up-a-dods-halflife-dedicated-server-on-linux/",
+      "title": "Setting up a Source dedicated server on Linux - rcon kickid [number], rcon banid [x] [y] kick, rcon removeid [p], rcon writeid, rcon say [text], rcon stats",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.gameserverkings.com/knowledge-base/team-fortress-2/admin-commands/",
+      "title": "Source engine RCON admin commands - kick \"<name>\", kickid <userid> \"<reason>\", banid <minutes> <steamid>, removeid <steamid>, writeid, status",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://legionhosting.net/kb/iosoccer/iosoccer-admin-commands",
+      "title": "IOSoccer Admin Commands (hosting knowledge base) - rcon status, rcon kick <userid>, rcon banid <minutes> <userid>, rcon removeid <steamid>, rcon writeid, banned_user.cfg, rcon say",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamah.com/iosoccer-console-commands-guide/",
+      "title": "IOSoccer: Console Commands Guide - game-specific sv_/mp_ commands (sv_restart, sv_endmatch, sv_addplayercardban, sv_toggleplayeryellowcard); no kick or ban",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Console_Command_List",
+      "title": "Valve Developer Community - Console Command List: kick 'Kick a player by slot, userid or name', banid 'Add a user ID to the ban list.', removeid 'Remove a user ID from the ban list.', rcon_password, hostport 'Host game server port' (27015)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "IOSoccer is a stock Source dedicated server (srcds) launched with -game iosoccer; app 673990 is the 'IOSoccer Dedicated Server' tool (SteamDB: type Tool, Source Engine, parent app 673560), and LinuxGSM's iosserver module sets appid=673990, engine=source, '-game iosoccer ... -port 27015'. RCON is standard Valve Source RCON (TCP) on the server's own port, enabled by setting rcon_password in iosoccer/cfg/server.cfg; there is no separate RCON port or enable switch, and hostport is the Source cvar for that port (-port sets it). Confidence is LOW on purpose: every kick/ban/say string here is engine-level Source behaviour taken from GENERAL Source server documentation, not from any IOSoccer-specific official source - the developer's own material (iosoccer.com server manual, the published Console Commands guide) documents only match control (sv_restart, sv_endmatch, mp_*, sv_addplayercardban / sv_toggleplayeryellowcard / sv_removeplayercardban, which are in-match cards rather than moderation) and never mentions kick or ban. SOURCE CAVEAT: the AlliedModders wiki page cited is a SteamCMD/srcds setup guide and documents NO admin commands - it supports only the 'stock srcds' identity claim; the command strings rest on the two general Source write-ups (tjansson, GameServerKings) plus the IOSoccer hosting KB. SOURCE DISAGREEMENT: the Legion Hosting knowledge base gives 'kick <userid>' and 'banid <minutes> <userid>', whereas the general Source documentation gives kick a NAME and kickid the userid; Valve's own Console Command List describes kick as 'Kick a player by slot, userid or name', so the hosting page is not necessarily wrong, but it is second-hand (it also lists mp_restartgame, which IOSoccer does not use) and is not treated as confirmation. kick is therefore templated on {playerName}, the form explicitly attested for Source; 'kickid <userid>' probably also works but no source confirms it for this build, and nothing confirms a Steam ID is accepted there. banid takes minutes (0 = permanent) and the Steam ID, with a trailing 'kick' to drop the player immediately. Bans exist only in memory until 'writeid' is run, which writes lines like 'banid 0 STEAM_0:1:12345678' to iosoccer/cfg/banned_user.cfg - the exact numeric formatting and whether the id is quoted vary by Source branch and were NOT verified for this build, so lineIdPattern is a best guess; IP bans are the separate addip/removeip/writeip list in iosoccer/cfg/banned_ip.cfg. Depending on the Source branch, status prints the id either as STEAM_0:1:12345678 or as [U:1:12345678]; both forms are accepted by the parse pattern. playerParse assumes the older single-column status format ('# <userid> \"<name>\" <uniqueid> ...'); newer Source branches print an extra leading index column and would not match, which is another reason for the low rating. There is no console command to set the MOTD - Source reads iosoccer/cfg/motd.txt - so motd is omitted."
+}

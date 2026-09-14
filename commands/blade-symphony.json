@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "slug": "blade-symphony",
+  "game": {
+    "displayName": "Blade Symphony Dedicated Server",
+    "appId": 228780,
+    "aliases": [
+      "Blade Symphony",
+      "berimbau",
+      "bsserver"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 27015,
+    "portSetting": null,
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:1:12345678",
+    "pattern": "(?:STEAM_[0-5]:[01]:[0-9]+|\\[U:[0-9]+:[0-9]+\\])"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "ban": "banid {duration} {playerId}",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*(?<accountId>[0-9]+)\\s+\"?(?<name>.+?)\"?\\s+(?<playerId>STEAM_[0-5]:[01]:[0-9]+|\\[U:[0-9]+:[0-9]+\\])",
+    "skipLinePattern": "^(hostname|version|udp/ip|map|players|tags|os|type|edicts|#\\s*userid)"
+  },
+  "banList": {
+    "paths": [
+      "berimbau/cfg/banned_user.cfg",
+      "berimbau/banned_user.cfg"
+    ],
+    "lineIdPattern": "^banid\\s+\\S+\\s+(STEAM_[0-5]:[01]:[0-9]+|\\[U:[0-9]+:[0-9]+\\])",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://www.blade-symphony.com/server-guide/",
+      "title": "Blade Symphony - Hosting a Dedicated Server (official; rcon_password in berimbau/cfg/server.cfg)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/225600/discussions/0/558750985622544675",
+      "title": "Blade Symphony - Dedicated Server Configuration Guide (status, banid, banip, listid, removeid, removeip)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1629339431",
+      "title": "Himura's Blade Symphony Linux Dedicated Server Guide (same rcon command list, berimbau/cfg/server.cfg)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/alliedmodders/sourcemod/blob/master/core/logic/smn_banning.cpp",
+      "title": "SourceMod - smn_banning.cpp, exact engine strings \"banid %d %s\", \"removeid %s\", \"writeid\" (minutes first, id second)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/alliedmodders/sourcemod/blob/master/core/PlayerManager.cpp",
+      "title": "SourceMod - PlayerManager.cpp, Blade Symphony is a supported engine branch (SE_BLADE); kick path always passes the numeric userid",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Source_Dedicated_Server",
+      "title": "Valve Developer Community - Source Dedicated Server (27015 TCP/UDP carries game traffic and RCON)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Console_Command_List",
+      "title": "Valve Developer Community - Console Command List (banid, removeid, listid, say)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://linuxgsm.com/servers/bsserver/",
+      "title": "LinuxGSM - Blade Symphony (bsserver), app id 228780",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Stock Source-engine dedicated server (mod directory \"berimbau\"), so it speaks the Valve Source RCON protocol on the game port - 27015 by default, moved with the -port launch argument, which is why portSetting is null. There is no separate enable switch: RCON is live as soon as a non-empty rcon_password is set in berimbau/cfg/server.cfg, which the official server guide documents (\"the password a player needs to provide if he wishes to run commands on your server remotely\"). Commands go through an authenticated RCON session, so do NOT prefix them with the client-side \"rcon \" word the community guides show. banid takes MINUTES first and the id second; {duration} 0 means permanent. banid does NOT disconnect the player - append the literal word kick as a third argument to drop them at the same time. A ban is also only in memory until writeid is run, which rewrites banned_user.cfg; removeid likewise needs a following writeid, so a manager that bans or unbans should send writeid immediately afterwards (it takes no arguments and could not be folded into these templates, which must stay single commands). NO KICK COMMAND IS RECORDED, deliberately. kickid exists at engine level and accepts an optional reason, but the sources disagree on what identifier it takes: SourceMod's own core always passes the numeric userid (\"kickid %d %s\" in PlayerManager.cpp) and two Source command references say userid only, while Garry's-Mod-family references say a SteamID also works; no Blade-Symphony-specific page documents kickid at all. The only identifier this file carries is the Steam ID, because banid and removeid require it, and a kickid template fed a Steam ID may silently kick nobody - so kick was dropped rather than shipped as a dead button. Use ban with {duration} 0 (plus a trailing kick argument) to remove a player. status, banid, banip, listid, removeid and removeip are listed for THIS game by two independent Blade Symphony admin guides and match SourceMod's engine strings; say is engine-level only, from the Valve console command list. status output format varies by Source build: the uniqueid column is either STEAM_0:1:xxxxxxx or [U:1:xxxxxxx] and banid/removeid accept both, so the pattern matches either. The playerParse regex has NOT been checked against real Blade Symphony status output - CS:GO-era builds (SourceMod groups Blade Symphony with CS:GO as SE_BLADE) print an extra column before the quoted name, which would leave that column inside the captured name; playerId still parses correctly, so the roster degrades rather than breaks. The Steam community guide also lists sm_kick/sm_ban/sm_say - those exist only if SourceMod is installed and are deliberately not recorded. The dedicated server app id is 228780; the game itself is 225600."
+}

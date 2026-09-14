@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "slug": "battlefield-1942",
+  "game": {
+    "displayName": "Battlefield 1942 Dedicated Server",
+    "appId": null,
+    "aliases": [
+      "Battlefield 1942",
+      "BF1942",
+      "BF42",
+      "bf1942",
+      "Battlefield 1942 Server"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 4711,
+    "portSetting": null,
+    "enableSetting": "admin.enableRemoteConsole",
+    "passwordSetting": null
+  },
+  "playerId": {
+    "label": "Player ID",
+    "example": "3",
+    "pattern": "[0-9]{1,3}"
+  },
+  "commands": {
+    "listPlayers": "game.listPlayers",
+    "kick": "admin.kickPlayer {playerId}",
+    "ban": "admin.banPlayer {playerId}",
+    "say": "admin.serverMessage \"{message}\"",
+    "motd": "game.setServerWelcomeMessage 0 \"{message}\""
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^\\s*(?:Id:\\s*)?(?<playerId>[0-9]+)\\s*[-:]?\\s*(?:Name:\\s*)?(?<name>\\S.*?)\\s*$",
+    "skipLinePattern": "^\\s*$|^\\s*[Ii][Dd]\\b.*[Nn]ame"
+  },
+  "banList": {
+    "paths": [
+      "mods/bf1942/settings/banlist.con",
+      "mods/bf1942/Settings/BanList.con"
+    ],
+    "lineIdPattern": "([0-9]{1,3}(?:\\.[0-9]{1,3}){3})",
+    "liveUnban": "admin.removeAddressFromBanList {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://icculus.org/pipermail/bf1942/2002-December/000788.html",
+      "title": "[bf1942] RE : [bf1942] admin.remote - icculus BF1942 Linux server mailing list",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://icculus.org/pipermail/bf1942/2002-December/000683.html",
+      "title": "[bf1942] Admin commands not working on latest version? (\"Use 4711 for the remote console\")",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.moongamers.com/forum/index.php?showtopic=68",
+      "title": "BF1942 console command list",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://gamefaqs.gamespot.com/pc/466245-battlefield-1942/faqs/26024",
+      "title": "Battlefield 1942 - Console Commands FAQ (KenZoe)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://lancommander.app/GameServers/BF1942/Options/",
+      "title": "Battlefield 1942 Server Configuration Options - LANCommander",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/LANCommander/LANCommander.Servers.Battlefield1942",
+      "title": "LANCommander.Servers.Battlefield1942 - compose maps 4711:4711/tcp with the comment \"RCON\"",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://team-simple.org/forum/viewtopic.php?id=11117",
+      "title": "All strings found in IDA - BF1942 retail binary string dump",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://xgamingserver.com/configs/bf1942",
+      "title": "Battlefield 1942 ready-to-use serversettings.con - shows game.setServerWelcomeMessage 0 \"\"",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "No Source RCON. BF1942's remote channel is its own remote console: admin.enableRemoteConsole <username> <password> [port], default TCP 4711, with an operator connecting via RemoteConsole.exe in the server's AdminTool folder; the wire protocol is proprietary and undocumented, hence flavour \"custom\". Port 4711 is two-sourced (icculus list 000683, \"Use 4711 for the remote console ... 4711 is the default port\", and the LANCommander container mapping 4711:4711/tcp # RCON). Username and password are arguments of that one command, not named settings, so portSetting/passwordSetting are null. CORRECTION (review 2026-09-13): an earlier draft justified transport by claiming the icculus list says admin commands cannot be run in the dedicated server's own console window. That is backwards. Message 000788 says the opposite: \"When you are sitting in front of your server/console (i.e. NOT remote), then you just issue the admin command right into the console (i.e. game.listplayers and admin.kickplayer <number>)\", reached by pressing the ` key to take the console out of status-display mode. The \"you cannot run commands there\" quote is from a different thread (000683) and refers to the startup window where a launch error is printed, not to the in-server console. The server therefore DOES accept these commands locally; transport is recorded as rcon because the remote console is the channel a remote runtime can actually drive, not because a local console channel is impossible. Argument-form disagreement on the enable command: the icculus FAQ and the MoonGamers list give admin.enableRemoteConsole [username] [password] [#port]; LANCommander and the KenZoe FAQ present it as a 0/1 toggle (admin.enableRemoteConsole 1). Probe both forms. Command casing comes from the strings in the retail binary (kickPlayer, kickPlayerByName, banPlayer, banPlayerKey, listPlayers, serverMessage, sayAll, setServerWelcomeMessage, listBannedAddresses, removeAddressFromBanList, enableRemoteConsole); community lists (MoonGamers, TweakGuides, Gamesclan) misspell listBannedAddresses as \"listBannedAdresses\". Source coverage is NOT uniform across the four commands: kick, ban and listPlayers appear in the binary dump, MoonGamers, the KenZoe FAQ and LANCommander; admin.serverMessage appears in the binary dump, the KenZoe FAQ (\"message = admin.servermessage\", yellow server text) and LANCommander, but NOT in the MoonGamers list; game.setServerWelcomeMessage appears in the binary dump, LANCommander and the XGamingServer reference serversettings.con (which literally contains game.setServerWelcomeMessage 0 \"\"), but NOT in MoonGamers or the KenZoe FAQ. Every recorded command still clears two independent sources, so confidence stays high. The moderation id is the per-session numeric player id printed by game.listPlayers - not a name, CD-key hash or account id; admin.kickPlayerByName <name> also exists but has no ban equivalent, so the numeric id is recorded. Disagreement: LANCommander documents an optional timeout on ban (admin.banplayer <id> [timeout]); no other source shows it, so {duration} is not used and the ban is recorded as permanent. game.sayAll exists (binary dump, MoonGamers) and is global chat; admin.serverMessage is the server-side yellow broadcast and is used for say. UNVERIFIED: the literal text layout of game.listPlayers output could not be sourced anywhere. LANCommander says it prints ids, names and CD-key hashes, so playerParse.linePattern has been widened to accept both a bare leading numeric id and an \"Id:\"-prefixed form, and the name group may swallow a trailing key hash. This regex is a guess and must be confirmed against a live server before anyone relies on the roster. Bans are stored as IP addresses and CD-key hashes, so there is no unban taking a session player id - unban is expressed as banList.liveUnban (admin.removeAddressFromBanList <ip>), and the substituted {playerId} there is the IP captured by lineIdPattern, not a session id. The banlist.con path is single-sourced (LANCommander). Enabling the remote console was reported in 2002 to cause an \"ASE\" hang on map change."
+}

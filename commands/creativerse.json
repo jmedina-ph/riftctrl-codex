@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "slug": "creativerse",
+  "game": {
+    "displayName": "Creativerse Dedicated Server",
+    "appId": 1098260,
+    "aliases": [
+      "Creativerse",
+      "Creativerse: The Definitive Edition",
+      "CreativerseServer",
+      "Creativerse Standalone Server"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://www.creativersegame.com/help/admin.html",
+      "title": "Creativerse - Admin Tools (Playful's official admin help: chat commands that open an in-game player list, and the localhost web admin tool at http://localhost:26902/admin/admin.html)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://playfulstudios.com/creativerse-the-definitive-edition/",
+      "title": "Playful Studios: Creativerse: The Definitive Edition (self-hosting, 'a separate web admin interface')",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/JamoDevNich/creativerse-server",
+      "title": "creativerse-server: dockerised Creativerse Dedicated Server (full port table 26900/26901/26902; web UI localhost-only; binary exits if -worldId is not provided)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://creativerse.fandom.com/wiki/Admin_Controls",
+      "title": "Creativerse Wiki: Admin Controls (/kick [minutes], /ban, /unban all 'bring up a list of players' to click)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/1098260/info/",
+      "title": "Creativerse Dedicated Server, AppID 1098260 (type: Tool; parent app Creativerse 280790)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Creativerse does have a real dedicated server since The Definitive Edition moved hosting off Playful's cloud onto players' own machines (Steam app 1098260, type Tool, parent app Creativerse 280790; binary CreativerseServer), but it exposes no channel that accepts typed commands. The server takes -worldId=<worldKey> and exits immediately without it; the dockerised community server publishes no further argument list, and documents no console command input. Its complete port table is 26900/UDP game, 26901/UDP Steam query and 26902/TCP web server, with no RCON port. Moderation happens two ways, neither of them a command pipe. (1) In-game chat commands typed by an admin in the GAME CLIENT, not on the server: /who, /kick [minutes], /ban, /unban, /mute [minutes], /promote [admin|mod|builder|visitor], /permissions, /help, /request. Playful's own admin page and the Creativerse Wiki agree that /kick, /ban, /unban, /mute and /promote take no player argument at all - they pop up an interactive list of players to click, so there is no text form that targets a specific player and nothing to template. (2) A browser admin UI at http://localhost:26902/admin/admin.html (add 2 to the world's game port if it is not the default), which Playful documents as requiring the world to be running on the same PC; the dockerised server repeats that it is reachable from the server itself only and advises against forwarding the port. That UI necessarily calls some HTTP endpoints underneath, but Playful publishes no API for them and no version guarantee, so nothing was recorded as a rest transport rather than guess paths. Confidence is 'low' despite the sources agreeing on what is documented, because this is an absence-of-evidence conclusion and an undocumented admin HTTP surface exists on 26902 that could turn this file into a rest entry if anyone reverse-engineers and publishes it."
+}

@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "slug": "frozen-flame",
+  "game": {
+    "displayName": "Frozen Flame - Dedicated Server",
+    "appId": 1348640,
+    "aliases": [
+      "Frozen Flame",
+      "FrozenFlame",
+      "FrozenFlameServer"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 27015,
+    "portSetting": "-RconPort",
+    "enableSetting": null,
+    "passwordSetting": "-RconPassword"
+  },
+  "playerId": {
+    "label": "Player ID",
+    "example": "76561198012345678",
+    "pattern": "[0-9A-Fa-f]{16,32}"
+  },
+  "commands": {
+    "info": "Admin_ServerWorld",
+    "listPlayers": "Admin_GetOnlinePlayers",
+    "kick": "Admin_KickPlayer {playerId} {reason}",
+    "ban": "Admin_Ban {playerId} {duration} {reason}",
+    "unban": "Admin_Unban {playerId}",
+    "say": "Admin_ChatMessage {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^(?<name>.*?)[\\s,:|]+(?<playerId>[0-9A-Fa-f]{16,32})\\s*$",
+    "skipLinePattern": "^\\s*$"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/DreamsideInteractive/FrozenFlameServer/blob/main/RCON.commands",
+      "title": "FrozenFlameServer/RCON.commands - Dreamside Interactive",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/DreamsideInteractive/FrozenFlameServer/blob/main/README.md",
+      "title": "Frozen Flame - Dedicated Server (README)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://legionhosting.net/kb/frozen-flame/frozen-flame-admin-commands",
+      "title": "Frozen Flame Admin Commands - Legion Hosting",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2969244913",
+      "title": "Frozen Flame - ItemIDs & Console Commands",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Command text comes from the developer's own server repo (DreamsideInteractive/FrozenFlameServer, RCON.commands). The Steam community guide and the Legion Hosting KB list exactly the same set and read as copies of that file, so this is effectively ONE independent source - hence confidence low. Transport: Valve Source RCON wire protocol; the official README points admins at mcrcon and says the password must be sent as \"admin:<Rcon Password>\", i.e. the literal prefix \"admin:\" is part of the auth string, not the password. RCON port and password are launch arguments (-RconPort=27015 -RconPassword=...), not ini settings; 27015 is the value in the publisher's own example launcher line, and the README's port list gives 27015 TCP for RCON, 25575 + 27015/udp for query, 7777 for game. Ban duration is in SECONDS (Admin_Ban <PlayerID> <Seconds> <Reason>); 'reason' is the trailing argument and the docs show it unquoted. Admin_ChatMessage is the only broadcast; there is no MOTD command. Bans and unbans are live commands - no documented ban file. UNRESOLVED: no published source states what PlayerID actually looks like. Admin_GetOnlinePlayers is documented only as 'Displays names and IDs of currently joined players' and no example output exists anywhere public. The game ships EasyAntiCheat/EOS but is Steam-only, so the id is plausibly a 17-digit SteamID64 or a 32-char hex EOS product user id; the pattern here is deliberately permissive to accept either, and playerParse.linePattern is a best-effort guess at a 'name then id' line. Both MUST be checked against a live server before the roster, kick or ban are trusted."
+}

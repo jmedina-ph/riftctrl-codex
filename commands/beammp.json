@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "slug": "beammp",
+  "game": {
+    "displayName": "BeamMP Server",
+    "appId": 284160,
+    "aliases": [
+      "BeamMP",
+      "BeamMP-Server",
+      "BeamNG.drive Multiplayer",
+      "BeamNG Multiplayer"
+    ]
+  },
+  "transport": "stdin",
+  "stdin": {
+    "note": "Commands are typed into the BeamMP-Server process's own console (prompt \"> \"), one per line, no leading slash. The bundled commandline library picks an interactive readline backend on a TTY and a buffered backend otherwise, so writing lines to the process's stdin works without a PTY. Typing \"lua\" switches the console into Lua mode where these commands are evaluated as Lua instead; \":exit\" returns to the normal console."
+  },
+  "playerId": {
+    "label": "Username",
+    "example": "SpeedyDriver",
+    "pattern": "[A-Za-z0-9_. -]{1,32}"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "list",
+    "kick": "kick \"{playerId}\" {reason}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^(?<playerId>(?<name>.+?))\\s+(?<accountId>[0-9]+)\\s+[0-9]+\\s*$",
+    "skipLinePattern": "^(Name\\s+ID\\s+Cars|No players online\\.)"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/BeamMP/BeamMP-Server/blob/v3.9.2/include/TConsole.h",
+      "title": "BeamMP-Server v3.9.2 - TConsole.h console command map",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/BeamMP/BeamMP-Server/blob/v3.9.2/src/TConsole.cpp",
+      "title": "BeamMP-Server v3.9.2 - TConsole.cpp (help text, Command_Kick, Command_List, Command_Say)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/BeamMP/BeamMP-Server/blob/master/src/TConfig.cpp",
+      "title": "BeamMP-Server TConfig.cpp - full ServerConfig.toml key list (no RCON keys)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://docs.beammp.com/server/manual/",
+      "title": "BeamMP Docs - Server Manual",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://xgamingserver.com/docs/beammp/console-commands",
+      "title": "XGamingServer Docs - BeamMP Server Console Commands Reference",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.ghostcap.com/guides/games/beammp/console-commands",
+      "title": "GHOSTCAP - How to Use Console Commands on Your BeamMP Server",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "No RCON and no admin HTTP API exist: TConfig.cpp's complete ServerConfig.toml key list has no RCON/port/password keys, and the BeamMP docs describe no remote admin channel. The only command channel is the server process console, so a panel must own the process or its stdin. Command text was read from the shipping release (v3.9.2 include/TConsole.h command map and src/TConsole.cpp) and matches the help output reproduced independently by two host providers. The full vanilla command set is: help, exit, kick, list, say, lua, settings, status, clear, version, protectmod, reloadmods, nettest. THERE IS NO BAN OR UNBAN in the base server - banning exists only via server-side Lua plugins such as BeamJoy, which is why no ban/unban/motd key is recorded here; hosting pages that advertise BeamMP ban commands are describing a plugin, not the server. kick moderates by NAME, not by any numeric id: Command_Kick compares the argument to each connected player's name case-insensitively and matches if either string is a PREFIX of the other, so a short argument can kick the wrong player - always pass the full name. With no reason given the server substitutes \"Kicked by server console\". list prints a fixed-width table with header \"Name\"(25) \"ID\"(6) \"Cars\"(6) and prints \"No players online.\" when empty; the ID column is a per-session client id (used by the Lua API), not the kick key, so it is mapped to accountId. say takes the rest of the line verbatim. appId 284160 is BeamNG.drive itself - BeamMP-Server is distributed from beammp.com/GitHub and has no Steam app of its own. Older builds (master branch as read on 2026-09-13, and 3.3-3.8 tags) lack version/protectmod/reloadmods/nettest but are identical for kick/list/say/status. Parser caveat: list pads the Name column to 25 characters with std::setw, so a name of 25 or more characters leaves no gap before the ID column and that row will not match linePattern - such a player is simply absent from the roster rather than mis-parsed. Quoting the name in kick is safe: the console's argument parser strips enclosing double, single or backtick quotes, which is the only way to kick a name containing spaces."
+}

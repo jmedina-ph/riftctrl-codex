@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "slug": "day-of-infamy",
+  "game": {
+    "displayName": "Day of Infamy Dedicated Server",
+    "appId": 462310,
+    "aliases": [
+      "Day of Infamy",
+      "DOI",
+      "DoI",
+      "doiserver"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 27015,
+    "portSetting": "hostport",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_1:0:12345678",
+    "pattern": "STEAM_[0-9]:[01]:[0-9]+"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kickid {playerId} {reason}",
+    "ban": "banid {duration} {playerId} kick",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*\\d+\\s+(?:\\d+\\s+)?\"(?<name>.+?)\"\\s+(?<playerId>STEAM_[0-9]:[01]:[0-9]+)",
+    "skipLinePattern": "^(#\\s*userid|hostname|version|udp/ip|os\\s|map\\s|players\\s|edicts)"
+  },
+  "banList": {
+    "paths": [
+      "doi/cfg/banned_user.cfg"
+    ],
+    "lineIdPattern": "banid\\s+[0-9.]+\\s+\"?(STEAM_[0-9]:[01]:[0-9]+)",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=952405515",
+      "title": "Day of Infamy Windows Dedicated Server (Steam guide) - lists 27015 'UDP for traffic, TCP for RCON', rcon_password, kick/kickid/banid/removeid/writeid/listid",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/GameServerManagers/Game-Server-Configs/blob/master/DayOfInfamy/server.cfg",
+      "title": "LinuxGSM Game-Server-Configs - DayOfInfamy/server.cfg (rcon_password, exec banned_user.cfg, exec banned_ip.cfg)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/GameServerManagers/LinuxGSM/blob/master/lgsm/config-default/config-lgsm/doiserver/_default.cfg",
+      "title": "LinuxGSM doiserver _default.cfg (appid 462310, port 27015, -game doi, systemdir doi, servercfgdir doi/cfg)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/222880/discussions/2/364042703853182968/",
+      "title": "Insurgency Server Admin Support - permanent bans ('banid < minutes > < userid | uniqueid > { kick }', 0 = permanent, writeid + exec banned_user.cfg)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.teamfortress.com/wiki/List_of_useful_console_commands",
+      "title": "Official TF2 Wiki - list of useful console commands (banid <minutes> <steamid>, 0 = permanent; status; kick <name>)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/447820/discussions/0/2549465882916981267/",
+      "title": "Day of Infamy Questions & General Discussion - 'RCON' thread (nickname 'might not work for special chars so use SteamID instead')",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/222880/discussions/2/540744935925171038/",
+      "title": "Insurgency Server Admin Support - Ban by STEAM_0:0:... (banned_user.cfg lines 'banid 0 STEAM_0:0:19787846', unquoted)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://linuxgsm.com/servers/doiserver/",
+      "title": "LinuxGSM - Day of Infamy Linux Game Server",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Stock Source SDK 2013 dedicated server (srcds -game doi, per LinuxGSM startparameters), so the Valve Source RCON wire protocol on TCP at the game port. RCON has no separate enable cvar: setting rcon_password in doi/cfg/server.cfg turns it on (LinuxGSM's shipped DayOfInfamy/server.cfg sets exactly that), and there is no separate RCON port - it rides the game port, whose cvar is hostport (Source 2013 cvarlist: 'hostport 27015 Host game server port'); the Steam dedicated-server guide states 27015 is 'UDP for traffic, TCP for RCON'. kickid and banid accept either the transient userid from status or the persistent Steam ID; this file moderates by Steam ID (STEAM_x:y:z, the uniqueid column of status) because userid changes on every reconnect. kickid's trailing {reason} is the engine's documented second argument ('Kick a player by userid or uniqueid, with a message'). banid takes MINUTES first, then the id, with an optional trailing 'kick' that drops the player immediately - 0 minutes is a permanent ban. IMPORTANT: banid is in-memory only; the ban is lost on restart unless 'writeid' is also issued, which appends the ban to doi/cfg/banned_user.cfg (the stock server.cfg execs banned_user.cfg and banned_ip.cfg on boot). The schema has no way to chain a second command, so an operator relying on this file's ban must issue writeid separately - this is the main footgun here. Ban-file lines are written unquoted as 'banid <minutes> <STEAM_x:y:z>' (seen as both 'banid 0 STEAM_0:0:...' and float minutes); lineIdPattern tolerates an optional leading quote defensively. removeid unbans live but likewise needs writeid to persist. IP bans use addip/removeip against doi/cfg/banned_ip.cfg and are not modelled here. No motd command exists - the MOTD is the motd.txt file. 'say' is the engine-standard Source broadcast; it is not called out on any Day-of-Infamy-specific page, it is inherited from the engine, as are status/kickid/removeid/writeid. On kick form: the Steam dedicated-server guide lists both 'kick <name>' and 'kickid <id>'; in the Day of Infamy RCON thread an admin ADVISES that a nickname 'might not work for special chars so use SteamID instead' - that is advice, not an observed failure, and the poster's kick/kickid attempts in that same thread were all diagnosed as 'you are not logged in via rcon_password'. kickid with a Steam ID is used here because a name is not a stable identifier, not because plain kick was demonstrated broken. The exact column layout of status was not observed on a live Day of Infamy server; the linePattern tolerates the optional second numeric column some Source builds print before the quoted name. Unverified against a live server."
+}

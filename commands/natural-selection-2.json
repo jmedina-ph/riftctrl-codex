@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "slug": "natural-selection-2",
+  "game": {
+    "displayName": "Natural Selection 2 Dedicated Server",
+    "appId": 4940,
+    "aliases": [
+      "Natural Selection 2",
+      "NS2",
+      "NS2 Dedicated Server"
+    ]
+  },
+  "transport": "stdin",
+  "stdin": {
+    "note": "Commands go to the dedicated server's own console. On Linux the server reads its controlling terminal, so managers run it under tmux/screen (LinuxGSM's ns2server module does exactly this); on Windows the server wiki says to select the active server window, press Tab to bring up the console window and then the tilde (~) key to bring up the console command line. No Source RCON. An optional HTTP web admin carries the same command text: start with -webadmin -webdomain <ip> -webuser <user> -webpassword <pass> -webport <port> (NS2 default 80, LinuxGSM default 8080) and GET /?command=Send&rcon=<command> behind HTTP Basic auth; responses are JSON."
+  },
+  "playerId": {
+    "label": "NS2 ID (numeric Steam account ID)",
+    "example": "12344228",
+    "pattern": "[0-9]{2,17}"
+  },
+  "commands": {
+    "listPlayers": "sv_status",
+    "kick": "sv_kick {playerId}",
+    "ban": "sv_ban {playerId} {duration} {reason}",
+    "unban": "sv_unban {playerId}",
+    "say": "sv_say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^(?<name>.+?)\\s*:\\s*Game Id\\s*=\\s*(?<accountId>[0-9]+)\\s*:\\s*NS2 Id\\s*=\\s*(?<playerId>[0-9]+)",
+    "skipLinePattern": "^\\s*$"
+  },
+  "sources": [
+    {
+      "url": "https://naturalselection.fandom.com/wiki/Dedicated_Server",
+      "title": "Dedicated Server - Natural Selection Wiki (mirror of the Unknown Worlds NS2 server wiki) - command table, webadmin parameters, ServerAdmin.json",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.ensl.org/articles/1072",
+      "title": "NSL Mod and server commands - ENSL (descriptions are DAK's registration strings verbatim)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://forums.unknownworlds.com/discussion/119169/ns2-b213-server-admin-system-updated",
+      "title": "NS2 B213 Server Admin System (Updated) - Unknown Worlds Forums",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://forums.unknownworlds.com/discussion/126975/sv-ban-description-is-wrong-in-wiki",
+      "title": "sv_ban description is wrong in wiki - Unknown Worlds Forums ('sv_ban 12344228 60 speed hacking')",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://help.bisecthosting.com/hc/en-us/articles/43697738998171-Natural-Selection-2-Server-Commands",
+      "title": "Natural Selection 2 Server Commands - BisectHosting",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://citadelservers.com/wiki/index.php?title=Server_Admin_Commands_in_Natural_Selection_2",
+      "title": "Server Admin Commands in Natural Selection 2 - Citadel Servers Wiki",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/xToken/DAK/blob/master/lua/plugins/baseadmincommands.lua",
+      "title": "DAK NS2 admin mod - baseadmincommands.lua (replaces the built-in sv_ commands; sole basis for the sv_status line shape)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/GameServerManagers/LinuxGSM/blob/master/lgsm/config-default/config-lgsm/ns2server/_default.cfg",
+      "title": "LinuxGSM ns2server default config - startparameters with -webadmin/-webdomain/-webuser/-webpassword/-webport, httpport 8080",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/4940/",
+      "title": "Natural Selection 2 Dedicated Server - AppID 4940 (type Tool) - Steam Database",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Command names are well attested and consistent across the NS2 server wiki, the ENSL community reference, hosting knowledge bases and the original Unknown Worlds B213 admin-system thread: sv_status (the wiki describes it as 'Show in game name, in game id, SteamID, for all connected players'), sv_kick <PLAYER>, sv_ban <PLAYER> <minutes> <reason> with 0 minutes meaning permanent, sv_unban <STEAMID>, sv_say <message>, plus sv_listbans, sv_psay, sv_tsay, sv_slay, sv_switchteam, sv_statusip. Short aliases kick/say/status/reset also exist. Running any of them requires the caller to be an admin in ServerAdmin.json, which keys users by Steam ID in NS2 format. Confidence is 'low' despite the number of sources because the sources DISAGREE on the identifier: the B213 thread and the DAK/ENSL help text ('Lists player Ids and names for use in sv commands') point at the short, per-connection in-game Game Id, while the wiki documents sv_unban as taking <STEAMID>, the Citadel wiki says in-game ID, SteamID or name are all accepted, and the Unknown Worlds 'sv_ban description is wrong in wiki' thread shows 'sv_ban 12344228 60 speed hacking', an 8-digit NS2/Steam account id. This file uses the NS2 id because it is the only identifier stable across reconnects, the only one sv_unban and the ban list accept, and the same form ServerAdmin.json uses; if a deployment finds sv_kick rejecting it, the Game Id from sv_status is the fallback. The playerParse pattern is the weakest part of this file: no primary source publishes vanilla sv_status output verbatim, so the pattern is modelled on the DAK admin mod, which prints '<name> : Game Id = <n> : NS2 Id = <n> : Steam Id = STEAM_0:...'. DAK is NOT independent corroboration for the vanilla layout - the ENSL article's command descriptions are DAK's own CreateServerAdminCommand strings word for word, and DAK's sv_ban help ('<player id> <player name> <duration in minutes> <reason text>') does not even match the vanilla signature, so DAK's status layout may be its own. Treat playerParse as unverified. There is no motd command and no separate server-info command (sv_help lists what the caller may run), so both keys are omitted; bans are managed live through sv_ban/sv_unban/sv_listbans rather than by editing a file, so no banList is recorded. Transport is recorded as stdin because the console is present on every install; the web admin described in stdin.note is off unless -webadmin is passed, and its GET /?command=Send&rcon=... form is documented only on the NS2 server wiki."
+}

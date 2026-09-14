@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "slug": "deathmatch-classic",
+  "game": {
+    "displayName": "Deathmatch Classic",
+    "appId": 40,
+    "aliases": [
+      "DMC",
+      "Deathmatch Classic Dedicated Server",
+      "Half-Life: Deathmatch Classic",
+      "hlds -game dmc",
+      "Half-Life Dedicated Server (dmc)"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 27015,
+    "portSetting": "port",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:1:12345678",
+    "pattern": "(?:STEAM|VALVE)_[0-9]+:[01]:[0-9]+"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "users",
+    "kick": "kick #{playerId} {reason}",
+    "ban": "banid {duration} {playerId} kick",
+    "unban": "removeid {playerId}",
+    "say": "say {message}",
+    "motd": "motd_write {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^\\s*(?<accountId>[0-9]+)\\s*:\\s*(?<playerId>\\S+)\\s*:\\s*(?<name>.*\\S)",
+    "skipLinePattern": "^(userid\\s|-{3,}|[0-9]+ users)"
+  },
+  "banList": {
+    "paths": [
+      "dmc/banned.cfg",
+      "banned.cfg"
+    ],
+    "lineIdPattern": "^banid\\s+\\S+\\s+((?:STEAM|VALVE)_[0-9]+:[01]:[0-9]+)",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/dreamstalker/rehlds/blob/master/rehlds/engine/sv_main.cpp",
+      "title": "ReHLDS engine source - SV_BanId_f, Host_Kick_f, SV_RemoveId_f, SV_WriteId_f, SV_Users_f, SV_Rcon/SV_Rcon_Validate, bannedcfgfile and rcon_password cvars",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/dreamstalker/rehlds/blob/master/rehlds/engine/host_cmd.cpp",
+      "title": "ReHLDS engine source - Host_Say, Host_Motd_Write_f, motdfile cvar, Cmd_AddCommand registration of status/say/kick/motd/motd_write",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Console_Command_List",
+      "title": "Console Command List - Valve Developer Community. NOTE: this is the SOURCE-engine command list, not a GoldSrc one. It carries kick (Kick a player by slot, userid or name), banid, removeid, listid, say and rcon_password, but it does NOT list users or motd_write. Weak corroborator for this file; the GoldSrc-specific evidence is the engine source plus the two Half-Life command listings below.",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/SteamCMD",
+      "title": "SteamCMD - Valve Developer Community (verbatim: HLDS is a special case: the App ID is always 90 and a mod must be chosen first)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.gamerconfig.eu/commands/half-life/",
+      "title": "Console commands for Half-Life - GAMERCONFIG (GoldSrc: kick, banid bans AND kicks using their uniqueid, removeid, writeid writes unique ids to banned.cfg, listid, users, status, say, motd, motd_write, rcon_password, port, bannedcfgfile)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://forum.esforces.com/threads/rcon-command-listing.21809/",
+      "title": "RCON Command listing - Earth's Special Forces forum (banid: ban player with id for minutes (0=permanent ban), add kick after user number to also kick; removeid; writeid to banned.cfg; users; status)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/40/history/",
+      "title": "Deathmatch Classic - AppID 40 - Steam Database",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Deathmatch Classic has no dedicated-server app of its own. It ships inside the Half-Life Dedicated Server (SteamCMD app 90; the Valve wiki states verbatim that HLDS is a special case where the app id is always 90 and a mod must be chosen first) and is launched with -game dmc. appId here is DMC's own Steam app id 40, because 90 is shared with Half-Life, TFC, Ricochet, Day of Defeat and CS 1.6 and so cannot identify this game on its own. TRANSPORT: GoldSrc rcon is NOT the Source TCP RCON protocol; it is the older connectionless UDP challenge/response scheme (the client sends getchallenge, then rcon <challenge> <password> <command>) served on the game port itself, hence flavour custom. SV_Rcon_Validate refuses when rcon_password is empty, so there is no separate enable cvar: rcon is live as soon as rcon_password is non-empty, and rcon_adduser optionally whitelists source IPs. The port is the port cvar, default 27015, also set with -port or +port. QUOTING IS LOAD-BEARING: the engine tokenizer treats a colon as its own token (COM_Parse), so banid, removeid and kick each rebuild a Steam ID from separate argv slots (banid uses argv 2/4/6, removeid 1/3/5, kick argv1-minus-# plus 3/5). Send the id UNQUOTED: banid 0 STEAM_0:1:12345678 kick parses as 8 tokens (SV_BanId_f caps Cmd_Argc at 8) and resolves, while quoting the id makes it a single token and the reconstruction yields a garbage id that matches nobody. BAN ARGUMENTS: the engine usage string is banid <minutes> <uniqueid or #userid> { kick } with Use 0 minutes for permanent; the first argument is MINUTES, 0 is permanent (banEndTime 0), and the trailing literal kick also drops the player. banid accepts no reason. PERSISTENCE: banid and removeid only edit the in-memory userfilters list. Send writeid afterwards to flush permanent bans to the file named by the bannedcfgfile cvar (default banned.cfg, in the mod directory, as lines of the form banid 0.0 STEAM_0:1:12345678), or the change is lost on restart. rcon runs one command per packet via Cmd_ExecuteString rather than the command buffer, so semicolon chaining does not work and writeid must be sent as its own command. KICK CAVEAT, the one point where sources disagree and the one command form resting on a single source: Host_Kick_f accepts kick <name>, kick # <userid> and kick #<uniqueid>, and its reason-offset arithmetic contains an explicit correction for the colon-split Steam ID form (argsStartNum += 4 when the id begins STEAM_/VALVE_), but the Valve wiki (kick a player by slot, userid or name - and that page is the Source-engine list, so it is weak evidence here) and gamerconfig (using their userid) document only the first two. The #uniqueid form is recorded here because it is the only identifier stable across name changes and is the same id that ban and unban take; it rests on the engine source alone, though that code path is outside REHLDS_FIXES and so reflects vanilla GoldSrc. If you prefer the documented route, kick <name> works (quote the name when it contains spaces), but the optional reason is then mangled because the reason offset is computed from unquoted token lengths; the per-session userid needed for kick # <userid> is exposed as accountId by playerParse. ROSTER: users prints userid : uniqueid : name with a dashed separator row and an N users footer and skips fakeclients (bots), which makes it cleaner to parse than status; status is kept as info because it also reports hostname, map, player count, ping and addresses. On LAN or insecure servers the uniqueid column can read STEAM_ID_LAN, VALVE_ID_LAN, HLTV or BOT, none of which are bannable Steam IDs and none of which match playerId.pattern. listid prints the current ban list. BROADCAST: say prefixes the hostname in angle brackets and truncates the message to 63 characters. MOTD: motd_write overwrites the file named by the motdfile cvar (default motd.txt, which must end in .txt) in the mod directory, converting a literal backslash-n into a newline; players see it on their next connect. It must be sent unquoted because it writes Cmd_Args verbatim, unlike say which strips one surrounding pair of quotes. The bare motd command only prints the current MOTD, it does not set it. SOURCE STRENGTH: transport, the Steam-ID moderation identifier and banid/removeid/writeid/users/status/say are each corroborated by three independent sources (ReHLDS engine code, the GAMERCONFIG Half-Life listing, the ESF RCON listing); motd_write's existence is corroborated by two (code, GAMERCONFIG) but its argument form by code alone."
+}

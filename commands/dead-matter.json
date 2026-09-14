@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "slug": "dead-matter",
+  "game": {
+    "displayName": "Dead Matter Dedicated Server",
+    "appId": 2584780,
+    "aliases": [
+      "Dead Matter",
+      "DM",
+      "deadmatter"
+    ]
+  },
+  "transport": "none",
+  "playerId": {
+    "label": "Steam ID",
+    "example": "76561198012345678",
+    "pattern": "7656119[0-9]{10}"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/johnnyguitarFP/deadmatterdedisetup",
+      "title": "deadmatterdedisetup - full Dead Matter dedicated server config reference (Game.ini / Engine.ini, ports, Admins/SuperAdmins)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/winglessraven/DeadMatterServerManager",
+      "title": "Dead Matter Server Manager - third-party server manager (ini editing and process control only, no RCON)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.ionos.com/digitalguide/server/know-how/dead-matter-server/",
+      "title": "IONOS - How to set up a Dead Matter server",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://survivalservers.com/wiki/index.php?title=Dead_Matter_Server_Admin_Commands_Usage",
+      "title": "Survival Servers wiki - Dead Matter Server Admin Commands Usage (in-game chat commands)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2210541875",
+      "title": "Dead Matter Dedicated Server Tutorial (Steam guide)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/2584780/info/",
+      "title": "SteamDB - Dead Matter Dedicated Server (App 2584780, tool; game app 2184150)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "No remote command channel. The Dead Matter dedicated server (Unreal Engine 4, DeadMatterServer, Steam app 2584780; game app 2184150, formerly the 575440 closed alpha) ships no RCON listener, no admin HTTP/REST API, and no documented stdin console: the only network ports it opens are the game ports (UDP/TCP 7777 and 7778) and the Steam A2S query port (UDP 27016). Basis: the community config reference at johnnyguitarFP/deadmatterdedisetup enumerates every documented Engine.ini and Game.ini key and contains no rcon/enable/port/password setting of any kind; the winglessraven Dead Matter Server Manager - a tool built specifically to run these servers - drives them purely by editing ini files and controlling the process, and exposes no list/kick/ban; hosting write-ups (IONOS, Survival Servers, the Steam dedicated-server tutorial) likewise describe ini-only administration. Dead Matter DOES have admin commands, but they are CLIENT-side: a player whose Steam64 ID is listed under Admins= or SuperAdmins= in [/Script/DeadMatter.DMGameSession] in Game.ini types them into the in-game chat (press Y), e.g. /kick, /ban, /banid, /unban, /banlistex, /kickall. They require a logged-in admin character in the world and cannot be sent by a server manager, so they are deliberately NOT recorded as commands here - recording them would ship buttons that send nothing. There is likewise no listPlayers over any pipe. Moderation identity is the Steam64 ID (that is what Admins=, SuperAdmins= and +Whitelist= take, and what the in-game /banid takes); playerId records it for manual entry only. The MOTD is the Game.ini key MOTD= and the whitelist is WhitelistActive= plus +Whitelist= entries - both config, not commands, and both need a restart. No ban-list file path is documented, so no banList block is recorded. Caveat: no official developer documentation for the dedicated server could be found anywhere - the publisher has published none - so this is a negative established from four independent third-party sources rather than an explicit vendor statement. If Dead Matter ever adds RCON this file must be revisited."
+}

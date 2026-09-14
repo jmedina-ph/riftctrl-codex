@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "slug": "farming-simulator-19",
+  "game": {
+    "displayName": "Farming Simulator 19 Dedicated Server",
+    "appId": 787860,
+    "aliases": [
+      "FS19",
+      "LS19",
+      "Farming Simulator 19",
+      "Landwirtschafts-Simulator 19"
+    ]
+  },
+  "transport": "rest",
+  "rest": {
+    "defaultPort": 8080,
+    "basePath": "/feed",
+    "auth": {
+      "type": "query",
+      "name": "code",
+      "credentialSetting": null
+    }
+  },
+  "playerId": {
+    "label": "Username",
+    "example": "Farmer_Joe",
+    "pattern": "[^\\s<>][^<>]{0,62}[^\\s<>]"
+  },
+  "commands": {
+    "info": "dedicated-server-stats.json",
+    "listPlayers": "dedicated-server-stats.json"
+  },
+  "playerParse": {
+    "mode": "json",
+    "rootPath": [
+      "slots",
+      "players"
+    ],
+    "namePath": [
+      "name"
+    ],
+    "playerIdPath": [
+      "name"
+    ]
+  },
+  "sources": [
+    {
+      "url": "https://www.farming-simulator.com/fs19-rent-a-dedicated-server.php",
+      "title": "Dedicated Server Software - Farming Simulator (GIANTS Software)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/TAEMBO/farming-simulator-types",
+      "title": "TAEMBO/farming-simulator-types - typed FS19/22/25 dedicated-server feeds",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://unpkg.com/farming-simulator-types@3.1.1/2019/feeds.d.ts",
+      "title": "farming-simulator-types 3.1.1 - 2019/feeds.d.ts (feed URL templates)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/TheCoati/FS19-Java-API",
+      "title": "TheCoati/FS19-Java-API - FS19 dedicated server API utility",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.ionos.com/digitalguide/server/know-how/farming-simulator-19-server/",
+      "title": "FS19 server: how to host a dedicated Farming Simulator server (IONOS)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://zap-hosting.com/guides/docs/vserver-windows-fs-19/",
+      "title": "Farming Simulator 2019 Dedicated Server Windows Setup (ZAP-Hosting Docs)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/787860/discussions/1/2479690531142784658/",
+      "title": "admin console :: Farming Simulator 19 Technical Support",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.farmsimgame.com/Docs/Farming-Simulator-25/Dedicated-Servers/",
+      "title": "Farming Simulator Dedicated Server web interface pages (FS25 documentation)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "FS19 has NO kick, ban, unban or broadcast command over any remote channel - those keys are omitted on purpose, not missing. The GIANTS dedicated server exposes an HTML admin web interface (default http://<ip>:8080/, login from the username/password in dedicatedServer.xml) that starts/stops the server and edits settings and mods but has no player-moderation control; kicking is done only from inside the game by a client that has logged in as admin with the admin password (ESC -> farm management -> admin login), which is a GUI action, not a text command. The in-game '^' console reached via game.xml <controls>true</controls> is a CLIENT cheat console (gsCheatMoney etc.) and cannot command a dedicated server - ignore hosting blogs that present it as server administration. What IS machine-usable is the read-only stats feed on the same web-interface port: GET /feed/dedicated-server-stats.json?code=<code> (also .xml), whose payload is {server, slots{capacity, used, players[]}, vehicles, mods, fields}; each player entry is {isUsed, isAdmin, uptime, name} when occupied and {isUsed: false} when the slot is empty. Consumers MUST discard entries with isUsed false - the schema's json playerParse has no filter for that - and note the feed exposes NO Steam ID or UID, only the display name, so the roster identifier is the username. Source disagreement: the .xml form of the feed is attested for FS19 by two independent projects (TheCoati/FS19-Java-API and TAEMBO/farming-simulator-types), while the .json form is attested for FS19 only by TAEMBO's typed routes; swap the extension to dedicated-server-stats.xml if a server 404s on .json. The 'code' is the web-statistics code shown by the server's own web interface; the dedicatedServer.xml setting that holds it was not confirmed, hence credentialSetting null. appId 787860 is the game: FS19 ships its dedicated server with the game rather than as a separate Steam app. Confidence low: the endpoint has two sources but the exact published command string (.json) and the payload field names rest on a single reverse-engineered code source, and GIANTS publishes no API documentation at all."
+}

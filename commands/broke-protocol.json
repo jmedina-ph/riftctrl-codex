@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "slug": "broke-protocol",
+  "game": {
+    "displayName": "BROKE PROTOCOL: Online City RPG",
+    "appId": 696370,
+    "aliases": [
+      "Broke Protocol",
+      "BROKE PROTOCOL",
+      "BP",
+      "Broke Protocol Dedicated Server",
+      "Broke Protocol - Online City Life RPG"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://brokeprotocol.com/bp/",
+      "title": "Broke Protocol - official dedicated server setup page (Cylinder Studios)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/broke-protocol/broke-protocol/wiki/Server-Administration",
+      "title": "Broke Protocol official wiki - Server Administration (settings.json, whitelist.txt, groups.json)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/broke-protocol/broke-protocol/blob/master/docs/CommandHandler.md",
+      "title": "Broke Protocol official API docs - CommandHandler",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/broke-protocol/broke-protocol/blob/master/GameSource/Commands.cs",
+      "title": "Broke Protocol GameSource Commands.cs (vanilla command registrations)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/xiluisx/ConsoleCommands",
+      "title": "ConsoleCommands - third-party plugin that adds commands to the Broke Protocol server console",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/broke-protocol/broke-protocol/wiki/How-to-host-Server",
+      "title": "Broke Protocol official wiki - Hosting a Server",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://brokeprotocol.com/api/class_broke_protocol_1_1_lite_d_b_1_1_ban.html",
+      "title": "Broke Protocol official Game API Reference - BrokeProtocol.LiteDB.Ban class",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Vanilla Broke Protocol ships no remote command channel: no RCON, no HTTP/REST admin API, and no server-console command parser. The official setup page (brokeprotocol.com/bp/) names only files to edit - settings.json, server_info.txt, announcements.txt, groups.json - started with Server.bat (Windows) or ./start.sh (Linux) on UDP 5557 and 5558, and the official wiki Server-Administration page adds whitelist.txt; neither mentions a console, a command, or a remote admin port. The older How-to-host-Server wiki page still describes a pre-1.0 file scheme (Settings.txt, Admin_list.txt, Ban_list.txt, Start.sh/Stop.sh) that groups.json and the in-game admin tools have since replaced - treat that page as out of date rather than as evidence of a plain-text ban file. Moderation in vanilla is done in-game by a player holding admin permissions: the v1.01 Admin Update added the Player Records menu (last 500 connections, view player info, submit bans even after the player left) and the group/permission manager backed by groups.json; bans are LiteDB records - the official Game API Reference documents a BrokeProtocol.LiteDB.Ban class - so no banList is recorded. The official CommandHandler doc confirms the shape of the command system: commands are registered by plugins and are invoked IN-GAME as chat commands by a player (the first parameter is always the calling ShPlayer, e.g. /ban \"John Smith\" \"Some Reason\"), gated by a namespace.command permission in groups.json - they are not console input, and the Steam thread about \"offline console commands\" resolves to exactly that, adding your name to the owner group in groups.json. GameSource/Commands.cs, the vanilla registration site, registers only demo commands (ExampleArgs, ExampleTest, ExampleDiscord, CoinFlip, SlowMo) - no kick, ban, say or player list. Third-party plugins change this but are not the base server: xiluisx/ConsoleCommands exists specifically to \"allow you to use simple commands in the Broke Protocol Console\" and adds AddGroup, Ban, BanInfo, BanList, Give, Groups, Help, ItemList, Online, Say, Teleport and UnBan; BPEssentials/Core adds a broader moderation suite as in-game chat commands. If a managed server is known to run one of those plugins, that plugin's command set - not this file - is what to send. Confidence is low because this is an argument from absence: no source states outright that Broke Protocol has no RCON/REST/console, it is inferred from the official hosting page, the official wiki, the official command API and the existence of a plugin whose whole purpose is adding console commands. No separate dedicated-server Steam app exists; the server is the game build itself (app 696370, the id Steam uses for BROKE PROTOCOL: Online City RPG)."
+}

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-13T05:14:52Z",
+  "generatedAt": "2026-09-14T05:21:10Z",
   "games": [
     {
       "slug": "7-days-to-die",
@@ -236,6 +236,82 @@
       "updatedAt": "2026-09-12"
     },
     {
+      "slug": "base-defense",
+      "displayName": "Base Defense Dedicated Server",
+      "appId": 817300,
+      "aliases": [
+        "Base Defense",
+        "bdef",
+        "B-Def"
+      ],
+      "transport": "rcon",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "battalion-legacy",
+      "displayName": "BATTALION: Legacy Dedicated Server",
+      "appId": 805140,
+      "aliases": [
+        "BATTALION: Legacy",
+        "BATTALION 1944",
+        "Battalion 1944",
+        "btlserver"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "battlefield-1942",
+      "displayName": "Battlefield 1942 Dedicated Server",
+      "appId": null,
+      "aliases": [
+        "Battlefield 1942",
+        "BF1942",
+        "BF42",
+        "bf1942",
+        "Battlefield 1942 Server"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "battlefield-vietnam",
+      "displayName": "Battlefield Vietnam Dedicated Server",
+      "appId": null,
+      "aliases": [
+        "Battlefield Vietnam",
+        "Battlefield: Vietnam",
+        "BFV",
+        "BF:V",
+        "bfvietnam"
+      ],
+      "transport": "rcon",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "beammp",
+      "displayName": "BeamMP Server",
+      "appId": 284160,
+      "aliases": [
+        "BeamMP",
+        "BeamMP-Server",
+        "BeamNG.drive Multiplayer",
+        "BeamNG Multiplayer"
+      ],
+      "transport": "stdin",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
       "slug": "black-mesa",
       "displayName": "Black Mesa Dedicated Server",
       "appId": 346680,
@@ -250,6 +326,165 @@
       "confidence": "high",
       "verified": false,
       "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "blade-symphony",
+      "displayName": "Blade Symphony Dedicated Server",
+      "appId": 228780,
+      "aliases": [
+        "Blade Symphony",
+        "berimbau",
+        "bsserver"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "brainbread",
+      "displayName": "BrainBread",
+      "appId": 90,
+      "aliases": [
+        "BB",
+        "BrainBread 1",
+        "brainbread",
+        "BrainBread Dedicated Server",
+        "Half-Life Dedicated Server (-game brainbread)"
+      ],
+      "transport": "rcon",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "brainbread-2",
+      "displayName": "BrainBread 2 Dedicated Server",
+      "appId": 475370,
+      "aliases": [
+        "BrainBread 2",
+        "BB2",
+        "bb2server",
+        "brainbread2",
+        "BrainBread2"
+      ],
+      "transport": "rcon",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "broke-protocol",
+      "displayName": "BROKE PROTOCOL: Online City RPG",
+      "appId": 696370,
+      "aliases": [
+        "Broke Protocol",
+        "BROKE PROTOCOL",
+        "BP",
+        "Broke Protocol Dedicated Server",
+        "Broke Protocol - Online City Life RPG"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "call-of-duty",
+      "displayName": "Call of Duty (2003)",
+      "appId": 2620,
+      "aliases": [
+        "Call of Duty",
+        "Call of Duty Dedicated Server",
+        "CoD",
+        "CoD1",
+        "Call of Duty 1"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "call-of-duty-2",
+      "displayName": "Call of Duty 2",
+      "appId": 2630,
+      "aliases": [
+        "CoD2",
+        "COD2",
+        "Call of Duty 2 Dedicated Server",
+        "Call of Duty(R) 2"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "call-of-duty-4-modern-warfare",
+      "displayName": "Call of Duty 4: Modern Warfare",
+      "appId": 7940,
+      "aliases": [
+        "CoD4",
+        "COD4",
+        "CoD4 MW",
+        "Call of Duty 4",
+        "Call of Duty 4: Modern Warfare Dedicated Server",
+        "Call of Duty(R) 4: Modern Warfare(R)"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "call-of-duty-modern-warfare-2",
+      "displayName": "Call of Duty: Modern Warfare 2 (2009)",
+      "appId": 10180,
+      "aliases": [
+        "MW2",
+        "Call of Duty: Modern Warfare 2",
+        "Call of Duty 6",
+        "CoD6",
+        "IW4"
+      ],
+      "transport": "none",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "call-of-duty-modern-warfare-3",
+      "displayName": "Call of Duty: Modern Warfare 3 - Dedicated Server",
+      "appId": 42750,
+      "aliases": [
+        "MW3",
+        "Call of Duty: Modern Warfare 3",
+        "Call of Duty®: Modern Warfare® 3 (2011)",
+        "Call of Duty 8",
+        "CoD8",
+        "IW5"
+      ],
+      "transport": "rcon",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "call-of-duty-united-offensive",
+      "displayName": "Call of Duty: United Offensive",
+      "appId": 2640,
+      "aliases": [
+        "CoD:UO",
+        "CoDUO",
+        "United Offensive",
+        "Call of Duty United Offensive",
+        "coduo"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": true,
+      "updatedAt": "2026-09-13"
     },
     {
       "slug": "call-of-duty-world-at-war",
@@ -282,6 +517,35 @@
       "confidence": "low",
       "verified": false,
       "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "clone-hero",
+      "displayName": "Clone Hero",
+      "appId": null,
+      "aliases": [
+        "Clone Hero Standalone Server",
+        "Clone Hero Server",
+        "CH"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "codename-cure",
+      "displayName": "Codename CURE Dedicated Server",
+      "appId": 383410,
+      "aliases": [
+        "Codename CURE",
+        "CURE",
+        "cc",
+        "cure"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
     },
     {
       "slug": "colony-survival",
@@ -422,6 +686,77 @@
       "updatedAt": "2026-09-12"
     },
     {
+      "slug": "creativerse",
+      "displayName": "Creativerse Dedicated Server",
+      "appId": 1098260,
+      "aliases": [
+        "Creativerse",
+        "Creativerse: The Definitive Edition",
+        "CreativerseServer",
+        "Creativerse Standalone Server"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "cryofall",
+      "displayName": "CryoFall Dedicated Server",
+      "appId": 1061710,
+      "aliases": [
+        "CryoFall"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "cs2d",
+      "displayName": "CS2D Dedicated Server",
+      "appId": 666220,
+      "aliases": [
+        "CS2D",
+        "Counter-Strike 2D",
+        "cs2d_dedicated"
+      ],
+      "transport": "rcon",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "cube-2-sauerbraten",
+      "displayName": "Cube 2: Sauerbraten",
+      "appId": null,
+      "aliases": [
+        "Sauerbraten",
+        "Cube 2",
+        "Cube 2: Sauerbraten Dedicated Server",
+        "sauerbraten-server",
+        "sauer_server"
+      ],
+      "transport": "none",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "cubic-odyssey",
+      "displayName": "Cubic Odyssey Dedicated Server",
+      "appId": 3858450,
+      "aliases": [
+        "Cubic Odyssey",
+        "CubicOdysseyServer",
+        "Cubic Odyssey Dedicated Server (Beta Version)"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
       "slug": "day-of-defeat",
       "displayName": "Day of Defeat",
       "appId": 30,
@@ -465,6 +800,21 @@
       "updatedAt": "2026-09-12"
     },
     {
+      "slug": "day-of-infamy",
+      "displayName": "Day of Infamy Dedicated Server",
+      "appId": 462310,
+      "aliases": [
+        "Day of Infamy",
+        "DOI",
+        "DoI",
+        "doiserver"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
       "slug": "dayz",
       "displayName": "DayZ Server",
       "appId": 223350,
@@ -481,6 +831,20 @@
       "updatedAt": "2026-09-12"
     },
     {
+      "slug": "dead-matter",
+      "displayName": "Dead Matter Dedicated Server",
+      "appId": 2584780,
+      "aliases": [
+        "Dead Matter",
+        "DM",
+        "deadmatter"
+      ],
+      "transport": "none",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
       "slug": "deadpoly",
       "displayName": "DeadPoly Dedicated Server",
       "appId": 2208380,
@@ -493,6 +857,22 @@
       "confidence": "low",
       "verified": false,
       "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "deathmatch-classic",
+      "displayName": "Deathmatch Classic",
+      "appId": 40,
+      "aliases": [
+        "DMC",
+        "Deathmatch Classic Dedicated Server",
+        "Half-Life: Deathmatch Classic",
+        "hlds -game dmc",
+        "Half-Life Dedicated Server (dmc)"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
     },
     {
       "slug": "dont-starve-together",
@@ -509,6 +889,51 @@
       "updatedAt": "2026-09-12"
     },
     {
+      "slug": "dota-2",
+      "displayName": "DotA 2 Dedicated Server",
+      "appId": 580,
+      "aliases": [
+        "Dota 2",
+        "DOTA 2",
+        "dota 2 beta",
+        "Dota 2 Dedicated Server"
+      ],
+      "transport": "stdin",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "double-action-boogaloo",
+      "displayName": "Double Action Dedicated Server",
+      "appId": 317800,
+      "aliases": [
+        "Double Action: Boogaloo",
+        "Double Action",
+        "DAB",
+        "dabserver"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "dystopia",
+      "displayName": "Dystopia Dedicated Server",
+      "appId": 17585,
+      "aliases": [
+        "Dystopia",
+        "Dystopia Mod",
+        "dys",
+        "dystopia"
+      ],
+      "transport": "rcon",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
       "slug": "eco",
       "displayName": "Eco Server",
       "appId": 739590,
@@ -521,6 +946,22 @@
       "confidence": "high",
       "verified": false,
       "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "empires-mod",
+      "displayName": "Empires Dedicated Server",
+      "appId": 460040,
+      "aliases": [
+        "Empires Mod",
+        "Empires",
+        "EmpiresMod",
+        "empires",
+        "em"
+      ],
+      "transport": "rcon",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
     },
     {
       "slug": "empyrion-galactic-survival",
@@ -583,6 +1024,19 @@
       "updatedAt": "2026-09-12"
     },
     {
+      "slug": "exfil",
+      "displayName": "Exfil Dedicated Server",
+      "appId": 3093190,
+      "aliases": [
+        "EXFIL",
+        "Exfil"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
       "slug": "factorio",
       "displayName": "Factorio",
       "appId": 427520,
@@ -595,6 +1049,55 @@
       "confidence": "high",
       "verified": false,
       "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "farming-simulator-19",
+      "displayName": "Farming Simulator 19 Dedicated Server",
+      "appId": 787860,
+      "aliases": [
+        "FS19",
+        "LS19",
+        "Farming Simulator 19",
+        "Landwirtschafts-Simulator 19"
+      ],
+      "transport": "rest",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "farming-simulator-22",
+      "displayName": "Farming Simulator 22 Dedicated Server",
+      "appId": 1248130,
+      "aliases": [
+        "Farming Simulator 22",
+        "FS22",
+        "FS 22",
+        "LS22",
+        "Landwirtschafts-Simulator 22",
+        "GIANTS Dedicated Server"
+      ],
+      "transport": "none",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "farming-simulator-25",
+      "displayName": "Farming Simulator 25 Dedicated Server",
+      "appId": 2300320,
+      "aliases": [
+        "Farming Simulator 25",
+        "FS25",
+        "FS 25",
+        "LS25",
+        "Landwirtschafts-Simulator 25",
+        "GIANTS Dedicated Server"
+      ],
+      "transport": "none",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
     },
     {
       "slug": "fistful-of-frags",
@@ -624,6 +1127,51 @@
       "updatedAt": "2026-09-12"
     },
     {
+      "slug": "frozen-flame",
+      "displayName": "Frozen Flame - Dedicated Server",
+      "appId": 1348640,
+      "aliases": [
+        "Frozen Flame",
+        "FrozenFlame",
+        "FrozenFlameServer"
+      ],
+      "transport": "rcon",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "garrys-mod",
+      "displayName": "Garry's Mod Dedicated Server",
+      "appId": 4020,
+      "aliases": [
+        "Garry's Mod",
+        "GMod",
+        "gmod",
+        "Garrys Mod",
+        "srcds"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "ground-branch",
+      "displayName": "GROUND BRANCH Dedicated Server",
+      "appId": 476400,
+      "aliases": [
+        "GROUND BRANCH",
+        "Ground Branch",
+        "GB",
+        "Ground Branch Dedicated Server"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": true,
+      "updatedAt": "2026-09-13"
+    },
+    {
       "slug": "half-life-2-deathmatch",
       "displayName": "Half-Life 2: Deathmatch Dedicated Server",
       "appId": 232370,
@@ -640,6 +1188,23 @@
       "updatedAt": "2026-09-12"
     },
     {
+      "slug": "half-life-deathmatch",
+      "displayName": "Half-Life Dedicated Server",
+      "appId": 90,
+      "aliases": [
+        "Half-Life: Deathmatch",
+        "Half-Life Deathmatch",
+        "HLDM",
+        "HLDS",
+        "Half-Life 1 Deathmatch",
+        "valve"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
       "slug": "half-life-deathmatch-source",
       "displayName": "Half-Life Deathmatch: Source Dedicated Server",
       "appId": 255470,
@@ -654,6 +1219,24 @@
       "confidence": "low",
       "verified": false,
       "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "half-life-opposing-force",
+      "displayName": "Half-Life: Opposing Force",
+      "appId": 90,
+      "aliases": [
+        "Opposing Force",
+        "Op4",
+        "OpFor",
+        "gearbox",
+        "Half-Life Dedicated Server",
+        "HLDS",
+        "opforserver"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
     },
     {
       "slug": "humanitz",
@@ -741,6 +1324,22 @@
       "updatedAt": "2026-09-12"
     },
     {
+      "slug": "iosoccer",
+      "displayName": "IOSoccer Dedicated Server",
+      "appId": 673990,
+      "aliases": [
+        "IOSoccer",
+        "IOS",
+        "iosoccer",
+        "iosserver",
+        "IOS Soccer"
+      ],
+      "transport": "rcon",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
       "slug": "killing-floor",
       "displayName": "Killing Floor Dedicated Server",
       "appId": 215360,
@@ -802,6 +1401,35 @@
       "updatedAt": "2026-09-12"
     },
     {
+      "slug": "longvinter",
+      "displayName": "Longvinter Dedicated Server",
+      "appId": 1639880,
+      "aliases": [
+        "Longvinter",
+        "Longvinter Server"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "medal-of-honor-allied-assault",
+      "displayName": "Medal of Honor: Allied Assault Dedicated Server",
+      "appId": null,
+      "aliases": [
+        "MOHAA",
+        "MoH:AA",
+        "Medal of Honor Allied Assault",
+        "mohaa_lnxded",
+        "OpenMoHAA"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
       "slug": "mindustry",
       "displayName": "Mindustry Dedicated Server",
       "appId": 1127400,
@@ -814,6 +1442,40 @@
       "confidence": "high",
       "verified": false,
       "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "minecraft",
+      "displayName": "Minecraft: Java Edition Server",
+      "appId": null,
+      "aliases": [
+        "Minecraft",
+        "Minecraft Java Edition",
+        "Minecraft Server",
+        "Vanilla Minecraft",
+        "minecraft-java",
+        "server.jar"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": true,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "minecraft-bedrock",
+      "displayName": "Minecraft: Bedrock Edition Dedicated Server",
+      "appId": null,
+      "aliases": [
+        "Bedrock Dedicated Server",
+        "BDS",
+        "Minecraft Bedrock Edition",
+        "Minecraft Bedrock Server",
+        "bedrock_server",
+        "MCBE"
+      ],
+      "transport": "stdin",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
     },
     {
       "slug": "minetest",
@@ -845,6 +1507,40 @@
       "updatedAt": "2026-09-12"
     },
     {
+      "slug": "mount-and-blade-2-bannerlord",
+      "displayName": "Mount & Blade II: Dedicated Server",
+      "appId": 1863440,
+      "aliases": [
+        "Mount & Blade II: Bannerlord",
+        "Bannerlord",
+        "Mount and Blade 2: Bannerlord",
+        "Bannerlord Dedicated Server",
+        "M&B II: Bannerlord"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "multi-theft-auto",
+      "displayName": "Multi Theft Auto: San Andreas Server",
+      "appId": null,
+      "aliases": [
+        "MTA",
+        "MTA:SA",
+        "MTA:SA Server",
+        "Multi Theft Auto",
+        "Multi Theft Auto: San Andreas",
+        "mta-server",
+        "mta-server64"
+      ],
+      "transport": "stdin",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
       "slug": "myth-of-empires",
       "displayName": "Myth of Empires Dedicated Server",
       "appId": 1794810,
@@ -857,6 +1553,34 @@
       "confidence": "low",
       "verified": false,
       "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "natural-selection",
+      "displayName": "Natural Selection",
+      "appId": 120,
+      "aliases": [
+        "NS",
+        "Natural Selection (Half-Life mod)",
+        "ns"
+      ],
+      "transport": "rcon",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "natural-selection-2",
+      "displayName": "Natural Selection 2 Dedicated Server",
+      "appId": 4940,
+      "aliases": [
+        "Natural Selection 2",
+        "NS2",
+        "NS2 Dedicated Server"
+      ],
+      "transport": "stdin",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
     },
     {
       "slug": "necesse",
@@ -872,6 +1596,33 @@
       "updatedAt": "2026-09-12"
     },
     {
+      "slug": "night-of-the-dead",
+      "displayName": "Night of the Dead Dedicated Server",
+      "appId": 1420710,
+      "aliases": [
+        "Night of the Dead",
+        "NOTD",
+        "NotD"
+      ],
+      "transport": "none",
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-13"
+    },
+    {
+      "slug": "nightingale",
+      "displayName": "Nightingale Dedicated Server",
+      "appId": 3796810,
+      "aliases": [
+        "Nightingale",
+        "NWX"
+      ],
+      "transport": "none",
+      "confidence": "high",
+      "verified": true,
+      "updatedAt": "2026-09-13"
+    },
+    {
       "slug": "no-more-room-in-hell",
       "displayName": "No More Room in Hell Dedicated Server",
       "appId": 317670,
@@ -885,6 +1636,22 @@
       "confidence": "high",
       "verified": true,
       "updatedAt": "2026-09-12"
+    },
+    {
+      "slug": "no-one-survived",
+      "displayName": "No One Survived Dedicated Server",
+      "appId": 2329680,
+      "aliases": [
+        "No One Survived",
+        "NoOneSurvivedDedicatedServer",
+        "NoOneSurvivedServer",
+        "NOS",
+        "WRSH"
+      ],
+      "transport": "none",
+      "confidence": "high",
+      "verified": false,
+      "updatedAt": "2026-09-13"
     },
     {
       "slug": "onset",

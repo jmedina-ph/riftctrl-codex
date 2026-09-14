@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "slug": "half-life-opposing-force",
+  "game": {
+    "displayName": "Half-Life: Opposing Force",
+    "appId": 90,
+    "aliases": [
+      "Opposing Force",
+      "Op4",
+      "OpFor",
+      "gearbox",
+      "Half-Life Dedicated Server",
+      "HLDS",
+      "opforserver"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 27015,
+    "portSetting": "port",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:1:12345678",
+    "pattern": "STEAM_[0-9]:[01]:[0-9]+"
+  },
+  "commands": {
+    "info": "stats",
+    "listPlayers": "status",
+    "kick": "kick \"{playerName}\"",
+    "ban": "banid {duration} {playerId} kick",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*\\d+\\s+\"(?<name>[^\"]*)\"\\s+(?<accountId>\\d+)\\s+(?<playerId>\\S+)",
+    "skipLinePattern": "^#\\s+name\\s+userid"
+  },
+  "banList": {
+    "paths": [
+      "gearbox/banned.cfg"
+    ],
+    "lineIdPattern": "^banid\\s+[0-9.]+\\s+(STEAM_[0-9]:[01]:[0-9]+)",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/dreamstalker/rehlds/blob/master/rehlds/engine/sv_main.cpp",
+      "title": "ReHLDS engine source - SV_BanId_f, SV_RemoveId_f, SV_WriteId_f, Host_Kick_f, SV_Rcon/SV_Rcon_Validate, rcon_password cvar",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/dreamstalker/rehlds/blob/master/rehlds/engine/host_cmd.cpp",
+      "title": "ReHLDS engine source - Host_Status_f, Host_Say, Host_Stats_f, Cmd_AddCommand registrations for status/say/kick/stats",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://counter-strike-boost.com/tutorials/rcon-commands-list",
+      "title": "Essential RCON Commands Every CS 1.6 Admin Needs (GoldSrc) - rcon status, rcon stats, rcon kick \"PlayerName\", rcon kick #12, rcon banid 0 STEAM_0:0:12345678 kick, rcon removeid STEAM_..., rcon writeid",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://forums.alliedmods.net/archive/index.php/t-36994.html",
+      "title": "AlliedModders - RCON thread showing 'rcon say hello' in use",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://linuxgsm.com/servers/opforserver/",
+      "title": "LinuxGSM - Opposing Force Linux Game Server (Steam app 90)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/master/lgsm/config-default/config-lgsm/opforserver/_default.cfg",
+      "title": "LinuxGSM opforserver _default.cfg - appid=90, appidmod=gearbox, engine=goldsrc, -game gearbox -port 27015",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Opposing Force is a GoldSrc mod run on the Half-Life Dedicated Server (Steam app 90) with -game gearbox (LinuxGSM opforserver: appid=90, appidmod=gearbox, engine=goldsrc, startparameters '-game gearbox ... -port 27015'); the client game is app 50. GoldSrc RCON is NOT Valve Source RCON: it is a connectionless UDP exchange on the game port - the server's connectionless handler dispatches 'challenge' (SVC_ServiceChallenge) and 'rcon' (SV_Rcon), and SV_Rcon_Validate checks the challenge, then compares Cmd_Argv(2) with rcon_password - hence flavour custom. There is no separate RCON port and no enable switch: RCON is refused only while rcon_password is empty (see also sv_rcon_maxfailures / sv_rcon_banpenalty, which addip repeat offenders). Verified engine usage strings: 'banid <minutes> <uniqueid or #userid> { kick }' plus 'Use 0 minutes for permanent'; 'removeid <uniqueid | #slotnumber>'; 'kick < name > | < # userid >' (ReHLDS adds an optional [reason], stock HLDS takes none). IMPORTANT: the Steam ID must be passed UNQUOTED - the GoldSrc tokenizer splits ':' into its own token and SV_BanId_f rebuilds the id as Cmd_Argv(2):Cmd_Argv(4):Cmd_Argv(6) (SV_RemoveId_f uses 1/3/5), so quoting yields a malformed id and the ban silently misses; the argument-count guards confirm the split form (banid accepts 3-8 args, removeid exactly 2 or 6). kick compares its argument against the client name case-insensitively, so it is templated on {playerName}; 'kick #<userid>' also works. Bans live only in memory until 'writeid' is run, and SV_WriteId_f skips every filter whose banTime != 0, i.e. it persists ONLY permanent bans, writing 'banid 0.0 STEAM_0:1:12345678' lines to bannedcfgfile (default banned.cfg, so gearbox/banned.cfg); IP bans are the separate addip/removeip/writeip list in gearbox/listip.cfg (listipcfgfile). say takes the raw rest of the line (a leading quote is stripped) and is truncated at 63 characters. status prints the header '#      name userid uniqueid frag time ping loss adr' then '#%2i \"<name>\" <userid> <uniqueid>', which is what playerParse matches (the numeric captured as accountId is the in-game userid, not a Steam account id). motd_write is real - Host_Motd_Write_f overwrites motdfile (default motd.txt, converting a literal backslash-n to a newline) and rcon runs commands as src_command, so it is reachable remotely - but it is attested ONLY in the engine source and in no independent write-up, so it is deliberately NOT shipped as a motd command at this confidence level. Non-Steam, LAN, pending or bot clients report VALVE_x:x:x, VALVE_ID_LAN, VALVE_ID_PENDING, VALVE_ID_LOOPBACK, STEAM_ID_LAN, STEAM_ID_PENDING, HLTV or BOT in status, none of which match the playerId pattern."
+}

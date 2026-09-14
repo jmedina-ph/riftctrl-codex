@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "slug": "clone-hero",
+  "game": {
+    "displayName": "Clone Hero",
+    "appId": null,
+    "aliases": [
+      "Clone Hero Standalone Server",
+      "Clone Hero Server",
+      "CH"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://wiki.clonehero.net/books/guides-and-tutorials/page/online-multiplayer",
+      "title": "Online Multiplayer - Clone Hero Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.clonehero.net/books/clone-hero-manual/page/online",
+      "title": "Online - Clone Hero Manual",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/vloschiavo/clonehero-standalone-server",
+      "title": "clonehero-standalone-server (Docker packaging of the official standalone server)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://legionhosting.net/kb/clone-hero/clone-hero-server-admin-guide",
+      "title": "Clone Hero Server Admin Guide - Legion Hosting",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://help.bisecthosting.com/hc/en-us/articles/43640567541659-How-to-Kick-Players-on-a-Clone-Hero-Server",
+      "title": "How to Kick Players on a Clone Hero Server - BisectHosting",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Clone Hero does ship an official standalone (headless) server, downloadable from clonehero.net and used by the hosting providers, but it exposes NO command channel to the server operator: no RCON, no admin HTTP API, and no stdin command loop. The executable prompts for configuration on first run and thereafter reads settings.ini (server name, port - default UDP 14242 - password, defaultgamemode, minrequiredplayers, maxplayers, maxspectators, servertickrate, lowsongspeed, maxsongspeed); after startup the console only prints logs. All moderation is done IN-GAME by the lobby host/leader (the first player to join), typed into lobby chat with a backslash prefix: '\\kick all', '\\kick players', '\\kick spectators', '\\kick player #' (1-4), plus '\\setpass', '\\setsongcount', '\\setmaxspeed', '\\setlowspeed', and '\\help' for the full list. Those are client-side chat commands from a seated player, not something a server manager can send down a pipe, so they are not recorded as commands here. There is also no ban system and no server-side player roster query - the operator's only levers are settings.ini (password, max players) plus restarting the process, so RIFT//CTRL should fall through to the host-level floor. Confidence is 'low' because this is an argument from absence: the Clone Hero wiki, the Docker packaging of the server and two hosting knowledge bases all document configuration and in-game chat commands and none mentions a server console, but no source states outright that a console does not exist."
+}

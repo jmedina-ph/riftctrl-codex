@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "slug": "double-action-boogaloo",
+  "game": {
+    "displayName": "Double Action Dedicated Server",
+    "appId": 317800,
+    "aliases": [
+      "Double Action: Boogaloo",
+      "Double Action",
+      "DAB",
+      "dabserver"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 27015,
+    "portSetting": "-port",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:1:12345678",
+    "pattern": "(?:STEAM_[0-5]:[01]:[0-9]+|\\[U:1:[0-9]+\\])"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kickid {playerId} {reason}",
+    "ban": "banid {duration} {playerId}",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*(?<accountId>\\d+)\\s+\"(?<name>.*?)\"\\s+(?<playerId>STEAM_[0-5]:[01]:\\d+|\\[U:1:\\d+\\])",
+    "skipLinePattern": "^(?:hostname|version|udp/ip|map|players|edicts|#\\s*userid)"
+  },
+  "banList": {
+    "paths": [
+      "dab/cfg/banned_user.cfg",
+      "dab/banned_user.cfg"
+    ],
+    "lineIdPattern": "banid\\s+[0-9.]+\\s+(STEAM_[0-5]:[01]:[0-9]+|\\[U:1:[0-9]+\\])",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://steamdb.info/app/317800/",
+      "title": "SteamDB - app 317800 'Double Action Dedicated Server', type Tool, Source engine (store-retired)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://help.steampowered.com/en/wizard/HelpWithGame/?appid=317800",
+      "title": "Steam Support - Double Action Dedicated Server (app 317800)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=332255864",
+      "title": "Official Server Setup Guide (Double Action Steam guide) - 'srcds -game dab +maxplayers 10'",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/groups/2x_action/discussions/0/522730700700783870/",
+      "title": "Server Setup Guide - Windows (Double Action Steam group) - 'srcds -game dab'",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/master/lgsm/config-default/config-lgsm/dabserver/_default.cfg",
+      "title": "LinuxGSM dabserver _default.cfg (appid 317800, engine source, port 27015, defaultmap da_rooftops)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Source_Dedicated_Server",
+      "title": "Valve Developer Community - Source Dedicated Server (27015 TCP/UDP carries RCON; server.cfg in <game>/cfg/)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Console_Command_List",
+      "title": "Valve Developer Community - Console Command List (kick, banid, addip, removeid, removeip, listid, say, rcon_password)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/List_of_TF2_console_commands_and_variables",
+      "title": "Valve Developer Community - List of TF2 console commands (kickid: 'Kick a player by userid or uniqueid, with a message')",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.teamfortress.com/wiki/Dedicated_server_configuration",
+      "title": "Official TF2 Wiki - Dedicated server configuration (rcon_password in server.cfg, exec banned_user.cfg / banned_ip.cfg, writeid, writeip)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.teamfortress.com/wiki/List_of_useful_console_commands",
+      "title": "Official TF2 Wiki - List of useful console commands (banid <minutes> <steamid>, 0 = permanent; kick <name>; status)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Stock Source SDK 2013 dedicated server: SteamDB and Steam Support name app 317800 'Double Action Dedicated Server' (Source engine, since retired from the store), LinuxGSM's dabserver _default.cfg records appid 317800, engine=source, port 27015, and both developer-side setup guides launch it as 'srcds -game dab', so the command set is the engine's, not the mod's. No DAB-specific page documents any admin command; every command here is the stock Source form, sourced from Valve's own wiki and the official TF2 wiki. RCON rides the TCP game port (27015 by default, moved with -port; LinuxGSM passes -port in startparameters) and is enabled simply by setting rcon_password in dab/cfg/server.cfg - no separate enable or port setting. Per-command sourcing, so a reader knows what is thin: banid, removeid, say, kick and rcon_password appear on Valve's Console Command List; kickid ('Kick a player by userid or uniqueid, with a message') appears only on Valve's TF2 console-command list; banid's ARGUMENT ORDER and its units - 'banid <minutes> <steamid>', 0 meaning permanent - come from exactly ONE source, the TF2 wiki, since Valve's own list gives no syntax; removeid's argument form is inferred from its description. An earlier draft of this file claimed Valve's engine help documents an optional trailing 'kick' argument ('banid <minutes> <id> [kick]') - that could not be found in any source and has been removed; the two-argument form recorded here is the only one with a source. banid holds the ban in memory only: run 'writeid' to commit it to banned_user.cfg (TF2 wiki), and banid does not disconnect an already-connected player, so kick separately. kickid and banid both accept either the in-session userid from 'status' (captured as accountId) or the Steam ID; the Steam ID is recorded as playerId because it is what the ban list persists. No source shows a real 'status' dump from this build, and Source prints the uniqueid column as STEAM_0:1:x on older builds and [U:1:x] on 2013-era builds, so the pattern and the parse accept both - the parse is therefore unconfirmed against real output. IP bans use the parallel addip/removeip/writeip and banned_ip.cfg. No motd command exists - Source serves motd.txt from the game directory - so no motd key. Nothing here has been run against a live server."
+}

@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "slug": "mount-and-blade-2-bannerlord",
+  "game": {
+    "displayName": "Mount & Blade II: Dedicated Server",
+    "appId": 1863440,
+    "aliases": [
+      "Mount & Blade II: Bannerlord",
+      "Bannerlord",
+      "Mount and Blade 2: Bannerlord",
+      "Bannerlord Dedicated Server",
+      "M&B II: Bannerlord"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://moddocs.bannerlord.com/multiplayer/hosting_server/",
+      "title": "Hosting a Custom Server - Bannerlord Modding Documentation (TaleWorlds)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/BUTR/Bannerlord.GABS/blob/master/docs/console-commands.md",
+      "title": "Bannerlord Console Commands Reference (BUTR, extracted from game assemblies)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/Bannerlord-Community/bannerlord_documentation/blob/main/server_config.md",
+      "title": "bannerlord_documentation - server_config.md",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://help.bisecthosting.com/hc/en-us/articles/43480813236891-How-to-Kick-or-Ban-Players-on-a-Mount-Blade-2-Bannerlord-Server",
+      "title": "How to Kick or Ban Players on a Mount & Blade 2: Bannerlord Server (BisectHosting)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/mentalrob/ChatCommands",
+      "title": "ChatCommands - third-party server-side Bannerlord chat command mod (README)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/1863440/info/",
+      "title": "Mount & Blade II: Dedicated Server (App 1863440)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "No commands are recorded and transport is 'none'. The Bannerlord dedicated custom server does read lines on stdin, but nothing it accepts there lists players, kicks, bans or broadcasts, so there is no command a moderation tool could send; the earlier draft recorded transport 'stdin' with no commands key, which is the same finding in the wrong encoding. Verified independently against the assembly-extracted reference: the DedicatedCustomServer ConsoleCommandMethod set is exactly seven commands - list, set_winner_team, set_server_bandwidth_limit_in_mbps, set_server_tickrate, stats, open_monitor, crash_game - and everything else documented for the console is server configuration (ServerName, GameType, Map, AdminPassword, MaxNumberOfPlayers, AllowPollsToKickPlayers, AllowPollsToBanPlayers) or match control (start_game, start_mission, start_game_and_mission, add_map_to_usable_maps, add_map_to_automated_battle_pool, set_automated_battle_count, enable_automated_battle_switching). Typing 'list' prints the command set the running build accepts. Moderation happens inside the game client: an admin right-clicks the server and picks 'Join as Admin' with the AdminPassword set in the server config, presses Esc, and uses the Admin Panel's Kick Player / Ban Player / Mute Player actions. TaleWorlds' own docs say a kicked player can rejoin immediately and a banned player cannot rejoin until the server restarts, i.e. bans are in-memory and there is no ban file to edit. The mp_admin.* commands in the Multiplayer assembly (mp_admin.kick_player [PlayerName], mp_admin.ban_player [PlayerName], mp_admin.announcement [Message], mp_admin.change_welcome_message [Message], mp_admin.change_class_restriction, mp_admin.restart_game) are CommandLineArgumentFunction commands typed in the CLIENT developer console by a logged-in admin, not ConsoleCommandMethod commands on the server console, so recording them here would send text down the wrong pipe. If they are ever confirmed on the server console, note that they take a player NAME, not a Steam ID, and use ' | ' (space-pipe-space) as the argument separator. Announcements are also available in-game as chat prefixes /ab [text] (admin broadcast) and /ac [text] (admin chat). Bannerlord has no RCON and no admin HTTP API. Disagreement: hosting-panel articles document '!kick <playername>' and '!ban <playername>' as in-game chat commands; those come from the third-party server-side ChatCommands mod (github.com/mentalrob/ChatCommands), whose README documents '!kick <Player Name>', '!ban <Player Name>' and '!unban <Player Name>' and warns that the first player whose name contains the input is matched. They are not vanilla and must not be recorded for a stock server. BisectHosting's kick/ban guide agrees with TaleWorlds that the in-game Admin Panel is the only route. Confidence stays low because the claim is a negative: the assembly-extracted command list is strong evidence, but the actual output of the server console's own 'list' command on a live build was not obtained."
+}

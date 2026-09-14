@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "slug": "night-of-the-dead",
+  "game": {
+    "displayName": "Night of the Dead Dedicated Server",
+    "appId": 1420710,
+    "aliases": [
+      "Night of the Dead",
+      "NOTD",
+      "NotD"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2252239447",
+      "title": "Night of the Dead Dedicated Server guide (Jackto Studios: build, jackto_dev, jacktoQA)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/1377380/discussions/0/2975149180209636621/",
+      "title": "PINNED: Dedicated Server - developer post by jackto (steamcmd +app_update 1420710)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/1377380/discussions/0/4402812641370023232/",
+      "title": "Any way to enable console commands on a dedicated server? (no console commands work on the dedicated build)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/1377380/discussions/0/4768721849824359962/",
+      "title": "Dedicated Server Admin usage - 'Admin Password only allows you to save or ban nothing else at this stage'",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/1377380/discussions/0/767436134178488292/",
+      "title": "Admin commands on dedicated server - main-menu Admin section, message of the day, ban requires the target to be online",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/1420710/",
+      "title": "SteamDB - Night of the Dead Dedicated Server (app 1420710, type Tool, parent app 1377380)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "No command channel exists. Jackto Studios' dedicated server (Steam tool app 1420710, binary LFServer.exe, launched by StartServer.bat) is configured entirely through ServerSettings.ini - [ServerSettings] ServerName/Password/MaxPlayers, [SystemSettings] IngameAdminPassword/DefaultMessageOfTheDay/SaveName/SaveIntervalHour, plus [GameSettings], [GameSettings/General], [GameSettings/Basic], [GameSettings/Advanced] and [GameSettings/Detail] blocks. The guide's StartServer.bat line is LFServer.exe ?listen -log -Port=7777 -QueryPort=27015 -CRASHREPORTS; those are the defaults (UDP 7777 game, UDP 27015 query) and operators override them on that line (a user in the pinned developer thread runs -Port=7779 -QueryPort=27016). The official guide documents no RCON, no console and no admin HTTP API. IngameAdminPassword authenticates a PLAYER inside the running game client, who then gets a small main-menu Admin section ('pretty much What You See Is What You Get') that can set the message of the day, save, and ban - and a target must be online to be banned; one developer-forum answer puts the whole surface at 'save or ban nothing else at this stage'. Forum reports agree that typed console commands and UUU do nothing on the dedicated build. Nothing is reachable as text down a pipe, so the runtime should stop probing and drop to the host-level floor. Third-party hosting knowledge bases (e.g. legionhosting.net) publish a fabricated Night of the Dead admin command list - EnableCheats, ListPlayers, KickPlayer, BanPlayer, UnbanPlayer, ServerMessage, SetTimeOfDay and similar ARK-style strings - which no developer source supports and which must not be ingested. Marked low because the absence is inferred from the official guide's silence plus community reports rather than stated outright by the developer; revisit if Jackto adds RCON."
+}

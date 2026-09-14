@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "slug": "cryofall",
+  "game": {
+    "displayName": "CryoFall Dedicated Server",
+    "appId": 1061710,
+    "aliases": [
+      "CryoFall"
+    ]
+  },
+  "transport": "none",
+  "playerId": {
+    "label": "Username",
+    "example": "Wanderer42",
+    "pattern": "[A-Za-z0-9_.-]{1,32}"
+  },
+  "sources": [
+    {
+      "url": "https://wiki.atomictorch.com/CryoFall/Server/Commands",
+      "title": "CryoFall/Server/Commands - AtomicTorchWiki",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.atomictorch.com/CryoFall/Server/Setup",
+      "title": "CryoFall/Server/Setup - AtomicTorchWiki",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/829590/discussions/2/2638497042769777768/",
+      "title": "Server / Admin Commands :: CryoFall Help & Technical Support",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=3310225220",
+      "title": "Guide :: Console commands - CryoFall",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://cryofall.fandom.com/wiki/Console",
+      "title": "Console - Official CryoFall Wiki (Fandom)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.g-portal.com/wiki/en/cryofall/",
+      "title": "CryoFall - All server settings and information | GPORTAL Wiki",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.atomictorch.com/VoidExpanse/Server_commands",
+      "title": "VoidExpanse/Server commands - AtomicTorchWiki",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "transport is 'none' because no published source shows a control channel that accepts CryoFall's moderation commands from outside the running game client. The commands themselves are real and were re-checked verbatim on the developer wiki on 2026-09-13: '/kick <character> [minutes] [kickMessageInQuotes]' (alias /mod.kickList.add), '/ban <playerName>' (alias /mod.blackList.add; permanent blacklist, no duration argument), '/mod.blackList.remove <playerName>' and '/admin.notifyAll <messageInQuotes>'. Moderation keys on the CHARACTER NAME; no numeric or Steam id appears anywhere in the admin command set. The blocker is placement. CryoFall/Server/Commands states: 'This is just a list of all the server console commands. You need to execute them right from the game by using in-game console as described in the Server Setup Guide.' The Setup guide types only 'stop 0' and 'stop 60 The shutdown message text goes here' into the server's terminal window, and its slash-prefix instruction ('please add / (slash) prefix to the server commands you want to execute') sits in the section about the in-game console opened with the ~ key. The developer's own Steam support reply ('The server commands need to be prefixed with / char') likewise addresses the in-game console, and the Fandom Console page and the G-Portal wiki independently describe the ~ in-game console as the place admin commands are entered. So the .NET console app's stdin is confirmed for server lifecycle ('stop') ONLY; nothing documents it accepting the slash-prefixed admin commands. An earlier draft recorded transport 'stdin' with the four commands on the strength of the same studio's VoidExpanse wiki ('In multiplayer you can enter them both in the server console and in chat') - that is a different title and is not evidence about CryoFall, so the commands are withheld rather than shipped against an unproven channel. There is no RCON and no HTTP admin API. There is also no command anywhere in the published set that lists connected players (only /admin.listCreativeModePlayers, /admin.listLandClaims, /moderatorList, /opList and the /mod.*.print dumps), no info or motd command, and no published ban-file format - blacklist state lives in the server's save data, so banList is omitted too. playerId is retained because the identifier question is settled independently of transport, but note that playerId.pattern is a conservative guess: AtomicTorch publishes no character-name charset or length rule. Confidence low: the developer wiki is effectively the single source, since the Steam guide and the G-Portal/Pingperfect/Citadel/Legion knowledge-base pages restate its list."
+}

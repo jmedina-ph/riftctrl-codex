@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "slug": "minecraft",
+  "game": {
+    "displayName": "Minecraft: Java Edition Server",
+    "appId": null,
+    "aliases": [
+      "Minecraft",
+      "Minecraft Java Edition",
+      "Minecraft Server",
+      "Vanilla Minecraft",
+      "minecraft-java",
+      "server.jar"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 25575,
+    "portSetting": "rcon.port",
+    "enableSetting": "enable-rcon",
+    "passwordSetting": "rcon.password"
+  },
+  "playerId": {
+    "label": "Username",
+    "example": "Notch",
+    "pattern": "[A-Za-z0-9_]{3,16}"
+  },
+  "commands": {
+    "listPlayers": "list uuids",
+    "kick": "kick {playerId} {reason}",
+    "ban": "ban {playerId} {reason}",
+    "unban": "pardon {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "(?<playerId>(?<name>[A-Za-z0-9_]{3,16})) \\((?<accountId>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\\)"
+  },
+  "banList": {
+    "paths": [
+      "banned-players.json"
+    ],
+    "lineIdPattern": "\"name\"\\s*:\\s*\"([^\"]+)\"",
+    "liveUnban": "pardon {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://minecraft.wiki/w/RCON",
+      "title": "RCON - Minecraft Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://minecraft.wiki/w/Server.properties",
+      "title": "server.properties - Minecraft Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://minecraft.wiki/w/Commands/ban",
+      "title": "/ban - Minecraft Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://minecraft.wiki/w/Commands/kick",
+      "title": "/kick - Minecraft Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://minecraft.wiki/w/Commands/list",
+      "title": "/list - Minecraft Wiki (list and list uuids)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://minecraft.wiki/w/Commands/say",
+      "title": "/say - Minecraft Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.digminecraft.com/game_commands/ban_command.php",
+      "title": "How to Use the Ban Command in Minecraft",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.digminecraft.com/game_commands/pardon_command.php",
+      "title": "How to Use the Pardon Command in Minecraft",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.digminecraft.com/game_commands/list_command.php",
+      "title": "How to Use the List Command in Minecraft (Java: /list [uuids])",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://mcipc.readthedocs.io/en/latest/rcon.html",
+      "title": "mcipc - RCON client documentation",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/MCDReforged/MinecraftDataAPI",
+      "title": "MCDReforged MinecraftDataAPI (/list output regex)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": "2026-09-13",
+  "notes": "Vanilla Mojang server.jar. minecraft.wiki/w/RCON calls it 'an implementation of the Source RCON protocol' and documents the Type 2 command payload as bare text ('time set 0'), so commands are sent WITHOUT a leading slash; the same is true on the interactive stdin console, which is the fallback when RCON is off. RCON is OFF by default (enable-rcon=false) and refuses to start with a blank rcon.password. Moderation is by username (game profile): /ban takes <targets> of type game_profile and digminecraft gives '/ban <name> [reason ...]' and '/pardon <name>', so playerId.label is Username. Vanilla has NO temporary/duration ban - the wiki syntax is 'ban <targets> [<reason>]' with no duration argument - so {duration} is deliberately absent; a temp ban needs a plugin. There is no motd command; motd is only a server.properties key. 'list' output is ONE line for all players, e.g. 'There are 2 of a max of 20 players online: Notch (069a79f4-44e9-4726-a5be-fca90e38aaf5), Jeb_ (853c80ef-3c37-49fd-aa49-938b674adae6)', matching MCDReforged's '^There are (\\d+) of a max( of)? (\\d+) players online:(.*)$' - the parser must scan that line globally, not assume one player per line. The linePattern is uuid-anchored so it cannot mis-match the header text. 'list uuids' is vanilla-only: Bukkit/Spigot/Paper substitute their own /list which does not support the uuids argument (it is ignored, or errors depending on build), in which case send plain 'list' and take names only - the linePattern will then match nothing. Bans are also written to banned-players.json (name + uuid) and banned-ips.json in the server root; pardon is the live unban. SOURCE CAVEAT: mcipc's RCON page corroborates that a Minecraft server speaks RCON and that commands carry no slash, but it does NOT itself say 'Source' - the Source flavour and port 25575 come from minecraft.wiki. Re-verified 2026-09-13 against the wiki RCON/server.properties/ban/kick/list/say pages, digminecraft ban/pardon/list, mcipc and MCDReforged; no disagreement found."
+}

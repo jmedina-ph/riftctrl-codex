@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "slug": "codename-cure",
+  "game": {
+    "displayName": "Codename CURE Dedicated Server",
+    "appId": 383410,
+    "aliases": [
+      "Codename CURE",
+      "CURE",
+      "cc",
+      "cure"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "source",
+    "defaultPort": 27015,
+    "portSetting": null,
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:1:12345678",
+    "pattern": "(?:STEAM_[0-9]:[01]:[0-9]+|\\[U:1:[0-9]+\\])"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kickid {playerId} \"{reason}\"",
+    "ban": "banid {duration} {playerId}; writeid; kickid {playerId} \"{reason}\"",
+    "unban": "removeid {playerId}; writeid",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*\\d+\\s+\"(?<name>.*?)\"\\s+(?<playerId>(?:STEAM_[0-9]:[01]:[0-9]+|\\[U:1:[0-9]+\\]))",
+    "skipLinePattern": "^(?:hostname|version|udp/ip|steamid|account|map|players|edicts|tags|os|type|sourcetv|#\\s*userid)"
+  },
+  "banList": {
+    "paths": [
+      "cure/cfg/banned_user.cfg"
+    ],
+    "lineIdPattern": "^banid\\s+\\S+\\s+(\\S+)",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://store.steampowered.com/news/app/355180/view/4041374038285638186",
+      "title": "Codename CURE - Dedicated Servers Live! (developer announcement: install with SteamCMD, app_update 383410 validate)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/383410/",
+      "title": "Codename CURE Dedicated Server, AppID 383410 (type: Tool)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/GameServerManagers/Game-Server-Configs/main/cc/server.cfg",
+      "title": "LinuxGSM default server.cfg for Codename CURE (documents rcon_password, sv_password, hostname)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/master/lgsm/config-default/config-lgsm/ccserver/_default.cfg",
+      "title": "LinuxGSM ccserver defaults: port 27015, startparameters -game cure",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.moddb.com/mods/codenamecure/tutorials/cure-create-servers",
+      "title": "Codename CURE - Create servers tutorial (srcds -game cure)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Rcon",
+      "title": "Valve Developer Community: rcon ('rcon is a console command available in all Source games'; server must have rcon_password set to a non-empty string). Does not state a port.",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Console_Command_List",
+      "title": "Valve Developer Community: Console Command List (lists kick, banid, removeid, listid, say; does NOT list kickid or writeid)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/app/222880/discussions/2/364042703853182968/",
+      "title": "Source dedicated server admin thread quoting the engine's own usage string: 'banid < minutes > < userid | uniqueid > { kick }', 0 minutes = permanent, writeid to persist",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://xgamingserver.com/blog/how-to-ban-players-from-your-garrys-mod-server/",
+      "title": "Source-engine ban command syntax: banid <minutes> <userid|SteamID>, kickid <userid|SteamID> \"<reason>\", removeid <SteamID>, writeid (writes banned_user.cfg)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://totalcsgo.com/commands/kickid",
+      "title": "kickid command reference: 'kickid <User ID> <Message>' (independent corroboration of kickid's argument order)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.facepunch.com/gmod/game.KickID",
+      "title": "Facepunch wiki: game.KickID - a Garry's Mod LUA function (not the console command), showing the Source family kicks by UserID, SteamID (STEAM_0:0:...) or SteamID64",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Codename CURE is a Source SDK 2013 multiplayer game; the dedicated server is plain srcds launched with -game cure (LinuxGSM startparameters, ModDB tutorial), so every command here is engine-level Source, not game-specific. The game itself ships no custom admin commands, and none of these commands has been observed against a running CURE server - verifiedAt is null for that reason. RCON is the Valve Source TCP protocol on the game port (27015 by default, set by the -port launch argument, not by a separate cvar) and is enabled simply by setting rcon_password to a non-empty value in cure/cfg/server.cfg; LinuxGSM's shipped server.cfg for this game documents rcon_password, sv_password and hostname. listPlayers and info are the same command: status prints hostname/version/map/player count followed by one line per player. Source's status prints the uniqueid either as STEAM_x:y:xxxxxxxx (older builds) or [U:1:xxxxxxxxx] (newer engine builds); which one Codename CURE prints was not confirmed, so playerId.pattern and playerParse.linePattern accept both. kickid, banid and removeid all accept either the ephemeral userid from status or the Steam ID; the Steam ID is used here because userids are reassigned every session. The engine's own usage string for banid is 'banid < minutes > < userid | uniqueid > { kick }' - minutes first, 0 meaning permanent - and the optional trailing kick argument is real; it is deliberately omitted here in favour of an explicit kickid, which does the same job and is better corroborated. Bans live in memory only until writeid rewrites cure/cfg/banned_user.cfg, so ban and unban chain writeid with a semicolon (Source's console executes semicolon-separated commands in one line); banid on its own also does not disconnect an already-connected player, hence the trailing kickid. SOURCING CAVEAT: Valve's own Console Command List contains banid, removeid, kick, listid and say but NOT kickid or writeid, and the Facepunch page is the Garry's Mod Lua function game.KickID rather than the console command - kickid and writeid are instead corroborated by the Steam admin thread quoting the engine usage output and by two independent command references. If a server ever rejects the semicolon-chained ban or unban line, send the parts as separate commands. There is no motd command - Source serves motd.txt from the game directory via the motdfile cvar."
+}

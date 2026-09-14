@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "slug": "cube-2-sauerbraten",
+  "game": {
+    "displayName": "Cube 2: Sauerbraten",
+    "appId": null,
+    "aliases": [
+      "Sauerbraten",
+      "Cube 2",
+      "Cube 2: Sauerbraten Dedicated Server",
+      "sauerbraten-server",
+      "sauer_server"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "http://sauerbraten.org/docs/game.html",
+      "title": "Cube 2: Sauerbraten - Command Reference",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/embeddedc/sauerbraten/blob/master/src/engine/server.cpp",
+      "title": "Sauerbraten engine/server.cpp (standalone server main loop) - source mirror",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/embeddedc/sauerbraten/blob/master/src/fpsgame/client.cpp",
+      "title": "Sauerbraten fpsgame/client.cpp (client console commands: kick, clearbans, setmaster) - source mirror",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://manpages.ubuntu.com/manpages/bionic/man6/sauerbraten-server.6.html",
+      "title": "sauerbraten-server(6) manpage",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "http://quadropolis.us/node/2525",
+      "title": "Hosting a Server - The Basics (Quadropolis)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "The Sauerbraten dedicated server has no command channel a server manager can drive: no RCON, no HTTP/REST admin API, and no stdin console. In the server source, the STANDALONE main() only parses argv and calls initserver(true, true), and rundedicatedserver() is `for(;;) serverslice(true, 5);` (plus a Windows PeekMessage pump) with no fgets/getline/select-on-stdin/ReadConsole anywhere. Administration happens over the game protocol from a connected game CLIENT: an admin types /setmaster <adminpass> (the -p adminpass startup option) and then /kick <cn|name> [reason], /spectator, /mastermode, /clearbans in the CLIENT console - registered in src/fpsgame/client.cpp as COMMAND(kick,\"ss\"), COMMAND(clearbans,\"\"), COMMAND(setmaster,\"ss\"), ICOMMAND(mastermode,\"i\"), ICOMMAND(spectator,\"is\"). They are client commands, not text a manager can send to the server process. Do not record them as commands: the ban-clearing command is `clearbans` (NOT clearallbans); the server-side CubeScript names are different again (ipban, clearipbans, adduser, clearusers, maprotation in src/fpsgame/server.cpp), and those only run from server-init.cfg, which is executed once at startup with no reload. The server does answer the read-only extinfo UDP query on serverport+1 (server info and connected-player stats), which could feed a roster but carries no commands. Note that /kick also IP-bans for 4 hours or until the server empties, and players are addressed by client number (cn) or name, not by a persistent account id. Third-party server mods - hopmod, zeromod, remod, QServ - add their own remote/IRC/stdin admin channels; those are separate builds and are not described here. The manpage's phrase for -p, \"password to remote administrate the server\", refers to this in-client master/admin flow, not to a remote console. Sources agree; none claims an official server-side console."
+}

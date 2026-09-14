@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "slug": "call-of-duty-modern-warfare-3",
+  "game": {
+    "displayName": "Call of Duty: Modern Warfare 3 - Dedicated Server",
+    "appId": 42750,
+    "aliases": [
+      "MW3",
+      "Call of Duty: Modern Warfare 3",
+      "Call of Duty®: Modern Warfare® 3 (2011)",
+      "Call of Duty 8",
+      "CoD8",
+      "IW5"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 27015,
+    "portSetting": "net_port",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Client number",
+    "example": "3",
+    "pattern": "[0-9]{1,2}"
+  },
+  "commands": {
+    "info": "serverinfo",
+    "listPlayers": "status",
+    "kick": "clientkick {playerId} \"{reason}\"",
+    "ban": "banClient {playerId} \"{reason}\"",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^\\s*(?<playerId>\\d+)\\s+-?\\d+\\s+(?:\\d+|[A-Z]+)\\s+(?<accountId>[a-zA-Z0-9]+)\\s+(?<name>.+?)\\s+\\d+\\s+\\d+\\.\\d+\\.\\d+\\.\\d+:-?\\d+",
+    "skipLinePattern": "^\\s*(?:num\\s+score|map:|-{3,})"
+  },
+  "sources": [
+    {
+      "url": "https://steamdb.info/app/42750/info/",
+      "title": "Call of Duty: Modern Warfare 3 - Dedicated Server (App 42750) - SteamDB",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.zeroy.com/index.php?title=Call_of_Duty_8:_Console_Commands",
+      "title": "Call of Duty 8: Console Commands - COD Modding & Mapping Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.zeroy.com/index.php/Call_of_Duty_8:_Rcon_Setup",
+      "title": "Call of Duty 8: Rcon Setup - COD Modding & Mapping Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.zeroy.com/index.php?title=Call_of_Duty_8:_Default_Server_Config",
+      "title": "Call of Duty 8: Default Server Config - COD Modding & Mapping Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BigBrotherBot/big-brother-bot/master/b3/parsers/cod8.py",
+      "title": "BigBrotherBot b3/parsers/cod8.py (Modern Warfare 3 parser)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BigBrotherBot/big-brother-bot/master/b3/parsers/cod6.py",
+      "title": "BigBrotherBot b3/parsers/cod6.py (command table cod8 inherits)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/RaidMax/IW4M-Admin/master/Application/RConParsers/BaseRConParser.cs",
+      "title": "IW4M-Admin BaseRConParser.cs - default Call of Duty RCON command prefixes",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/RaidMax/IW4M-Admin/master/Plugins/ScriptPlugins/ParserTeknoMW3.js",
+      "title": "IW4M-Admin ParserTeknoMW3.js (IW5 status pattern and command overrides)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://forum.plutonium.pw/topic/18180/dropclient-banclient",
+      "title": "dropclient & banclient - Plutonium forum (IW5)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://kb.firedaemon.com/support/solutions/articles/4000086728-call-of-duty-modern-warfare-3-dedicated-server",
+      "title": "Run Call of Duty: Modern Warfare 3 Server as a Service - FireDaemon KB",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "The 2011 PC title, unlike Modern Warfare 2, does ship a real dedicated server: Steam tool app 42750, 'Call of Duty: Modern Warfare 3 - Dedicated Server' (SteamDB app type Tool), configured from admin/server.cfg. RCON is the Quake3/IW UDP dialect, not Valve Source RCON, hence flavour 'custom': a single UDP datagram of 0xFF 0xFF 0xFF 0xFF 'rcon <password> <command>' to the game port, reply prefixed 0xFF 0xFF 0xFF 0xFF 'print' (IW4M-Admin BaseRConParser.cs). There is no separate RCON port or enable switch; RCON rides net_port and is enabled simply by setting rcon_password, which is empty by default ('seta rcon_password \"\"'). Two independent sources give the same ports, so the port is not in dispute: the stock server.cfg on the zeroy wiki and FireDaemon's install guide both show net_port 27015 (game/secure port) with net_queryPort 27014, net_authPort 8766, net_masterServerPort 27016. Commands here are the bare command text; do not prefix 'rcon', that framing belongs to the protocol (a player typing at an in-game console types 'rcon status', a tool sends 'status'). SOURCE DISAGREEMENT, the reason this file is 'low': the kick spelling is not agreed. The zeroy wiki's Rcon Setup page lists '/kickclient [player id] - This will kick a player according to its ID (given with the /status command)' and never mentions 'clientkick'; the sibling Console Commands page lists no kick command at all. The hosting knowledge bases that list 'kickclient' (Elite Game Servers, End of Reality) reproduce that wiki page nearly verbatim, so they are one source, not three. Against that, three independent implementations use 'clientkick': B3's cod6 parser that cod8 inherits ('clientkick %(cid)s'), IW4M-Admin's base Call of Duty parser ('clientkick {0} \"{1}\"', which is what it uses for Plutonium IW5 since there is no IW5-specific parser), and a Plutonium forum thread where 'rcon clientkick 4' is given as the working replacement after dropclient/banclient/tempbanClient failed. This file therefore records 'clientkick'. Note the two spellings differ in argument support as well: B3's form passes no reason, IW4M-Admin's passes a quoted reason, and the quoted-reason form recorded here is attested only by IW4M-Admin. Ban is weaker still and should be treated as UNCONFIRMED: 'banClient <client number> <optional reason>' comes from the zeroy Console Commands dump (the Rcon Setup page gives the same command without the reason argument) and is described as writing the player's GUID to a ban file, but no independent implementation uses it on this title - both B3 (cod6/cod8) and IW4M-Admin map their own ban action onto clientkick and keep bans in their own database (only B3's older cod5 parser uses 'banclient'), and the same Plutonium thread reports banclient not working. Expect to fall back to kick plus a host-level block. The TeknoMW3 mod, which IW4M-Admin does have a parser for, uses 'dropclient {num} \"{reason}\"' and rcon port 8766 instead; that parser is for the mod, not the stock server. No live 'unban' command is recorded: the game's unban takes a player NAME, not the client number that kick and ban take, so it cannot be expressed with {playerId}; the stock list gives 'unban \"player name\"'. No ban-file path is recorded either, because the only concrete path found (PermanentBan.txt, via the b3-plugin-guidunban project) belongs to TeknoMW3 rather than the stock server. playerId is the client number from the 'status' listing, which is per-session and changes on reconnect, so list players immediately before kicking or banning. The status GUID column, captured as accountId, is a 16-character hex form of the player's Steam ID. 'serverinfo' is documented only on the zeroy Rcon Setup page but is standard across the Call of Duty line. If the 2023 title 'Call of Duty: Modern Warfare III' was meant instead, it has no dedicated server and no admin console at all and would be a 'none' file."
+}

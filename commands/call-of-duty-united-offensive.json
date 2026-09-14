@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "slug": "call-of-duty-united-offensive",
+  "game": {
+    "displayName": "Call of Duty: United Offensive",
+    "appId": 2640,
+    "aliases": [
+      "CoD:UO",
+      "CoDUO",
+      "United Offensive",
+      "Call of Duty United Offensive",
+      "coduo"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 28960,
+    "portSetting": "net_port",
+    "enableSetting": null,
+    "passwordSetting": "rconPassword"
+  },
+  "playerId": {
+    "label": "Client number",
+    "example": "3",
+    "pattern": "[0-9]{1,2}"
+  },
+  "commands": {
+    "info": "serverinfo",
+    "listPlayers": "status",
+    "kick": "clientkick {playerId}",
+    "ban": "banClient {playerId}",
+    "say": "say {message}",
+    "motd": "set scr_motd \"{message}\""
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^\\s*(?<playerId>\\d+)\\s+(?<score>-?\\d+)\\s+(?<ping>\\d+)\\s+(?<accountId>\\d+)\\s+(?<name>.+?)\\s+(?<lastmsg>\\d+)\\s+(?<address>\\S+)\\s+(?<qport>-?\\d+)\\s+(?<rate>\\d+)\\s*$",
+    "skipLinePattern": "^\\s*(?:map:|num\\s+score|-{3,})"
+  },
+  "sources": [
+    {
+      "url": "https://wiki.zeroy.com/index.php/Call_of_Duty:_Rcon_Commands",
+      "title": "Call of Duty: Rcon Commands - COD Modding & Mapping Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "http://www.nobsclan.com/tuts/coduo/",
+      "title": "No Bullshit Clan - Call of Duty: United Offensive Dedicated Server Installation",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BigBrotherBot/big-brother-bot/master/b3/parsers/cod.py",
+      "title": "BigBrotherBot b3/parsers/cod.py (Call of Duty parser: _commands and status regex)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.opferlamm-clan.de/call-of-duty-uo-cvar-und-server-befehle.html",
+      "title": "Call of Duty UO CVAR und Server Befehle",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://gamefaqs.gamespot.com/pc/920122-call-of-duty-united-offensive/faqs/33278",
+      "title": "Call of Duty: United Offensive - Server Configuration Guide (shift3)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.gamesclan.net/billing/knowledgebase/35/Call-of-Duty-Rcon-Commands.html",
+      "title": "Call of Duty Rcon Commands - Gamesclan knowledgebase",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": "2026-09-13",
+  "notes": "id Tech 3 engine, so RCON is the Quake 3 style connectionless UDP packet (0xFFFFFFFF + 'rcon <password> <command>') sent to the GAME port, not Valve Source RCON - hence flavour 'custom'. The port is whatever '+set net_port' is, default 28960; RCON is live as soon as 'set rconPassword' is non-empty, there is no separate enable switch. The server moderates by CLIENT NUMBER (the 'num' column of 'status'), which is a slot index reassigned on every reconnect - always run listPlayers immediately before kick/ban. Name-based twins exist ('kick <name>', 'banUser <name>', 'tempBanUser <name>', 'unbanUser <name>') but player names carry ^-colour codes and spaces, so they are unreliable as a moderation key; note that 'kick all' kicks everyone. unban is deliberately omitted: the only live unban takes a player NAME, which is not the identifier this file moderates by, so no correct {playerId} template exists; the zeroy wiki and B3 spell it 'unbanuser <name>' while the opferlamm list spells it 'unban <name>', a further reason not to record it. banClient writes the player's GUID to ban.txt in the server's base/mod directory; the exact path and line format are not confirmed by the sources consulted, so no banList block is recorded rather than guessing one. 'tempBanClient <id>' exists but takes no duration argument, so {duration} cannot be expressed and ban maps to the permanent banClient. 'motd' is not a command but the scr_motd cvar (documented in the shift3 config guide as 'set scr_motd \"Message of the day\"' and in the opferlamm UO cvar list) set live over RCON; it shows on connect, so it affects players who join afterwards. The status line regex is adapted from BigBrotherBot's CoD parser, whose column order is slot, score, ping, guid, name, lastmsg, ip:port, qport, rate; the guid column only appears on patched clients (1.4+/1.51 UO), and 'loopback' can appear in the address column on a listen server, which is why address is matched as \\S+ rather than a dotted quad. Per-command corroboration: status, clientkick and banClient appear in the zeroy wiki, the nobsclan UO tutorial, the opferlamm cvar list and B3's cod.py; serverinfo in zeroy, nobsclan and opferlamm; say in nobsclan and B3 (it is absent from the zeroy wiki and the opferlamm list), which is still two independent sources. Source disagreement: the gamesclan knowledgebase lists status, say, clientkick and banclient alongside map, map_restart, map_rotate and scr_* cvar toggles, but omits serverinfo and every by-name ban/unban variant; tacodewolff's page (not cited) presents the same list as CoD4 commands 'very similar to previous editions'. Both are treated as derivative hosting/echo material and neither is counted toward confidence."
+}

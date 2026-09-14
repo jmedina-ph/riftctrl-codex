@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "slug": "nightingale",
+  "game": {
+    "displayName": "Nightingale Dedicated Server",
+    "appId": 3796810,
+    "aliases": [
+      "Nightingale",
+      "NWX"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://a.storyblok.com/f/239842/x/e8167d5c91/nightingale-dedicated-server-0-8-final.pdf",
+      "title": "Nightingale Dedicated Server documentation v0.8 (Inflexion Games)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://help.bisecthosting.com/hc/en-us/articles/40706988595227-How-to-Kick-or-Ban-Players-on-a-Nightingale-Server",
+      "title": "How to Kick or Ban Players on a Nightingale Server - in-game Social Screen (O), Remove/Ban on the player card, unban by editing Bans= in ServerState.ini",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/Ekman/Nightingale-Docker",
+      "title": "Ekman/Nightingale-Docker - ServerSettings.ini keys (StartingDifficulty, Password, AdminPassword); AdminPassword 'grants access to the kick/ban commands'; no RCON",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/fireblade004/nightingale-server",
+      "title": "fireblade004/nightingale-server - Docker image configured by environment variables (MAXPLAYERS, CONNECTIONPASSWORD, SERVERGAMEPORT); no RCON or console",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/Raziel7893/WindowsGSM.Nightingale",
+      "title": "WindowsGSM.Nightingale plugin - 7777 UDP default / 27015 UDP query, no RCON (note: its README app-id field and -port=8211 line are copy-pasted from another plugin)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/3796810/",
+      "title": "SteamDB - Nightingale Dedicated Server (app 3796810, type Tool)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": "2026-09-13",
+  "notes": "No command channel exists. Inflexion's official v0.8 guide documents the entire control surface as start-up command line / -ini arguments: -log, -noconsole, -port=<1024-65535>, -multihome=<ip>, -statusPort=<1024-65535>, -EnableCheats (cheat/debug menu), -ini:ServerSettings:[/Script/NWX.NWXServerSettings]:Password= / :AdminPassword=, -ini:Game:[/Script/Engine.GameSession]:MaxPlayers=, -ini:Engine:[JsonLogger]:bEnable=true / :bStdout=true, and -ini:Engine:[HTTPServer.Listeners]:+ListenerOverrides=(Port=<port>,BindAddress=<ip>) (a bind override for the status listener, NOT an admin API). The same keys can live in NWX/Config/ServerSettings.ini, copied from ExampleServerSettings.ini. There is no RCON, no stdin command console and no admin API. The guide states: 'If an admin password is set, players with the correct password can authenticate in-game in order to kick and ban other players' - moderation is a GUI action in the game client's social menu (join as admin, press O for the Social Screen, then Remove to kick or Ban on the player's card), and bans are recorded by player name on the Bans= line of NWX/Saved/Config/<Platform>Server/ServerState.ini, with no Steam ID or UID surfaced to target, which is why no playerId is recorded. The optional -statusPort flag adds a READ-ONLY HTTP endpoint, GET http://<host>:<port>/status, returning 503 {\"status\":\"loading\",\"player_count\":0,\"player_names\":[]} while starting and 200 {\"status\":\"ready\",\"player_count\":2,\"player_names\":[\"Alice\",\"Bob\"]} once up (names only, no identifiers, accepts no commands); it is recorded here in notes rather than as a rest transport because nothing can be sent to it. Linux entry point is NWXServer.sh; default game port UDP 7777, query port UDP 27015; server tool app id 3796810 (SteamDB, type Tool). Third-party hosting wikis (e.g. supercraft.host) publish a fabricated Nightingale command set (/kick, /ban, /unban, /tp, /shutdown, /save, /say, /players, /info, /help), as does a Steam forum reply suggesting the Minecraft command '/pardon-ip'; none of it exists and none must be ingested. Documentation fetched is version 0.8 - re-check if Inflexion publishes a newer PDF."
+}

@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "slug": "battalion-legacy",
+  "game": {
+    "displayName": "BATTALION: Legacy Dedicated Server",
+    "appId": 805140,
+    "aliases": [
+      "BATTALION: Legacy",
+      "BATTALION 1944",
+      "Battalion 1944",
+      "btlserver"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1287190221",
+      "title": "Battalion 1944 Server Commands (Steam guide) - full Server.* command list",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1288970621",
+      "title": "Battalion 1944 Server Setup Guide (Steam guide) - 'open console in game', +AdminSteamIDs=, 'you can not BAN anyone'",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/master/lgsm/config-default/config-lgsm/btlserver/_default.cfg",
+      "title": "LinuxGSM btlserver _default.cfg - appid 805140, engine 'unreal4', consoleinteract='no', ports 7777/7780, no rcon settings",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://linuxgsm.com/servers/btlserver/",
+      "title": "BATTALION: Legacy Linux Game Server - LinuxGSM",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://survivalservers.com/wiki/index.php?title=BATTALION_1944_Server_Admin_Commands_Usage",
+      "title": "BATTALION 1944 Server Admin Commands Usage (hosting KB, echoes the Steam guides)",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/STBRR/BLD",
+      "title": "BLD - Battalion: Legacy Linux deployer; passes -AdminPassword=, configs live in Battalion/Config/DefaultGame*.ini",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/805140/info/",
+      "title": "BATTALION: Legacy Dedicated Server (App 805140), parent app 489940",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "BATTALION: Legacy (formerly BATTALION 1944, Bulkhead/Square Enix Collective; tool app 805140, game app 489940) has admin commands but no remote command channel, so there is nothing for RIFT//CTRL to send. Administration happens from the IN-GAME CLIENT console of a player whose SteamID64 is listed in +AdminSteamIDs= in Battalion/Config/DefaultGame.ini - the setup guide is explicit: 'To enter and admin command. You must open console in game a type one of the following bellow.' The commands are UE4 exec commands prefixed 'Server.': Server.KickPlayerByName <NAME>, Server.KickPlayerBySteamID <ID>, Server.Announce <MESSAGE>, Server.ListPartyMembers, Server.ChangeMap <MAP> <MODE>, Server.Restart, Server.Shutdown, Server.DisconnectAll, Server.EndRound, Server.Pause, Server.WinRound, Server.LoseRound, Server.LoadNextGame, Server.ChangeToTeam, Server.AddBot, Server.KillBots, Server.State. They are recorded here as prose rather than as commands because they cannot be issued to the server process from outside the game. No source describes an RCON listener or an HTTP/REST admin API, and the evidence against stdin is positive rather than merely absent: LinuxGSM's btlserver/_default.cfg sets consoleinteract='no' (it enables interactive console input for servers that accept it) and defines no rcon host/port/password fields at all, while its startparameters are only -Port=7777 -QueryPort=7780 -BroadcastIp= -log. THERE IS NO BAN COMMAND AT ALL - the Steam setup guide states plainly 'At the moment you can not BAN anyone from your server. Kick is the only resource available.' Kick targets either the player's display name or their SteamID64 (e.g. 76561197976577178). Default ports are 7777 game and 7780 query; engine is Unreal Engine 4 and the Linux binary is BattalionServer-Linux-Shipping. The community Linux deployment repo STBRR/BLD passes -AdminPassword= on the command line, but no source documents a login command or remote console that this password unlocks; it appears to gate the in-game admin/password entry. Confidence is low because the Server.* command list traces to a single lineage - the two Steam guides, which the hosting knowledge bases (Survival Servers, Citadel, Streamline and others) visibly copy - and because 'no remote channel' is still partly an absence-of-evidence finding: no publisher document explicitly rules out server-side console input. If that changes, the file becomes a 'stdin' file with the Server.* commands above."
+}

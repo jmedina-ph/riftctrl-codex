@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "slug": "natural-selection",
+  "game": {
+    "displayName": "Natural Selection",
+    "appId": 120,
+    "aliases": [
+      "NS",
+      "Natural Selection (Half-Life mod)",
+      "ns"
+    ]
+  },
+  "transport": "rcon",
+  "rcon": {
+    "flavour": "custom",
+    "defaultPort": 27015,
+    "portSetting": "port",
+    "enableSetting": null,
+    "passwordSetting": "rcon_password"
+  },
+  "playerId": {
+    "label": "Steam ID",
+    "example": "STEAM_0:1:12345678",
+    "pattern": "STEAM_[0-9]+:[01]:[0-9]+"
+  },
+  "commands": {
+    "info": "status",
+    "listPlayers": "status",
+    "kick": "kick \"{playerName}\"",
+    "ban": "banid {duration} {playerId} kick",
+    "unban": "removeid {playerId}",
+    "say": "say {message}"
+  },
+  "playerParse": {
+    "mode": "regex",
+    "linePattern": "^#\\s*[0-9]+\\s+\"(?<name>.*)\"\\s+(?<accountId>[0-9]+)\\s+(?<playerId>STEAM_[0-9]+:[01]:[0-9]+|VALVE_[0-9]+:[01]:[0-9]+|STEAM_ID_PENDING|STEAM_ID_LAN|VALVE_ID_PENDING|VALVE_ID_LAN|VALVE_ID_LOOPBACK|BOT|HLTV|UNKNOWN|LOOPBACK)",
+    "skipLinePattern": "^(hostname|version|tcp/ip|ipx|map|players)\\s*:|^#\\s+name\\s+userid|^[0-9]+ users"
+  },
+  "banList": {
+    "paths": [
+      "ns/banned.cfg",
+      "banned.cfg",
+      "nsp/banned.cfg"
+    ],
+    "lineIdPattern": "^banid\\s+[0-9.]+\\s+(STEAM_[0-9]+:[01]:[0-9]+)",
+    "liveUnban": "removeid {playerId}"
+  },
+  "sources": [
+    {
+      "url": "https://github.com/rehlds/ReHLDS/blob/master/rehlds/engine/sv_main.cpp",
+      "title": "ReHLDS engine sv_main.cpp - SV_BanId_f, SV_RemoveId_f, SV_WriteId_f, SV_GetIDString, rcon_password cvar",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/rehlds/ReHLDS/blob/master/rehlds/engine/host_cmd.cpp",
+      "title": "ReHLDS engine host_cmd.cpp - Host_Status_f output format, Host_Kick_f, say command registration",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://developer.valvesoftware.com/wiki/Console_Command_List",
+      "title": "Console Command List - Valve Developer Community (banid, removeid, kick, say)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/ENSL/NS",
+      "title": "ENSL/NS - Natural Selection mod for Half-Life source (mod folder ns)",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://forums.unknownworlds.com/discussion/61359/natural-selection-hlds-setup-guide",
+      "title": "Natural Selection HLDS Setup Guide - Unknown Worlds Forums (hlds.exe -console -game nsp +port ... +map ...)",
+      "kind": "forum",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://steamdb.info/app/120/",
+      "title": "Natural Selection - AppID 120 - Steam Database",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "high",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "Natural Selection is a Half-Life 1 (GoldSrc) mod with no dedicated-server app of its own: it is run by HLDS as 'hlds -console -game ns +port 27015 +map ns_eclipse' (the ENSL/NS repository is the mod folder 'ns'; the Unknown Worlds setup thread shows the same shape of invocation against the older 'nsp' folder, e.g. 'hlds.exe -console -game nsp +port 27014 +maxplayers 10 +map co_angst'). Moderation is therefore pure GoldSrc engine, not mod-specific, and every command string here was read out of the ReHLDS engine source (a reverse-engineering of HLDS build 6152/6153) and re-verified against it line by line: SV_BanId_f prints 'Usage:  banid <minutes> <uniqueid or #userid> { kick }' plus 'Use 0 minutes for permanent'; SV_RemoveId_f prints 'Usage:  removeid <uniqueid | #slotnumber>'; Host_Kick_f prints 'usage:  kick < name > | < # userid >' in stock builds and gains '[reason]' only when compiled with REHLDS_FIXES, so {reason} is deliberately absent from the kick template. Host_Kick_f matches a bare first argument against the player NAME only; it does additionally have a '#'-prefixed branch that will accept a Steam ID, but that path re-assembles the id out of several Cmd_Argv slots and is fragile, so the template uses {playerName} while ban/unban use the uniqueid. banid alone is in-memory only; bans survive a restart only after 'writeid', which rewrites the file named by the 'bannedcfgfile' cvar (registered default 'banned.cfg', in the mod directory) as lines of the form 'banid 0.0 STEAM_0:1:12345678' (SV_WriteId_f: FS_FPrintf(f, \"banid 0.0 %s\\n\", SV_GetIDString(...))). IP bans are a separate system (addip/removeip/writeip -> listip.cfg) and are not modelled here. RCON is GoldSrc RCON - a challenge/response UDP protocol on the same port as the game - and is NOT the Source RCON TCP wire protocol, hence flavour 'custom'; rcon_password is the only enable-like cvar registered (the sv_rcon_* cvars are failure-threshold and ban-penalty tuning, not an on/off switch) and RCON cannot be moved off the game port. The status output is taken verbatim from Host_Status_f: the header '#      name userid uniqueid frag time ping loss adr', then per client '#%2i %8s %i %s' where the %8s argument is va(\"\\\"%s\\\"\", client->name) - so the name is always quoted and the column order really is name, userid, uniqueid - followed by frags, time, ping, loss and, only when printing to the local console (conprint) rather than over RCON, the address; the block ends with a '%i users' line. Fake clients print 'BOT' in the uniqueid column. SV_GetIDString also emits non-numeric ids that are NOT Steam IDs: 'STEAM_ID_PENDING' while a client is still authenticating, 'STEAM_ID_LAN' / 'VALVE_ID_LAN' when sv_lan is 1, 'VALVE_ID_PENDING', 'VALVE_ID_LOOPBACK' for a loopback client and 'HLTV' for the proxy; linePattern now accepts these so the roster is not silently empty on a LAN or unauthenticated server, but they are placeholders and must never be passed to banid. Many NS servers additionally run Metamod/AMX Mod X, which layers its own amx_kick/amx_ban commands on top; the engine commands above work regardless."
+}

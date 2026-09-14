@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "slug": "longvinter",
+  "game": {
+    "displayName": "Longvinter Dedicated Server",
+    "appId": 1639880,
+    "aliases": [
+      "Longvinter",
+      "Longvinter Server"
+    ]
+  },
+  "transport": "none",
+  "sources": [
+    {
+      "url": "https://wiki.longvinter.com/server/configuration",
+      "title": "Server Configuration - Longvinter Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/kimzuni/longvinter-docker-server",
+      "title": "kimzuni/longvinter-docker-server README",
+      "kind": "code",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://github.com/Uuvana-Studios/longvinter-linux-server",
+      "title": "Uuvana-Studios/longvinter-linux-server (deprecated, redirects users to wiki.longvinter.com)",
+      "kind": "official",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://wiki.longvinter.com/server/windows",
+      "title": "Windows Server Setup - Longvinter Wiki",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-13"
+    },
+    {
+      "url": "https://www.4netplayers.com/en/wiki/longvinter/how-can-i-become-admin/",
+      "title": "How to become an Admin in Longvinter - 4netplayers wiki",
+      "kind": "community",
+      "retrievedAt": "2026-09-13"
+    }
+  ],
+  "confidence": "low",
+  "researchedAt": "2026-09-13",
+  "verifiedAt": null,
+  "notes": "No command channel found. The developer-pointed server wiki documents the complete Game.ini setting list (ServerName, ServerMOTD, MaxPlayers, Password, CommunityWebsite, ServerTag, CoopPlay, CheckVPN, CoopSpawn, PVP, TentDecay, MaxTents, ChestRespawnTime, DisableWanderingTraders, AdminSteamID, RestartTime24h, SaveBackups) and the single launch parameter -GamePort (default UDP 7777); it contains no RCON enable/port/password setting, no admin console command list and no HTTP admin API, and the words RCON, console, kick and ban do not appear on it. The maintained community Docker server project states outright: 'At the moment, All related features have been replaced and removed because Longvinter does not support RCON/REST API' - its broadcast and save-before-restart features were deleted for that reason, and its remaining 'broadcast' variables only post to Discord webhooks. AdminSteamID 'Assigns admin privileges to specified EOS IDs' (EOS account ids, taken from in-game settings); that is an in-client privilege, not a remote command pipe, and no source documents what admins can then do - host guides covering admin setup (e.g. 4netplayers) walk through pasting the EOS Account ID and list no admin commands at all. ServerMOTD is a config value shown on signs around the island, not a live command. Uuvana's own Linux server repo is deprecated ('no longer maintained', migrated to Steam distribution) and carries only backup/get-id/update shell scripts plus systemd unit files, no console interaction. Confidence is low because the negative rests on one explicit third-party statement plus the absence of any RCON/admin-command material in the official documentation, not on a developer statement that no admin commands exist. Moderation must fall back to the host-level floor (firewall / process control)."
+}

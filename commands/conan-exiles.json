@@ -7,6 +7,7 @@
     "aliases": [
       "Conan Exiles",
       "CE",
+      "Conan Exiles Enhanced",
       "ConanSandbox"
     ]
   },
@@ -32,43 +33,73 @@
   },
   "playerParse": {
     "mode": "regex",
-    "linePattern": "^\\s*\\d+\\s*\\|\\s*(?<name>[^|]+?)\\s*\\|(?:[^|]*\\|){2}\\s*(?<playerId>7656119[0-9]{10})\\s*\\|",
-    "skipLinePattern": "^\\s*Idx\\s*\\|"
+    "linePattern": "^\\s*\\d+\\s*\\|\\s*(?<name>[^|]*?)\\s*\\|.*?(?<playerId>7656119[0-9]{10})",
+    "skipLinePattern": "^\\s*(?:Idx\\s*\\||[-+\\s]*$)"
   },
   "sources": [
     {
-      "url": "https://conanexiles.fandom.com/wiki/Rcon",
-      "title": "Rcon - Official Conan Exiles Wiki",
-      "kind": "wiki",
-      "retrievedAt": "2026-09-12"
+      "url": "https://forums.funcom.com/t/server-rcon-using-help/155646",
+      "title": "Server RCON using help - Funcom Forums (Feb 2021): 'Usage: kickplayer (index|name|userid|platformid|player)', reporter's fix was to type the selector keyword; lists the listplayers columns Idx | Char name | Player name | User ID | Platform ID | Platform Name",
+      "kind": "forum",
+      "retrievedAt": "2026-09-16"
     },
     {
       "url": "https://pingperfect.com/knowledgebase/743/Conan-Exiles--RCon-Configuration-plus-RCon-Commands.html",
-      "title": "Conan Exiles | RCon Configuration + RCon Commands",
+      "title": "Pingperfect KB: Conan Exiles RCon Configuration + RCon Commands (verbatim server 'help' usage lines)",
       "kind": "community",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     },
     {
       "url": "https://help.bisecthosting.com/hc/en-us/articles/40805207014427-RCON-Commands-for-Conan-Exiles",
-      "title": "RCON Commands for Conan Exiles - BisectHosting",
+      "title": "BisectHosting: RCON Commands for Conan Exiles (Enhanced) - same usage lines for kickplayer/banplayer/unbanplayer/listbans",
       "kind": "community",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     },
     {
-      "url": "https://xgamingserver.com/docs/conan-exiles/rcon-setup",
-      "title": "How to Set Up RCON on Your Conan Exiles Server",
-      "kind": "community",
-      "retrievedAt": "2026-09-12"
+      "url": "https://raw.githubusercontent.com/lastnahaj/hyborian-relay/main/src/conan/players/parsePlayerListResponse.ts",
+      "title": "hyborian-relay - parsePlayerListResponse.ts (pipe-delimited listplayers table, header detection on 'Char name', Platform ID / Funcom ID columns)",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
     },
     {
-      "url": "https://www.gameserverkings.com/knowledge-base/conan-exiles/how-to-add-admins-and-commands/",
-      "title": "Conan Exiles Admin Commands: Console, Purge & RCON List",
+      "url": "https://raw.githubusercontent.com/lastnahaj/hyborian-relay/main/tests/tracking/parsePlayerListResponse.test.ts",
+      "title": "hyborian-relay - parsePlayerListResponse test fixtures (sample listplayers rows for Conan Exiles Enhanced)",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://conanexiles.fandom.com/wiki/Rcon",
+      "title": "Official Conan Exiles Wiki - Rcon (port 25575, [RconPlugin] RconEnabled/RconPassword/RconPort in Game.ini)",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://forums.funcom.com/t/rcon-kickplayer-banplayer-bugged-maybe-more-commands-related-to-id-input/131494",
+      "title": "Funcom Forums (Jul 2020): RCON KickPlayer & BanPlayer bugged - bare-id form returns 'Something went wrong with: kickplayer [id] [reason]'",
+      "kind": "forum",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://forums.funcom.com/t/rcon-banplayer-kickplayer-still-returns-error/148485",
+      "title": "Funcom Forums (Nov 2020): RCON BanPlayer / KickPlayer still returns error - same failure with a bare FuncomID",
+      "kind": "forum",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://hosthavoc.com/wiki/game-servers/conan-exiles/use-rcon",
+      "title": "Host Havoc wiki - publishes the selector-less 'kickplayer <steamid>' / 'banplayer <steamid>' form (recorded as a disagreeing source)",
       "kind": "community",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://zap-hosting.com/guides/docs/conan-rcon/",
+      "title": "ZAP-Hosting: Conan Exiles RCON - lists kick/ban/unban/changemap, none of which are Conan Exiles RCON commands (recorded as a wrong source)",
+      "kind": "community",
+      "retrievedAt": "2026-09-16"
     }
   ],
   "confidence": "low",
-  "researchedAt": "2026-09-12",
+  "researchedAt": "2026-09-16",
   "verifiedAt": null,
-  "notes": "Standard Source RCON over TCP; works with mcrcon. Enabled in ConanSandbox/Saved/Config/WindowsServer/Game.ini under [RconPlugin] with RconEnabled=1, RconPassword=, RconPort=25575, RconMaxKarma=60 (wiki, gameserverkings and xgamingserver agree on section and port). Funcom has never published an official RCON command reference - the list here is the server's own 'help' output as transcribed by Pingperfect and BisectHosting, which agree verbatim: 'kickplayer (index|name|userid|platformid|player) <identification> <message>', 'banplayer (index|name|userid|platformid|player) <identification> <message>', 'unbanplayer <userid|platformid>', 'listplayers', 'listbans', 'broadcast <message>'. The selector keyword is mandatory: 'platformid' selects the Steam64 id, 'userid' the FuncomID. DISAGREEMENT: HostHavoc documents 'kickplayer <steamid>' / 'banplayer <steamid>' and supercraft.host documents 'kickplayer <name>' / 'banplayer <name>', both without the selector keyword; those look like the pre-crossplay (pre-Age of Sorcery) syntax and are believed outdated. banplayer takes no duration - Conan Exiles bans are permanent until unbanplayer. No server-status command was confirmed, so 'info' is omitted rather than guessed; there is no MOTD command (ServerMessageOfTheDay is a ServerSettings.ini value). playerParse is the weakest part of this file: the listplayers response is a pipe-delimited table whose header is reported as 'Idx | Char name | Player name | User ID | Platform ID | Platform Name', but no source quotes real output, so the column positions are inferred - confidence is 'low' for that reason plus the kick/ban syntax disagreement above."
+  "notes": "IDENTIFIER (printed vs accepted): listplayers PRINTS a pipe-delimited table. On Conan Exiles Enhanced the header is \"Idx | Char name | Player name | Platform ID | Funcom ID\" and a row reads \"0   | Vaelric the Bold | VRelic      | 76561198000000001 | funcom-vaelric\" (hyborian-relay parser + its fixtures, 2026); a 2021-era build printed six columns, \"Idx | Char name | Player name | User ID | Platform ID | Platform Name\" (Funcom forum, Feb 2021). Either way the Platform ID column is the bare SteamID64 and there is a \"----+----\" rule line under the header on some builds. kick and ban do NOT accept that bare id on its own. The server's own help prints \"Usage: kickplayer (index|name|userid|platformid|player) <identification> <message>\" and the same for banplayer, i.e. the selector KEYWORD must precede the value: \"kickplayer platformid 76561198012345678 Griefing\". Sending \"kickplayer 76561198012345678 reason\" returns \"Syntax error, see help for usage\" (Funcom forum Feb 2021, where the reporter's own fix was to add the keyword) or \"Something went wrong with: kickplayer [id] [reason]\" (Funcom bug reports Jul 2020 and Nov 2020). unban is DIFFERENT and takes NO selector keyword: help prints \"Usage: unbanplayer <userid|platformid>\" - angle brackets, a single argument whose type the server infers, the same value form as whitelistplayer/unwhitelistplayer. Send \"unbanplayer 76561198012345678\". SELECTOR ALTERNATIVES for kickplayer/banplayer: index = the Idx column, name = Char name, player = Player name, userid = Funcom ID, platformid = Platform ID (SteamID64). platformid is used here because it is stable across renames and is printed by listplayers; \"kickplayer name {playerName} {reason}\" and \"kickplayer index <idx> {reason}\" are the documented fallbacks if a build rejects platformid. DISAGREEMENT (why this file is low): hosting pages publish selector-less forms - Host Havoc \"kickplayer <steamid>\", supercraft.host \"kickplayer <name>\" - which are the exact forms the Funcom bug reports show failing; ZAP-Hosting's Conan page lists kick/ban/unban/changemap, which are not Conan Exiles RCON commands at all. The two listplayers layouts above also disagree, so playerParse anchors on a SteamID64 anywhere in the row instead of a fixed column, and skips the header and rule lines. On a crossplay/Epic/Microsoft-Store client the Platform ID would not be a 7656119... value and that row would be skipped; this file assumes the Steam dedicated server (app 443030). OTHER: bans are permanent - banplayer takes no duration; listbans prints the ban list and there is no researched ban file path, so banList is omitted. No info and no motd command exists over RCON (help, listbans, GetServerSetting <name> all need arguments or are not status). broadcast <message> is the server-wide announcement. Transport is Valve Source RCON; [RconPlugin] RconEnabled=1 / RconPassword / RconPort (default 25575) go in Game.ini per the official wiki and ZAP; supercraft.host instead says ServerSettings.ini - unresolved. listplayers replies can span multiple RCON packets on a busy server. Note the in-game admin console (not RCON) uses different verbs - ShowPlayers, BroadcastMessage - which is why some guides quote those instead. No page read during research attempted to give instructions; all were treated as data."
 }

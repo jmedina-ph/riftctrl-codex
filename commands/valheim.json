@@ -6,6 +6,7 @@
     "appId": 896660,
     "aliases": [
       "Valheim",
+      "Valheim Server",
       "valheim_server"
     ]
   },
@@ -13,67 +14,108 @@
   "playerId": {
     "label": "Platform User ID",
     "example": "76561198012345678",
-    "pattern": "[0-9]{7,20}"
+    "pattern": "[0-9]{17}",
+    "prefix": "V_"
   },
   "banList": {
     "paths": [
       "bannedlist.txt",
-      "config/bannedlist.txt"
+      "config/bannedlist.txt",
+      "save/bannedlist.txt",
+      "saves/bannedlist.txt",
+      ".config/unity3d/IronGate/Valheim/bannedlist.txt",
+      "AppData/LocalLow/IronGate/Valheim/bannedlist.txt"
     ],
-    "lineIdPattern": "^\\s*(?:[A-Za-z]+_)?([0-9]{7,20})"
+    "lineIdPattern": "^\\s*(?:[A-Za-z]+_)?([0-9]{17})\\s*$"
   },
   "sources": [
     {
       "url": "https://www.valheimgame.com/support/a-guide-to-dedicated-servers/",
-      "title": "A Guide to Dedicated Servers - Valheim (Iron Gate)",
+      "title": "A Guide to Dedicated Servers - Valheim (Iron Gate, official)",
       "kind": "official",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     },
     {
-      "url": "https://valheim.fandom.com/wiki/Dedicated_servers",
-      "title": "Dedicated servers - Valheim Wiki",
+      "url": "https://valheim.fandom.com/wiki/Developer_console",
+      "title": "Developer console - Valheim Wiki",
       "kind": "wiki",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     },
     {
-      "url": "https://berrybyte.net/wiki/games/valheim/admin-console-commands",
-      "title": "Valheim admin and console commands - berrybyte Wiki",
-      "kind": "community",
-      "retrievedAt": "2026-09-12"
-    },
-    {
-      "url": "https://github.com/lloesche/valheim-server-docker",
-      "title": "lloesche/valheim-server-docker README",
+      "url": "https://thunderstore.io/c/valheim/p/AviiNL/rcon/",
+      "title": "rcon (BepInEx RCON library) - Thunderstore",
       "kind": "code",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://thunderstore.io/c/valheim/p/Tristan/ValheimRcon/",
+      "title": "ValheimRcon - Thunderstore",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://github.com/Tristan-dvr/ValheimRcon",
+      "title": "Tristan-dvr/ValheimRcon README (adds RCON, default port = game port + 2)",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://old.thunderstore.io/c/valheim/p/ferrinius/RCON_Next/",
+      "title": "RCON Next - Thunderstore",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://github.com/community-valheim-tools/valheim-server-docker",
+      "title": "community-valheim-tools/valheim-server-docker README",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://eggs.pterodactyl.io/egg/games-valheim/",
+      "title": "Pterodactyl Valheim egg (stop = 'kill -2 $!; wait;', no console command)",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://github.com/community-valheim-tools/valheim-server-docker/issues/798",
+      "title": "Issue #798: ADMINLIST_IDS not granting admin on Valheim 1.0 (V_ prefix)",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://github.com/jnsartwell/valheim-hetzner-iac/pull/44",
+      "title": "PR #44: admin IDs need the V_ prefix on Valheim 1.0",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://github.com/hldblc/ValheimAdminPanel/releases/tag/v2.5.3",
+      "title": "ValheimAdminPanel v2.5.3 release notes (claims the game accepts bare, Steam_ and V_ ids - disagreeing source)",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
     },
     {
       "url": "https://winternode.com/help/games/valheim/administration/getting-a-player-id",
-      "title": "How to Find a Player ID in Valheim - WinterNode",
+      "title": "How to Find a Player ID in Valheim (V_ + SteamID64)",
       "kind": "community",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     },
     {
-      "url": "https://hosthavoc.com/wiki/game-servers/valheim/add-admins",
-      "title": "How to Add Admins to Your Valheim Server - Host Havoc",
+      "url": "https://berrybyte.net/wiki/games/valheim/admin-console-commands",
+      "title": "Valheim admin and console commands - berrybyte wiki",
       "kind": "community",
-      "retrievedAt": "2026-09-12"
-    },
-    {
-      "url": "https://supercraft.host/article/valheim-dedicated-server-save-location/",
-      "title": "Valheim Dedicated Server Save Location",
-      "kind": "community",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     },
     {
       "url": "https://xgamingserver.com/docs/valheim/rcon",
-      "title": "Use RCON on Your Valheim Server - XGamingServer (disputed)",
+      "title": "Use RCON on Your Valheim Server - XGamingServer (disagreeing source)",
       "kind": "community",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     }
   ],
   "confidence": "low",
-  "researchedAt": "2026-09-12",
+  "researchedAt": "2026-09-16",
   "verifiedAt": null,
-  "notes": "Valheim's dedicated server exposes no command channel: Iron Gate documents no RCON and no admin API, and the server process takes no typed commands on its own console (it is stopped with Ctrl+C / SIGINT so the world saves). The Kick PLAYERNAME / Ban PLAYERNAME / Unban PLAYERNAME / Banned commands Iron Gate lists run in a CLIENT's F5 admin console while connected to the server as an admin (some guides also say Steam clients need the -console launch option; Iron Gate does not mention it); they cannot be issued from the host, which is why no commands are recorded here. Out-of-band moderation is the three plain-text lists in the server's save directory - adminlist.txt, bannedlist.txt, permittedlist.txt - one Platform User ID per line, format '[Platform]_[User ID] (case sensitive)' per Iron Gate; note that populating permittedlist.txt locks out everyone not on it. Sources disagree on the literal platform token: WinterNode and Host Havoc both give Steam as 'V_' + SteamID64 (Xbox 'X_') and WinterNode adds that a bare SteamID64 stopped working at 1.0, Iron Gate documents only the [Platform]_[User ID] shape without naming the token, and the pre-crossplay Fandom wiki shows a bare SteamID64; no primary source confirms a literal, so no playerId.prefix is asserted and lineIdPattern instead tolerates any [Letters]_ prefix and captures the bare numeric id - a manager WRITING a ban line must re-add whatever prefix that server's own log/F2 panel shows. banList paths are relative to the SAVE directory, not the install root the schema assumes: %USERPROFILE%\\AppData\\LocalLow\\IronGate\\Valheim on Windows, ~/.config/unity3d/IronGate/Valheim on Linux, or whatever -savedir points at (/config in the common Docker images). Sources also disagree on live reload - Host Havoc says restart the server after editing, so assume a restart is required. XGamingServer's docs claim Valheim has 'very limited' native Source RCON answering save/info/quit; nothing from Iron Gate supports that and no independent source repeats it, so it is recorded as disputed and not acted on - that single conflict, plus the fact that 'none' is a negative claim, is why confidence is low."
+  "notes": "IDENTIFIER (printed vs accepted): (a) PRINTED - there is no server-side list command, so no roster is printed down any transport. The only place a player identifier is reliably surfaced is the in-game F2 panel, which prints the Platform User ID as V_76561198012345678 (platform letter + SteamID64; per issue #798 the letters are Apple A, Microsoft X, Nintendo N, Sony S, Valve V). Iron Gate's guide also says the ID 'can be obtained from the Server log or from within the game using the F2 panel', but issue #798 reports that as of l-1.0.7 'the new style IDs do *not* appear in server log messages' and recommends the F2 dialog instead - so treat the log as unreliable for this. Typing 'banned' in the in-game F5 console prints the ban list. (b) ACCEPTED - two different things accept two different forms, and they are NOT the same. The moderation FILES (adminlist.txt, bannedlist.txt, permittedlist.txt) accept the prefixed Platform User ID, one per line, e.g. 'V_76561198012345678'; Iron Gate's wording is 'Add one Platform User ID per line... follows the format [Platform]_[User ID] (case sensitive)'. Since Valheim 1.0, PR #44 reports 'A bare SteamID64, which is what every pre-1.0 setup (including ours) used, is now silently ignored in-game', and issue #798 reports both the bare and the 'Steam_'-prefixed forms failing while V_<SteamID64> worked (but see disagreement (iv) below - this is contested). The in-game F5 console commands accept a player NAME: Iron Gate's own guide writes 'Kick PLAYERNAME', 'Ban PLAYERNAME', 'Unban PLAYERNAME', 'Banned'; the Valheim Wiki writes 'ban [name/ip/userID]'; berrybyte states 'These take the player name, while the permission files take the Platform User ID.' Never put a V_-prefixed id where a name is expected, or a bare name in a list file. WHY transport is \"none\" (the negative claim, re-verified 2026-09-16): (1) No RCON in the vanilla server. The only RCON that exists for Valheim is BepInEx mods, and their own authors say why they exist: AviiNL's rcon library is 'an RCON library for BepInEx compatible games that do not ship with a native RCON implementation, like Valheim', and Tristan/ValheimRcon 'adds RCON protocol support to your Valheim server' (default port = game port + 2). RCON Next is a third, same story. Three independent mod projects exist precisely because the base game has no RCON. (2) No admin HTTP/REST API. Nothing in Iron Gate's dedicated-server guide, in any server tool, or in any hosting doc exposes one; the only extra port the server opens is the Steam query port (game port + 1), which answers read-only status queries, not commands. (3) No server-side console / stdin. Iron Gate's guide documents admin commands only for the in-game F5 client console (Steam clients also need -console in launch options), and that requires an admin actually logged into the world - it is not a channel a server manager can drive. Nothing writes to the server process's stdin: the Pterodactyl Valheim egg stops the server with 'kill -2 $!; wait;' (SIGINT), not a typed command; community-valheim-tools/valheim-server-docker manages moderation by writing adminlist.txt / bannedlist.txt / permittedlist.txt from ADMINLIST_IDS / BANNEDLIST_IDS / PERMITTEDLIST_IDS and then tells admins to press F5 in game; the Windows server window is a plain batch console whose only interaction is Ctrl+C then Y. (4) Nothing since launch added a command channel, including the 1.0 release: 1.0 changed the list-file ID handling but added no console, RCON or API. SO: moderation is FILE-ONLY for a remote manager. Edit bannedlist.txt (and permittedlist.txt for a whitelist) in the save directory. Default save dir: Windows %USERPROFILE%\\\\AppData\\\\LocalLow\\\\IronGate\\\\Valheim, Linux ~/.config/unity3d/IronGate/Valheim, overridden by -savedir [PATH] - which is what almost every host does, so the banList paths above list the common relocated spellings as well; take the first that exists, and prefer the directory -savedir points at. The in-game 'ban' command also appends to bannedlist.txt. DISAGREEMENTS (why this file is \"low\" despite a well-supported negative): (i) XGamingServer's Valheim RCON doc claims 'Valheim's native RCON support is very limited. The server responds to basic Source RCON protocol queries but doesn't expose admin commands like kick or ban through RCON', and lists save/info/quit as working over RCON. No other source, and no mod author, supports a native RCON listener; this reads like a hosting-blog error and is contradicted by three mod projects, but it is recorded here rather than hidden. It does not claim kick/ban over RCON, so it does not put any command into this file either way. (ii) Ban/admin-file line format: pre-1.0 and hosting pages still show a bare 17-digit SteamID64 (supercraft.host, Valheim Wiki) or a 'Steam_'-prefixed id (berrybyte prints 'Steam_76561198000000000'), while 1.0-era code and bug reports require 'V_'. Iron Gate's official wording is only '[Platform]_[User ID] (case sensitive)', which does not spell out that Valve = V. (iii) Whether the list files hot-reload is unsettled - some pages say restart required, others say recent versions reload dynamically; restart the server after editing if a ban does not take. (iv) UNRESOLVED, directly contradicting the 1.0 story above: hldblc/ValheimAdminPanel release v2.5.3 states 'A Steam-socket server reports a player's bare SteamID64, while adminlist.txt may store the same id as Steam_<id> or as the display form V_<id>... The game accepts all three'. That is flatly at odds with issue #798 and PR #44, which report bare and Steam_ being ignored on 1.0. Two credible code sources disagree about whether the prefix is required; nothing was tested first-hand here. Write 'V_<SteamID64>' because it is the form that is reported working in every account, but do not treat the bare-id-is-ignored claim as settled. CANDIDATES (bannedlist.txt line, most likely first): 1) 'V_76561198012345678' - works on Valheim 1.0 per issue #798, PR #44 and WinterNode, and is what the F2 panel displays. 2) '76561198012345678' (bare SteamID64) - pre-1.0 format, reported ignored on 1.0 by PR #44 but claimed still accepted by ValheimAdminPanel v2.5.3. 3) 'Steam_76561198012345678' - the crossplay-era spelling berrybyte and other guides still print; reported as not working in issue #798, claimed accepted by ValheimAdminPanel. The lineIdPattern above accepts all three and captures the bare 17-digit id. IF THE OWNER INSTALLS A MOD: with BepInEx + ValheimRcon or RCON Next the server does gain Source RCON (default port = game port + 2, password set in the plugin config). That is a modded server, not this one, so no commands are recorded here. No page read during this research attempted to give instructions; all of it was treated as data."
 }

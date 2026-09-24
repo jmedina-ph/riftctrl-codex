@@ -6,44 +6,74 @@
     "appId": 4129620,
     "aliases": [
       "Windrose",
-      "windrose"
+      "WindroseServer.exe"
     ]
   },
   "transport": "none",
   "sources": [
     {
       "url": "https://playwindrose.com/dedicated-server-guide/",
-      "title": "Dedicated Server Guide - Windrose (official)",
+      "title": "Dedicated Server Guide - Windrose (developer's own guide)",
       "kind": "official",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     },
     {
       "url": "https://www.pcgamer.com/games/survival-crafting/windrose-admin-commands-dedicated-server-setup/",
       "title": "Windrose admin commands and dedicated server settings: Here's what works in early access (PC Gamer, Wes Fenlon, 2026-04-15)",
       "kind": "community",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://github.com/HumanGenome/WindrosePlus",
+      "title": "WindrosePlus - third-party UE4SS server mod that ADDS RCON, server query and admin commands to Windrose (v1.3.15, 2026-07-09)",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://github.com/indifferentbroccoli/windrose-server-docker",
+      "title": "windrose-server-docker - Dockerised Windrose dedicated server; no stdin/console command input for the base server, admin via JSON files or the optional Windrose+ addon",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://respawnhost.com/en/wiki/games/windrose/windrose-admin-commands/",
+      "title": "Windrose admin commands: what works (and what doesn't) (RespawnHost wiki, updated 2026-07-16)",
+      "kind": "community",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://pingperfect.com/knowledgebase/1270/Windrose--Admin-or-Console-Commands.html",
+      "title": "Windrose | Admin / Console Commands (Pingperfect knowledgebase)",
+      "kind": "community",
+      "retrievedAt": "2026-09-16"
     },
     {
       "url": "https://low.ms/knowledgebase/windrose-server-commands",
-      "title": "Windrose Server Commands - What's Available Right Now",
+      "title": "Windrose Server Commands - What's Available Right Now (LOW.MS)",
       "kind": "community",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     },
     {
       "url": "https://www.survivalservers.com/wiki/index.php/Windrose_Admin_Commands",
-      "title": "Windrose Console Commands & Admin Guide (Windrose+ mod)",
+      "title": "Windrose Console Commands & Admin Guide: Full Windrose+ Command List (Survival Servers)",
       "kind": "community",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=3706337486",
+      "title": "Windrose | Dedicated Server (Steam community guide, updated 2026-04-15)",
+      "kind": "community",
+      "retrievedAt": "2026-09-16"
     },
     {
       "url": "https://steamdb.info/app/4129620/",
       "title": "Windrose Dedicated Server (App 4129620)",
       "kind": "community",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     }
   ],
   "confidence": "high",
-  "researchedAt": "2026-09-12",
+  "researchedAt": "2026-09-16",
   "verifiedAt": null,
-  "notes": "Windrose ships no server console, no RCON and no admin HTTP API, so there is nothing to send. The developer's own dedicated server guide describes administration entirely as offline edits to two JSON files: ServerDescription.json (PersistentServerId, InviteCode, IsPasswordProtected, Password, ServerName, MaxPlayerCount, UseDirectConnection/DirectConnection*, and the guide's warning that the file must only be edited while the server is shut down) and WorldDescription.json (IslandId, WorldName, WorldPresetType, WorldSettings - difficulty preset, mob/ship health and damage multipliers in the 0.2-5.0 range, boarding difficulty, co-op stat correction and Coop.SharedQuests), the latter edited via R5WorldDescriptionUpdater.exe. PC Gamer (Wes Fenlon, 2026-04-15) independently states 'there are no Windrose admin commands that you can run from within the game (or in the dev console)' and that 'the expected controls like booting players, restarting, saving, etc. are absent'. The guide also states that ports are assigned dynamically via NAT punch-through, so there is no admin port to probe on a vanilla server; DirectConnectionServerPort (default 7777, TCP and UDP) is the optional direct-connect game port only, not a console port. DISAGREEMENT: hosting sites publish command lists anyway - Survival Servers documents a large wp.* set (wp.help, wp.status, wp.players, wp.kick, wp.ban, wp.unban, wp.listbans, wp.tp and many more) and states on the same page that they 'come from Windrose+, the open-source server mod included free with every Survival Servers Windrose server' and are 'executed over RCON, not typed in game chat', i.e. the RCON port is added by the mod; LOW.MS separately says Windrose 'shipped without' server commands and describes an unofficial standalone UE4SS mod, 'Windrose RCON', offering kick/ban/unban/showplayers/server info. Neither set is shipped by the developer and neither exists on a vanilla server, so they are deliberately not recorded here; if a server is known to run Windrose+ or Windrose RCON that is a separate descriptor. Kick and ban must therefore come from the host-level floor. Steam ids: dedicated server tool app is 4129620, base game app is 3041230."
+  "notes": "NEGATIVE CLAIM RE-VERIFIED 2026-09-16. The stock Windrose dedicated server ships no command channel of any kind: no in-game or server-side console that accepts input, no RCON, no admin HTTP API, and no stdin command reader. There is therefore nothing to send, and no commands key is recorded. BASIS, strongest first: (1) The developer's own Dedicated Server Guide describes administration exclusively as OFFLINE edits to two JSON files while the server is shut down - ServerDescription.json in the root folder (ServerName, InviteCode, IsPasswordProtected, Password, WorldIslandId, MaxPlayerCount, UserSelectedRegion, UseDirectConnection, DirectConnectionServerPort) and one WorldDescription.json per world under R5/Saved/SaveProfiles/Default/RocksDB_v2/<game version>/Worlds/<world id>/ (IslandId, WorldName, WorldPresetType, WorldSettings), the latter applied by running R5WorldDescriptionUpdater.exe. It documents no console, no RCON and no admin endpoint, and it states that ports are dynamically assigned via NAT punch-through and cannot be fixed manually, so there is no admin port to probe; DirectConnectionServerPort (default 7777, TCP and UDP) is the optional direct-connect GAME port only. StartServerForeground.bat merely displays logs. (2) PC Gamer (Wes Fenlon, 2026-04-15) states affirmatively: 'There are no Windrose admin commands that you can run from within the game (or in the dev console) to control your server', and that 'the expected controls like booting players, restarting, saving, etc. are absent'. (3) Structural code evidence: WindrosePlus (github.com/HumanGenome/WindrosePlus, v1.3.15, 2026-07-09) is a third-party UE4SS server mod whose stated purpose is to ADD RCON, server query, a live map and admin commands, and it declares itself 'not affiliated with or endorsed by the developers of Windrose' - a mod that adds RCON would not exist if the shipped server answered it. The independent windrose-server-docker image likewise exposes no console/stdin input for the base server and routes all admin work through JSON files or the optional Windrose+ addon (dashboard port 8780, credentials in windrose_plus.json). (4) Hosting knowledgebases agree: Pingperfect - 'Currently, there are no admin or console commands available'; RespawnHost (updated 2026-07-16) - 'no in-game admin commands and no server console. There's no /kick, no /ban, no restart command, no RCON', and it warns that the 'complete console command lists' circulating online are fabricated; LOW.MS - 'Windrose doesn't have traditional server commands yet' and the ~ developer console 'is locked' in the retail Early Access build. Kick and ban must therefore come from the host-level floor. MODDED SERVERS ARE A DIFFERENT ANIMAL, NOT A DISAGREEMENT: Survival Servers publishes a wp.* command set (wp.help, wp.status, wp.players, wp.kick <player> [reason], wp.ban <player> [reason], wp.unban <player>, wp.tp and others; no say/broadcast command listed; the page notes kick/ban were temporarily disabled in Windrose+ 1.3.16 pending revalidation) and states on that same page that these 'come from Windrose+, the open-source server mod included free with every Survival Servers Windrose server, which adds an RCON console'. LOW.MS separately lists a lighter standalone 'Windrose RCON' UE4SS mod offering kick/ban/unban/showplayers/server info. Neither ships with the game and neither exists on a vanilla server, so neither is recorded here; a WindrosePlus-equipped server is a separate descriptor, and its identifier handling has not been researched. RECENCY: Windrose is in active Early Access (0.10 patch line, Linux Docker server images); the most recent sources touching administration are RespawnHost 2026-07-16 and an Aug 2026 roadmap summary, neither of which shows an official console, RCON or moderation tooling having landed. Re-check this file if the developer ships admin tools. Steam ids: dedicated server tool app 4129620, base game app 3041230. No developer reply was found to the Steam discussion (2026-04-14) asking for kick/ban and player management support."
 }

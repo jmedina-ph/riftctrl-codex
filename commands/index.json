@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-24T05:13:27Z",
+  "generatedAt": "2026-09-24T12:07:07Z",
   "games": [
     {
       "slug": "7-days-to-die",
@@ -567,12 +567,13 @@
       "aliases": [
         "Conan Exiles",
         "CE",
+        "Conan Exiles Enhanced",
         "ConanSandbox"
       ],
       "transport": "rcon",
       "confidence": "low",
       "verified": false,
-      "updatedAt": "2026-09-12"
+      "updatedAt": "2026-09-16"
     },
     {
       "slug": "core-keeper",
@@ -2122,12 +2123,13 @@
       "appId": 896660,
       "aliases": [
         "Valheim",
+        "Valheim Server",
         "valheim_server"
       ],
       "transport": "none",
       "confidence": "low",
       "verified": false,
-      "updatedAt": "2026-09-12"
+      "updatedAt": "2026-09-16"
     },
     {
       "slug": "vein",
@@ -2163,12 +2165,12 @@
       "appId": 4129620,
       "aliases": [
         "Windrose",
-        "windrose"
+        "WindroseServer.exe"
       ],
       "transport": "none",
       "confidence": "high",
       "verified": false,
-      "updatedAt": "2026-09-12"
+      "updatedAt": "2026-09-16"
     },
     {
       "slug": "wolfenstein-enemy-territory",

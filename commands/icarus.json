@@ -7,9 +7,11 @@
     "aliases": [
       "Icarus",
       "ICARUS",
-      "Icarus Server"
+      "Icarus Server",
+      "Icarus: First Cohort"
     ]
   },
+  "transport": "none",
   "playerId": {
     "label": "Steam ID",
     "example": "76561198012345678",
@@ -22,65 +24,82 @@
     ],
     "lineIdPattern": "\"AccountJson\"\\s*:\\s*\"Steam:([0-9]{17})\""
   },
-  "transport": "none",
   "sources": [
     {
       "url": "https://github.com/RocketWerkz/IcarusDedicatedServer/wiki/Console---RCON-Commands",
       "title": "Console / RCON Commands - RocketWerkz/IcarusDedicatedServer Wiki",
       "kind": "official",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     },
     {
       "url": "https://github.com/RocketWerkz/IcarusDedicatedServer/wiki/Server-Config-&-Launch-Parameters",
       "title": "Server Config & Launch Parameters - RocketWerkz/IcarusDedicatedServer Wiki",
       "kind": "official",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     },
     {
-      "url": "https://github.com/RocketWerkz/IcarusDedicatedServer/wiki/Server-Setup",
-      "title": "Server Setup - RocketWerkz/IcarusDedicatedServer Wiki",
-      "kind": "official",
-      "retrievedAt": "2026-09-12"
+      "url": "https://raw.githubusercontent.com/CubeCoders/AMPTemplates/main/icarus.kvp",
+      "title": "CubeCoders AMP GenericModule template icarus.kvp (AdminMethod=TailLogFile, Console.UserActions={})",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/CubeCoders/AMPTemplates/main/icarusports.json",
+      "title": "CubeCoders AMP icarusports.json (only GamePort 17777/UDP and QueryPort 27015/UDP)",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://github.com/Genis221/Icarus-Server-Manager",
+      "title": "Genis221/Icarus-Server-Manager - web control panel for Icarus dedicated servers",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/mornedhels/icarus-server/main/scripts/icarus-commands",
+      "title": "mornedhels/icarus-server - scripts/icarus-commands (loadProspect implemented by editing ServerSettings.ini + restart)",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
     },
     {
       "url": "https://icarus.wiki.gg/wiki/Dedicated_Servers",
       "title": "Dedicated Servers - ICARUS Wiki (wiki.gg)",
       "kind": "wiki",
-      "retrievedAt": "2026-09-12"
-    },
-    {
-      "url": "https://icarus.fandom.com/wiki/Dedicated_Server",
-      "title": "Dedicated Server - Icarus Wiki (Fandom)",
-      "kind": "wiki",
-      "retrievedAt": "2026-09-12"
-    },
-    {
-      "url": "https://help.bisecthosting.com/hc/en-us/articles/40146864135323-How-to-Kick-or-Ban-Players-on-an-ICARUS-Server",
-      "title": "How to Kick or Ban Players on an ICARUS Server - BisectHosting",
-      "kind": "community",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     },
     {
       "url": "https://www.gameserverkings.com/knowledge-base/icarus/icarus-console-commands/",
       "title": "Icarus Console Commands: What Actually Works - GameServerKings",
       "kind": "community",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     },
     {
-      "url": "https://pingperfect.com/knowledgebase/1135/Icarus--Admin-or-RCon-Commands.html",
-      "title": "Icarus | Admin / RCon Commands - Pingperfect",
+      "url": "https://supercraft.host/wiki/icarus/admin_commands/",
+      "title": "Icarus Admin & Console Commands (2026) - Supercraft Host (checked against Week 248 build, 3 Sep 2026)",
       "kind": "community",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://shockbyte.com/billing/knowledgebase/872/How-to-KickorBan-Players-from-your-Icarus-Server.html",
+      "title": "How to Kick/Ban Players from your Icarus Server - Shockbyte",
+      "kind": "community",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://help.bisecthosting.com/hc/en-us/articles/40146864135323-How-to-Kick-or-Ban-Players-on-an-ICARUS-Server",
+      "title": "How to Kick or Ban Players on an ICARUS Server - BisectHosting",
+      "kind": "community",
+      "retrievedAt": "2026-09-16"
     },
     {
       "url": "https://steamcommunity.com/app/1149460/discussions/0/691999715068289431/",
       "title": "RCON Clarification (it doesnt exist) :: Icarus General Discussions",
       "kind": "forum",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     }
   ],
-  "confidence": "high",
-  "researchedAt": "2026-09-12",
-  "verifiedAt": "2026-09-12",
-  "notes": "No server-side command channel. Icarus' admin commands exist, but the only documented way to send them is the IN-GAME CHAT of a connected admin client: RocketWerkz' own dedicated-server wiki page (titled 'Console / RCON Commands', which is where the confusion comes from) says 'To use an RCON command, type / or \\ then the command into the in game chat.' The command set is AdminLogin [Password], KickPlayer [SteamId or PlayerName] [Reason (optional)], BanPlayer [SteamId or PlayerName] [Reason (optional)], UnbanPlayer [SteamId or PlayerName], ReturnToLobby, ReturnToLobbyWhenEmpty and AdminSay [Message]; there is no list-players command at all, and no server-info command. Nothing is recorded under commands because a server manager has no pipe to put that text down: the server exposes only the game port and the Steam query port ('The default ports are 17777 and 27015 respectively', per the official Server Setup page), no RCON port, and -Log 'causes the server to open a log window while running', which no source describes as accepting typed input. The official config page calls AdminPassword the 'Password required for using admin RCON commands' and adds that an empty value means 'just using the RCON /AdminLogin will give admin privilege's to a player' - i.e. it is the credential for the in-game /AdminLogin, not a listener password; Icarus/Saved/AdminWhitelist.txt (one SteamID per line, per the wiki.gg page) pre-grants admin. Bans are file-based and survive restarts: Icarus/Saved/PlayerBanList.txt holds JSON entries with AccountId, AccountJson (of the form Steam:<SteamID64>), BanReason and PlayerNameDuringBan, so unbanning offline is an edit of that file plus a restart; the lineIdPattern here pulls the SteamID64 out of the AccountJson line because that field's Steam:<id> shape is the one actually published, whereas both wiki pages show AccountId only as a redacted placeholder and tell the reader to substitute a Steam ID into it without stating its exact format. Source disagreement: Pingperfect files the same list under 'Admin / RCon Commands' and hosts commonly allocate an RCON port for Icarus, implying a remote console that does not exist - though Pingperfect gives no socket or password connection steps, only the command list. BisectHosting states kick/ban/unban are typed in in-game chat after an admin login, GameServerKings says explicitly 'Icarus does not implement an RCON listener. The commands are chat-only', and a long-standing Steam General Discussions thread titled 'RCON Clarification (it doesnt exist)' independently tells players 'there is no RCON' and that none of these actions 'can be done remotely'. Confidence high: the developer's own wiki plus two independent knowledge bases and a community thread agree on the chat-only channel, and no source documents a working RCON connection. Treat the -Log window as untested rather than proven inert."
+  "confidence": "low",
+  "researchedAt": "2026-09-16",
+  "verifiedAt": null,
+  "notes": "IDENTIFIER (printed vs accepted): PRINTED - nothing. Icarus has NO list-players command of any kind, so no roster is ever printed on demand; the only server-side roster signal is the log file, where a join writes 'LogConnectedPlayers: Display: AddConnectedPlayer - UserId: <id> | PlayerName: <name>' and a leave writes 'LogOnline: STEAM: <id> has been removed.' (these two lines are exactly what CubeCoders' AMP template parses to build its player list, Console.UserJoinRegex / Console.UserLeaveRegex in icarus.kvp). ACCEPTED - RocketWerkz' own wiki gives the argument as '[SteamId or PlayerName]', i.e. a BARE SteamID64 with no prefix or a bare in-game name, e.g. '/KickPlayer 76561198012345678 griefing'; the 'Steam:' prefix appears only inside the ban FILE's AccountJson field ('Steam:<SteamID64>'), never as a command argument, which is why playerId carries no prefix here. Neither form is recorded under commands, because a server manager has no pipe to send them down.\n\nRE-RESEARCH 2026-09-16, and a CORRECTION: the previous revision of this file carried verifiedAt 2026-09-12. That was wrong - nothing here has been run against a live server - and it is now null. The transport 'none' verdict itself is re-confirmed and strengthened.\n\nWHY 'none' (the negative claim, checked channel by channel). (1) RCON socket: none exists. RocketWerkz' page is titled 'Console / RCON Commands' but its own instruction is 'Commands are entered in-game via chat by prefixing with / or \\', e.g. '/AdminLogin password12345'. The server opens only two ports - AMP's icarusports.json declares GamePort 17777/UDP and QueryPort 27015/UDP and nothing else - and no source anywhere gives a host/port/password handshake for an Icarus RCON listener. GameServerKings states flatly 'Icarus does not implement an RCON listener. The commands are chat-only', and a Steam General Discussions thread titled 'RCON Clarification (it doesnt exist)' says 'there is no RCON' and 'none of them can be done remotely'. (2) stdin / server console: no evidence of one, and the panels behave as though there is none. AMP - which uses Source RCON, Telnet or stdin wherever a game offers it - sets App.AdminMethod=TailLogFile with App.TailLogFilePath pointing at Icarus/Saved/Logs/Icarus.log, i.e. it READS the log and sends nothing, and it ships Console.UserActions={} so AMP exposes no kick/ban buttons for Icarus at all. supercraft.host, re-checked command by command against the shipped 'Dangerous Horizons' Week 248 build (3 September 2026), states 'Icarus has no developer console'. The documented launch flags are only -PORT=, -QueryPort=, -MULTIHOME=, -UserDir=, -saveddirsuffix=, -LOG= and -ABSLOG=; -LOG/-ABSLOG set a log PATH, and no source describes any console window as accepting typed input. Treat a Windows -log window as untested rather than proven inert. (3) Web/admin API: none. The two maintained community server managers both stop at process control - Genis221/Icarus-Server-Manager (a web control panel) says in its README 'Admin commands are in-game (/AdminLogin, /AdminSay, /KickPlayer, /ReturnToLobby), not Source RCON' and offers start/stop, SteamCMD, config editing and a live LOG console only; mornedhels/icarus-server (Docker) implements its single 'command', loadProspect, by sed-editing LoadProspect= in ServerSettings.ini and restarting the process under supervisord - a restart, not a message to a running server.\n\nSERVER-WIDE, NOT PER-SAVE: the seven admin commands (AdminLogin, KickPlayer, BanPlayer, UnbanPlayer, ReturnToLobby, ReturnToLobbyWhenEmpty, AdminSay) act on the whole server session - BanPlayer writes a server-side entry to Icarus/Saved/PlayerBanList.txt that outlives the prospect and the restart, and AdminSay reaches every connected player. GameServerKings draws the line explicitly: the Unreal debug commands such as GiveItem 'affect your local client only. It does nothing to a dedicated server, and nothing for anyone else in your session', whereas the seven official commands 'operate server-wide'. So these ARE genuine server-management actions; what is missing is only the pipe - they are reachable solely from the chat box of an admin who is connected as a player.\n\nADMIN CREDENTIAL: AdminPassword in ServerSettings.ini is described by the official config page as the 'Password required for using admin RCON commands', and 'If left empty just using the RCON /AdminLogin will give admin privilege's to a player (effectively an empty password)' - that is the credential for the in-game /AdminLogin, not a listener password. Icarus/Saved/AdminWhitelist.txt (one SteamID64 per line) pre-grants admin and, per the wiki.gg page, 'Breaks delete button on prospect load but allows returning to lobby, kicking, etc, without first logging in with admin pw'.\n\nBANS ARE FILE-BASED and are the one thing a host-level manager can act on offline: Icarus/Saved/PlayerBanList.txt holds {\"BanInfos\":[{\"AccountId\":\"...\",\"AccountJson\":\"Steam:<SteamID64>\",\"BanReason\":\"...\",\"PlayerNameDuringBan\":\"...\"}]}. lineIdPattern targets AccountJson because that field's 'Steam:<id>' shape is the one actually published, while both wikis show AccountId only as a redacted placeholder. Editing the file requires a restart to take effect, and -UserDir= / -saveddirsuffix= relocate Saved/, so the listed paths are the defaults only.\n\nSOURCE DISAGREEMENT (naming, not substance): Pingperfect files the same seven commands under the page title 'Icarus | Admin / RCon Commands', echoing the developer's own page title, and some hosts allocate an 'RCON port' for Icarus in their panels - which implies a remote console that does not exist. No such page supplies connection steps, and no source contradicts the chat-only channel. Confidence high: the developer's own wiki, two independent maintained code sources (AMP's template and two community server managers), a Sept-2026 build-checked knowledge base and a community thread all agree, and the absence is corroborated by the port list rather than only by silence.\n\nVERIFY PASS (2026-09-16): confidence downgraded high -> low. The transport \"none\" verdict, the identifier claim and the ban-file handle all survived an independent re-read of every cited source, but two things block a high rating. (1) CubeCoders' icarus.kvp sets App.HasWriteableConsole=True alongside App.AdminMethod=TailLogFile, so the earlier claim that the template only READS the log and sends nothing was an overstatement: AMP presents an input box wired to the process. Nothing shows Icarus acting on that input and nothing rules it out, so the stdin channel is UNTESTED rather than proven absent - and a negative claim with an untested channel cannot be high. (2) The banList shape (four field names, the \"Steam:\" prefix) rests on wiki.gg alone, with every published example line redacted, so lineIdPattern encodes a single-source assumption. The hosting pages (Shockbyte, BisectHosting, Pingperfect, AleForge, MintServers, LOW.MS) reproduce the developer wiki verbatim and count as ONE source, not six. PIPELINE NOTE: this document is the research-stage output with the verify stage's verdict applied by hand - the verify agent returned the literal string \"PLACEHOLDER\" instead of a document, so its corrected copy was lost and recovered from the run journal."
 }

@@ -14,37 +14,73 @@
   "sources": [
     {
       "url": "https://enshrouded.zendesk.com/hc/en-us/articles/16055441447709-Dedicated-Server-Configuration",
-      "title": "Dedicated Server Configuration - Enshrouded official support",
+      "title": "Dedicated Server Configuration - Enshrouded Support (Keen Games)",
       "kind": "official",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     },
     {
       "url": "https://enshrouded.zendesk.com/hc/en-us/articles/19191581489309-Server-Roles-Configuration",
-      "title": "Server Roles Configuration - Enshrouded official support",
+      "title": "Server Roles Configuration - Enshrouded Support (Keen Games)",
       "kind": "official",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     },
     {
-      "url": "https://enshrouded.zendesk.com/hc/en-us/articles/16056312924957-Dedicated-Server-FAQ",
-      "title": "Dedicated Server FAQ - Enshrouded official support",
-      "kind": "official",
-      "retrievedAt": "2026-09-12"
+      "url": "https://github.com/CubeCoders/AMPTemplates/blob/main/enshrouded.kvp",
+      "title": "CubeCoders AMP generic-module template for Enshrouded (Meta.ConfigVersion=11)",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://github.com/pelican-eggs/games-steamcmd/blob/main/enshrouded/egg-enshrouded.json",
+      "title": "Pelican egg: Enshrouded (exported_at 2026-04-06)",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://github.com/mornedhels/enshrouded-server",
+      "title": "mornedhels/enshrouded-server - Enshrouded Dedicated Server container with autoupdate",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://github.com/Crazyloon/Enshrouded-Server-Manager",
+      "title": "Crazyloon/Enshrouded-Server-Manager",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://github.com/bonsaibauer/enshrouded_server_docker/blob/main/docs/enshrouded_server.md",
+      "title": "bonsaibauer/enshrouded_server_docker - enshrouded_server.json field reference (claims a 'bans' array)",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
     },
     {
       "url": "https://enshrouded.featureupvote.com/suggestions/523356/common-dedicated-server-management-functions",
-      "title": "Common Dedicated Server Management Functions (445 votes, open, no dev reply)",
+      "title": "Common Dedicated Server Management Functions - Enshrouded official feedback board (447 votes, open)",
       "kind": "forum",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     },
     {
       "url": "https://www.gameserverkings.com/knowledge-base/enshrouded/how-to-add-admins-and-commands/",
-      "title": "Enshrouded Admin Commands, Roles and Server Settings",
+      "title": "Enshrouded Admin Commands, Roles and Server Settings - GameServerKings",
       "kind": "community",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://shockbyte.com/help/knowledgebase/articles/how-to-kick-players-on-your-enshrouded-server",
+      "title": "How to Kick Players on Your Enshrouded Server - Shockbyte",
+      "kind": "community",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://supercraft.host/wiki/enshrouded/admin_commands/",
+      "title": "Enshrouded Admin Commands - supercraft.host (contradicting source: lists /kick, /ban chat commands; unsupported)",
+      "kind": "community",
+      "retrievedAt": "2026-09-16"
     }
   ],
-  "confidence": "high",
-  "researchedAt": "2026-09-12",
+  "confidence": "low",
+  "researchedAt": "2026-09-16",
   "verifiedAt": null,
-  "notes": "No command channel exists. Keen Games' own dedicated-server docs cover only enshrouded_server.json (name, saveDirectory, logDirectory, ip, queryPort default 15637, slotCount, voice/text chat, gameSettingsPreset, userGroups) and document no console, no RCON, no HTTP/REST admin API and no query/command port beyond the game's own query port; the server process window accepts no typed input, so there is no usable stdin console either. Moderation exists only as an in-client permission: the official Server Roles Configuration article gives the dedicated-server Admin group \"canKickBan\": true, i.e. a player who joined with the admin password can kick/ban from the in-game UI, which is not reachable from outside the game client. That article also still says \"We will work on better admin tools and rights management in the near future\", and the 445-vote feature request for kick/ban/whitelist/RCON was still open with no developer reply as of its last comment (Aug 2025). DISAGREEMENT: hosting-blog pages invent a chat-command set for this game - supercraft.host/wiki/enshrouded/admin_commands publishes \"/kick [player]\", \"/ban [player]\", \"/unban [player]\" and \"/serverstatus\" as if typed in chat; none of these appear in any Keen Games source and they are rejected here. The gameserverkings knowledge base agrees with the negative finding, stating outright that \"/kick, /give or /tp ... do not exist in Enshrouded\" and that \"Keen Games ships no console for either the client or the dedicated server, the server window accepts no input\". appId is the Enshrouded Dedicated Server tool (2278520), not the game (1203620). Players do appear in the server log by Steam ID, which is the only external identifier a host-level floor could key on."
+  "notes": "IDENTIFIER (printed vs accepted): not applicable - there is no command channel, so nothing prints a roster and nothing accepts a kick/ban argument. The only identifier an operator can observe out-of-band is the in-game character NAME, scraped from the server log: AMP's template parses Console.UserJoinRegex=^.*\\[server\\] Player '(?<username>.+?)' logged in with Permissions:$ and Console.UserLeaveRegex=^.*\\[server\\] Remove Player '(?<username>.+?)'$ in enshrouded.kvp. No Steam ID or account UID is written to the log or to any config field an operator can act on, so no playerId is recorded here.\n\nBASIS FOR \"none\" (independently re-verified 2026-09-16 by fetching each source; negative claim): no source documents any RCON listener, any typed console/stdin command, or any admin HTTP API for the Enshrouded dedicated server. Evidence, independent of each other:\n(1) Keen Games' own documentation. \"Dedicated Server Configuration\" (updated 2025-02-21) enumerates enshrouded_server.json (name, password, saveDirectory, logDirectory, ip, queryPort, slotCount, voiceChatMode, enableVoiceChat, enableTextChat, gameSettingsPreset, gameSettings) with no rcon/console/API setting. \"Server Roles Configuration\" (updated 2025-11-10) documents userGroups with canKickBan/canAccessInventories/canEditBase/canExtendBase/reservedSlots; it grants the kick/ban PERMISSION but documents no command to invoke it. queryPort is a Steam A2S query port (read-only), not a command port.\n(2) CubeCoders AMP template enshrouded.kvp, verified at Meta.ConfigVersion=11: Console.UserActions={} (AMP defines per-player kick/ban/say buttons there, and the set is EMPTY) and Console.UserChatRegex=^$ (no chat to read). App.ExitMethod=OS_CLOSE, so the App.ExitString=stop value is never sent. AMP builds its player list purely from the log regexes above, not from any list command. CAVEAT recorded honestly: the template also sets App.AdminMethod=STDIO and App.HasWriteableConsole=True, which means AMP will forward typed input to the process stdin; the template defines no command for that channel and no source documents the server parsing stdin, but \"AMP can type into stdin\" is not the same as a proven absence of any stdin reader. The negative therefore rests on absence of documentation across every source checked, not on a disassembly or a live test.\n(3) Pelican egg egg-enshrouded.json (exported_at 2026-04-06): features are [\"steam_disk_space\"] only, no \"rcon\"; stop is \"^C\" (SIGINT), not a console command; startup runs the server in the background and then `tail -c0 -F ./logs/enshrouded_server.log --pid=$ENS_PID`, i.e. the panel must tail a log FILE because the process gives it no usable interactive console.\n(4) Maintained community managers. mornedhels/enshrouded-server exposes only supervisorctl process actions (enshrouded-force-update, enshrouded-reset-roles, restart enshrouded-server) - no game command interface. Crazyloon/Enshrouded-Server-Manager does install/start/stop, config editing, backups and scheduled restarts only.\n(5) Keen's own feedback board suggestion \"Common Dedicated Server Management Functions\" (RCON, kick/ban by Steam ID, list connected users), opened 18 Jan 2024, 447 votes, still open with no developer response or implemented status as of 2026-09-16.\nScope limit: patch notes were not read one by one, so \"no update ever added a command channel\" is an inference from the above sources being current (AMP ConfigVersion 11, Pelican export 2026-04-06). Enshrouded 1.0 is dated 2026-10-15 and has not shipped as of this review; re-research after that date.\n\nMODERATION IS IN-GAME ONLY: an admin joins the server as a player, presses O for the social/player menu, selects the player and chooses Kick Player (Shockbyte, step-by-step, player name only - no Steam ID). GameServerKings states plainly: \"Enshrouded has no admin console, no chat commands and no RCON... If you arrived here looking for /kick, /give or /tp, they do not exist in Enshrouded.\"\n\nCONTRADICTING SOURCES (weighed, not hidden): hosting wikis exist that list Enshrouded admin chat commands - supercraft.host's Enshrouded page lists \"/kick [player]\", \"/ban [player]\", \"/unban [player]\", \"/serverstatus\" and says they are typed in the chat window after authenticating with an admin password. Nothing in Keen's documentation, the AMP template (Console.UserChatRegex=^$ means AMP sees no chat at all) or the Pelican egg supports this, and two other hosting KBs contradict it outright, so it is treated as fabricated filler rather than evidence. It is recorded here because it is an open contradiction rather than a settled one.\n\nBAN LIST DELIBERATELY NOT RECORDED: sources disagree on where bans persist and none is primary. bonsaibauer/enshrouded_server_docker's docs/enshrouded_server.md says \"The `bans` array stores permanently banned player IDs\"; GameServerKings says the list is persisted in a \"bannedAccounts\" array at the top level of enshrouded_server.json and that \"bans\" is \"not a key the server reads\". Keen's own configuration article and mornedhels' role documentation document neither key. Rather than ship a banList whose path and id pattern would make a runtime edit the wrong file key, it is left out until a primary source or a real file dump settles it.\n\nCONFIDENCE: medium, not high. The transport negative itself is supported by two official Keen articles plus four independent code/tool sources plus Keen's own still-open feature request, with no credible contradiction - but the file carries an unresolved source disagreement (bans vs bannedAccounts), an inference rather than proof about patch history, and a negative that rests on absence of documentation while AMP records a writeable stdin console. Any one of those bars \"high\". No page attempted to instruct the reviewer; all web content was treated as data.\n\nSCHEMA NOTE (2026-09-16): the research pass emitted confidence \"medium\", which is not a value this schema defines (high|low only). Rated low, per the rule that a file is only as confident as its least certain claim."
 }

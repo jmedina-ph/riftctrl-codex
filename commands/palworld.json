@@ -19,9 +19,10 @@
     "passwordSetting": "AdminPassword"
   },
   "playerId": {
-    "label": "Platform User ID",
-    "example": "steam_76561198000000000",
-    "pattern": "(?:[a-z0-9]+_)?[0-9A-Za-z]{8,}"
+    "label": "Steam ID",
+    "example": "76561198035441627",
+    "pattern": "7656119[0-9]{10}",
+    "prefix": "steam_"
   },
   "commands": {
     "info": "Info",
@@ -38,58 +39,101 @@
     "playerIdFromEnd": 1,
     "accountIdFromEnd": 2
   },
+  "banList": {
+    "paths": [
+      "Pal/Saved/SaveGames/banlist.txt"
+    ],
+    "lineIdPattern": "(?:steam_|ps5_|gdk_)?([0-9A-Za-z]{8,})",
+    "liveUnban": "UnBanPlayer {playerId}"
+  },
   "sources": [
     {
-      "url": "https://docs.palworldgame.com/settings-and-operation/commands",
-      "title": "Palworld Server Guide - Commands",
+      "url": "https://docs.palworldgame.com/settings-and-operation/commands/",
+      "title": "Palworld Server Guide - Commands (docs version 1.0.4)",
       "kind": "official",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     },
     {
-      "url": "https://docs.palworldgame.com/settings-and-operation/configuration",
-      "title": "Palworld Server Guide - Configuration (RCONEnabled/RCONPort/AdminPassword)",
+      "url": "https://docs.palworldgame.com/api/rcon/",
+      "title": "Palworld Server Guide - RCON (\"RCON is now deprecated. Please consider to use REST API.\")",
       "kind": "official",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     },
     {
-      "url": "https://docs.palworldgame.com/api/rest-api/kick",
-      "title": "Palworld REST API - Kick player",
+      "url": "https://docs.palworldgame.com/api/rest-api/players/",
+      "title": "Palworld Server Guide - REST API: Get player list (name, accountName, playerId, userId...)",
       "kind": "official",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://docs.palworldgame.com/api/rest-api/kick/",
+      "title": "Palworld Server Guide - REST API: Kick player (body field \"userid\")",
+      "kind": "official",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://github.com/zaigie/palworld-server-tool/blob/main/api/player.go",
+      "title": "palworld-server-tool api/player.go - getPlayerActionUserId() returns steam_<SteamId> for kick/ban/unban",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
     },
     {
       "url": "https://github.com/thijsvanloef/palworld-server-docker/blob/main/scripts/player_logging.sh",
-      "title": "palworld-server-docker - player_logging.sh (ShowPlayers CSV shape)",
+      "title": "palworld-server-docker player_logging.sh - row shape \"<name>,<player_id>,(steam|ps5|gdk)_<id>\"",
       "kind": "code",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     },
     {
-      "url": "https://github.com/thijsvanloef/palworld-server-docker/blob/main/scripts/helper_functions.sh",
-      "title": "palworld-server-docker - helper_functions.sh (broadcast/ShowPlayers over RCON)",
+      "url": "https://github.com/Charahiro/pal_rcon/blob/main/src/pal_rcon/models.py",
+      "title": "pal_rcon models.py - skips the literal header \"name,playeruid,steamid\"; kickplayer/banplayer take a bare steam id",
       "kind": "code",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     },
     {
-      "url": "https://github.com/juunini/palworld-rcon",
-      "title": "juunini/palworld-rcon - command table",
+      "url": "https://github.com/shupershuff/PalworldServerTools/blob/main/PalworldServerTools.ps1",
+      "title": "PalworldServerTools.ps1 - sends \"KickPlayer <steamid>\", matches \"failed to kick\"/\"failed to ban\", appends \"steam_<steamid>\" to banlist.txt",
       "kind": "code",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     },
     {
-      "url": "https://www.gameserverkings.com/knowledge-base/palworld/admin-commands/",
-      "title": "Palworld Admin Commands & Moderation Guide",
+      "url": "https://github.com/rinjugatla/palworld-server-player-logger",
+      "title": "palworld-server-player-logger - live ShowPlayers sample: playeruid 1166585980, steamid 76561198035441627",
+      "kind": "code",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://ggservers.com/knowledgebase/article/how-to-kick-and-ban-players-on-your-palworld-server/",
+      "title": "GGServers KB (2025-05-09) - \"KickPlayer steam_<Steam ID here>\"",
       "kind": "community",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
     },
     {
-      "url": "https://help.bisecthosting.com/hc/en-us/articles/40947021276187-How-to-Kick-or-Ban-Players-on-a-Palworld-Server",
-      "title": "How to Kick or Ban Players on a Palworld Server",
+      "url": "https://xgamingserver.com/docs/palworld/admin-commands",
+      "title": "XGamingServer docs - \"/KickPlayer steam_76561198012345678\"; Xbox/PS5 use their platform UserID",
       "kind": "community",
-      "retrievedAt": "2026-09-12"
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://www.survivalservers.com/wiki/Palworld_Admin_Commands",
+      "title": "SurvivalServers wiki (edited 31 Aug 2026) - \"...use that longer form in REST calls, and the plain number in chat commands\"",
+      "kind": "wiki",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://www.battlemetrics.com/rcon/palworld",
+      "title": "BattleMetrics Palworld RCON - broadcast is cut off at the first space; spaces replaced with underscores",
+      "kind": "community",
+      "retrievedAt": "2026-09-16"
+    },
+    {
+      "url": "https://nodecraft.com/support/games/palworld/general/banning-and-unbanning-players-on-your-palworld-server",
+      "title": "Nodecraft (updated 07/01/26) - banlist at /Pal/Saved/SaveGames/banlist.txt",
+      "kind": "community",
+      "retrievedAt": "2026-09-16"
     }
   ],
-  "confidence": "high",
-  "researchedAt": "2026-09-12",
+  "confidence": "low",
+  "researchedAt": "2026-09-16",
   "verifiedAt": null,
-  "notes": "Official docs write every command with a leading slash (/ShowPlayers) because that is the in-game admin-chat form; over RCON the slash is dropped and the bare word is sent - palworld-server-docker sends RCON \"ShowPlayers\" and \"broadcast <msg>\" through rcon-cli, and GameServerKings states the console form is 'the same commands typed without the leading slash'. Casing here follows the official docs; the server is case-insensitive in practice. Broadcast cannot carry spaces over RCON: palworld-server-docker replaces every space with an underscore before sending, and non-ASCII messages fail outright - a caller that needs real spaces should use the REST API instead. ShowPlayers returns CSV with a header row and three columns, name,playeruid,<platform>_<id>; palworld-server-docker's player_logging.sh comments the third column as (steam|ps5|gdk)_<id> and skips the header with tail -n +2, and a player still loading or in character creation shows a playeruid of 8 or 32 zeroes. SOURCES DISAGREE on the moderation identifier: the official command reference still says <SteamID>; GameServerKings says either the Steam ID or the Player UID works for Steam players and that Xbox/Game Pass/PS5/Mac players must be addressed by Player UID; BisectHosting documents /KickPlayer steam_<SteamID>; and the REST API's kick takes a 'userid' string, the same field the /players response returns. The pattern therefore accepts both the bare id and a platform-prefixed form, and it does NOT enumerate platform prefixes - only (steam|ps5|gdk) are attested anywhere I read, so the prefix group is written generically rather than as a list. The value taken straight out of the ShowPlayers third column is the recommended one to pass, but for non-Steam players GameServerKings' advice (use the Player UID, column two) is the documented fallback if a kick appears to hit nobody. Palworld also exposes a REST admin API (RESTAPIEnabled/RESTAPIPort, default 8212, HTTP Basic auth with the admin password, base path /v1/api, endpoints info/players/announce/kick/ban/unban); it is recorded here as a note rather than as the transport because RCON is the older and more widely deployed channel, but note that palworld-server-docker now logs 'RCON IS DEPRECATED AND WILL BE REMOVED IN A FUTURE RELEASE. PLEASE USE THE REST API INSTEAD.' and prefers REST, so a future revision may flip this file to rest. Setting names RCONEnabled/RCONPort/AdminPassword come from the official configuration reference, which prints no defaults; the 25575 default is from palworld-server-docker (RCON_PORT 25575). juunini/palworld-rcon implements Info, ShowPlayers, KickPlayer, BanPlayer and Broadcast but has no UnBanPlayer method - UnBanPlayer rests on the official reference plus GameServerKings. No motd command exists."
+  "notes": "IDENTIFIER (printed vs accepted): PRINTED - ShowPlayers answers with a CSV block. The header line is literally \"name,playeruid,steamid\" (Charahiro/pal_rcon's models.py skips that exact string: `if line == \"name,playeruid,steamid\": continue`) and a row looks like \"Rcat999,1166585980,76561198035441627\" - name, then a DECIMAL playeruid, then the Steam id. rinjugatla/palworld-server-player-logger publishes a live sample with playeruid \"1166585980\" / steamid \"76561198035441627\" / playeruid_hex \"4588b07c\"; the playeruid is the decimal value of the first 8 hex characters of the REST API's playerId field (zaigie/palworld-server-tool getPlayerUid()). A player who is still loading or in character creation prints playeruid \"00000000\" instead. On crossplay servers the third column is reported as a PLATFORM-PREFIXED user id, not a bare number: thijsvanloef/palworld-server-docker documents the row shape in scripts/player_logging.sh as \"<name>,<player_id>,(steam|ps5|gdk)_<id>\". ACCEPTED - NOT SETTLED, and the sources genuinely conflict. Pocketpair's own command page (docs version 1.0.4) still says \"/KickPlayer <SteamID>\" with no prefix, and Charahiro/pal_rcon sends \"kickplayer <17-digit steamid>\"; but the REST API that Pocketpair now directs admins to takes {\"userid\": \"steam_7656...\"}, banlist.txt stores entries as \"steam_7656...\" (shupershuff/PalworldServerTools writes exactly \"steam_$steamid\"), and two independent hosting docs publish the prefixed form for RCON too (GGServers 2025-05-09: \"KickPlayer steam_<Steam ID here>\"; XGamingServer: \"/KickPlayer steam_76561198012345678\" plus \"For Xbox/PS5 crossplay players, use their platform UserID instead of steam_\"). This file therefore emits the PREFIXED form via playerId.prefix \"steam_\" - it is the only form that can also name an Xbox (gdk_) or PS5 (ps5_) player - but the bare form is a live alternative, see CANDIDATES. Because playerId.prefix is stripped on input, the CSV parse works whether the third column prints \"76561198035441627\" or \"steam_76561198035441627\". A wrong form is NOT silent: the server's reply contains \"failed to kick\" / \"failed to ban\" (shupershuff/PalworldServerTools matches exactly those strings on the RCON response), so a runtime can detect rejection and try the next candidate.\n\nCANDIDATES: kick / ban / unban argument, most likely first. (1) \"steam_76561198035441627\" - the platform UserId form. Sources: Palworld REST API kick/ban/unban userid field (official docs); zaigie/palworld-server-tool api/player.go getPlayerActionUserId(), whose comment reads \"prefer the full UserId (supports cross-platform), fall back to steam_ + SteamId\"; banlist.txt line format; GGServers 2025-05-09; XGamingServer. (2) \"76561198035441627\" - bare SteamID64. Sources: official command page v1.0.4 \"/KickPlayer <SteamID>\"; survivalservers wiki last edited 31 Aug 2026 - \"The REST API lists the same players with the ID in the form steam_<SteamID64> - use that longer form in REST calls, and the plain number in chat commands\"; Charahiro/pal_rcon; shupershuff/PalworldServerTools sends \"KickPlayer <bare steamid>\". (3) the decimal playeruid from column 2, e.g. \"1166585980\" - DavidJS01/palcon documents kick as \"Kick a player given a Palworld UID or Steam ID\", and valamidev/palworld-rcon-buddy's README example is {\"command\":\"KickPlayer 41XXXXX2\"}, which is a playeruid, not a SteamID64.\n\nRCON IS DEPRECATED BY THE PUBLISHER. docs.palworldgame.com/api/rcon now carries only: \"RCON is now deprecated. Please consider to use REST API.\" RCON still exists and is still what panels drive (BattleMetrics ships a Palworld RCON tool; thijsvanloef/palworld-server-docker still ships rcon-cli), so transport is recorded as rcon - but the publisher-sanctioned channel is now the REST API on RESTAPIPort (RESTAPIEnabled), basic auth as user \"admin\" with AdminPassword, base path /v1/api: GET /v1/api/info, GET /v1/api/players (fields name, accountName, playerId, userId, ip, ping, location_x, location_y, level, building_count), POST /v1/api/kick {\"userid\":...}, /v1/api/ban, /v1/api/unban, /v1/api/announce {\"message\":...}. zaigie/palworld-server-tool has already moved kick/ban/unban/showplayers/broadcast off RCON onto those REST endpoints, and Charahiro/pal_rcon's README now says RCON looks abandoned and points at its own REST client. If RCON stops answering, this file should be re-cut as transport \"rest\".\n\nCOMMANDS ARE SENT WITHOUT A LEADING SLASH over RCON. The slash form (/KickPlayer ...) is the in-game chat form. Confirmed in code: palworld-server-docker runs `rcon-cli \"Broadcast Hello everyone\"`, zaigie/palworld-server-tool sends \"Info\", Charahiro/pal_rcon sends \"kickplayer\"/\"showplayers\" lowercase, shupershuff sends \"KickPlayer $steamid\". Command names are case-insensitive; the casing here is Pocketpair's.\n\nBROADCAST IS TRUNCATED AT THE FIRST SPACE. BattleMetrics' Palworld RCON page: \"The game currently cuts off any messages sent at the first space. To work around this problem we automatically replace spaces with underscores.\" A caller that needs multi-word broadcasts over RCON must substitute underscores for spaces itself, or use POST /v1/api/announce, which does not have this bug. Palworld RCON is also ASCII-only: Charahiro/pal_rcon encodes outbound payloads as ASCII because UTF-8 corrupts both the request and the response, and Lukium/palworld-admin reports that a single player with a non-ASCII name breaks the whole ShowPlayers reply and makes kick/ban fail. zaigie/palworld-server-tool has an opt-in base64 RCON mode for this.\n\nBAN ONLY REACHES ONLINE PLAYERS. shupershuff/PalworldServerTools falls back to appending \"steam_<steamid>\\n\" to Pal/Saved/SaveGames/banlist.txt when the target is offline, with the comment \"ARRCON can only ban players who are online\". Hence banList. BanPlayer takes no reason and no duration - bans are permanent until the id is removed from banlist.txt or UnBanPlayer is run. UnBanPlayer is in Pocketpair's command table for v1.0.4, but Nodecraft's page (updated 07/01/26) still says \"there is no unban command\" and tells admins to edit banlist.txt; treat the file as the reliable path and the command as the fast path. There is no MOTD command, so motd is omitted. ShowPlayers responses are also flaky: pal_rcon retries ShowPlayers up to 10 times by default because the reply frequently arrives truncated.\n\nCONFIDENCE is low and the reason is the identifier, not the command names: the command names (Info, ShowPlayers, KickPlayer, BanPlayer, UnBanPlayer, Broadcast) are agreed by every source including Pocketpair, but no source I could reach shows the exact accepted argument working on a current (crossplay-era) server, and the two best-dated sources contradict each other. Nothing here has been run against a live server."
 }

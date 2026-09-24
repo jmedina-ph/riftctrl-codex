@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-14T05:21:10Z",
+  "generatedAt": "2026-09-24T05:13:27Z",
   "games": [
     {
       "slug": "7-days-to-die",
@@ -987,9 +987,9 @@
         "enshrouded_server"
       ],
       "transport": "none",
-      "confidence": "high",
+      "confidence": "low",
       "verified": false,
-      "updatedAt": "2026-09-12"
+      "updatedAt": "2026-09-16"
     },
     {
       "slug": "et-legacy",
@@ -1286,12 +1286,13 @@
       "aliases": [
         "Icarus",
         "ICARUS",
-        "Icarus Server"
+        "Icarus Server",
+        "Icarus: First Cohort"
       ],
       "transport": "none",
-      "confidence": "high",
-      "verified": true,
-      "updatedAt": "2026-09-12"
+      "confidence": "low",
+      "verified": false,
+      "updatedAt": "2026-09-16"
     },
     {
       "slug": "insurgency",
@@ -1704,9 +1705,9 @@
         "Palworld Server"
       ],
       "transport": "rcon",
-      "confidence": "high",
+      "confidence": "low",
       "verified": false,
-      "updatedAt": "2026-09-12"
+      "updatedAt": "2026-09-16"
     },
     {
       "slug": "pavlov-vr",

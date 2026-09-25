@@ -27,17 +27,56 @@ const APPROVER = env('TRELLO_APPROVER_ID');
 const ALLOW_APP_MOVES = env('ALLOW_APP_MOVES') === 'true';
 const DRY_RUN = env('DRY_RUN') === 'true';
 const OUT_DIR = env('OUT_DIR', 'commands');
+const MAX_ATTEMPTS = Number(env('TRELLO_MAX_ATTEMPTS', '5'));
+// Small pause between cards. The cost is a few seconds per run; the benefit is staying clear of the
+// per-token rate limit instead of sitting just under it and relying on luck.
+const CARD_DELAY_MS = Number(env('TRELLO_CARD_DELAY_MS', '60'));
 
 for (const [k, v] of Object.entries({ TRELLO_KEY: KEY, TRELLO_TOKEN: TOKEN, TRELLO_APPROVED_LIST_ID: LIST, TRELLO_APPROVER_ID: APPROVER })) {
   if (!v) { console.error(`Missing required env ${k}`); process.exit(2); }
 }
 
+// A run reads ~3 requests per approved card, so a board with ~150 approved cards makes ~450 calls in
+// about a minute. Real runs have hit both HTTP 429 ("Rate limit exceeded: requests per interval for
+// API token") and HTTP 503 upstream connection resets. Without a retry a single unlucky request
+// throws, the card is marked invalid, and the whole run fails claiming a card was REJECTED -- which
+// sends you hunting a bad document that does not exist. Retry, and keep transient failures in their
+// own bucket so they are never reported as rejections.
+class TransientError extends Error {}
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
 async function trello(path, params = {}) {
   const url = new URL(API + path);
   for (const [k, v] of Object.entries({ ...params, key: KEY, token: TOKEN })) url.searchParams.set(k, v);
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Trello ${path} -> HTTP ${res.status}: ${(await res.text()).slice(0, 200)}`);
-  return res.json();
+  let lastErr;
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    let res;
+    try {
+      res = await fetch(url);
+    } catch (e) {                                   // DNS, reset socket, timeout
+      lastErr = new TransientError(`Trello ${path} -> ${e.message}`);
+      await sleep(backoffMs(attempt, null));
+      continue;
+    }
+    if (res.ok) return res.json();
+    const body = (await res.text()).slice(0, 200);
+    // 429 = rate limited, 5xx = Trello having a moment. Both are worth retrying; 4xx is not.
+    if (res.status === 429 || res.status >= 500) {
+      lastErr = new TransientError(`Trello ${path} -> HTTP ${res.status}: ${body}`);
+      await sleep(backoffMs(attempt, res.headers.get('retry-after')));
+      continue;
+    }
+    throw new Error(`Trello ${path} -> HTTP ${res.status}: ${body}`);
+  }
+  throw lastErr;
+}
+
+// Exponential backoff with jitter, honouring Retry-After when Trello sends it.
+function backoffMs(attempt, retryAfter) {
+  const header = Number(retryAfter);
+  if (Number.isFinite(header) && header > 0) return Math.min(header * 1000, 20000);
+  return Math.min(500 * 2 ** (attempt - 1), 8000) + Math.floor(Math.random() * 250);
 }
 
 // The most recent action that put this card into the Approved list (a move, or created directly in it).
@@ -118,8 +157,12 @@ for (const card of cards) {
     r.detail = file + (app ? ` (appCreator=${JSON.stringify(approval.appCreator)}, allowed)` : '');
     if (!DRY_RUN) writeFileSync(file, next);
   } catch (e) {
-    r.detail = `error: ${e.message}`;
+    // A transient read failure is NOT a rejected card. Calling it one sends you hunting a document
+    // bug that does not exist -- which is exactly what happened chasing runs #55-#61.
+    r.status = e instanceof TransientError ? 'unreadable' : 'invalid';
+    r.detail = `${r.status === 'unreadable' ? 'transient' : 'error'}: ${e.message}`;
   }
+  if (CARD_DELAY_MS) await sleep(CARD_DELAY_MS);
 }
 
 // Rebuild index.json (generated, never hand-edited) in the shape commands/README.md documents.
@@ -154,13 +197,13 @@ if (!DRY_RUN && existsSync(OUT_DIR)) {
 const count = (s) => results.filter((r) => r.status === s).length;
 const lines = [
   `## Approved commands${DRY_RUN ? ' (dry run)' : ''}`,
-  `added ${count('added')} · updated ${count('updated')} · unchanged ${count('unchanged')} · **rejected ${count('invalid')}**`,
+  `added ${count('added')} · updated ${count('updated')} · unchanged ${count('unchanged')} · **rejected ${count('invalid')}** · unreadable ${count('unreadable')}`,
   '', '| Card | Result | Detail |', '|---|---|---|',
   ...results.map((r) => `| [${r.card.replace(/\|/g, '/')}](${r.url}) | ${r.status} | ${String(r.detail).replace(/\|/g, '/')} |`),
 ];
 console.log(lines.join('\n'));
 if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines.join('\n') + '\n');
 if (process.env.GITHUB_OUTPUT) {
-  appendFileSync(process.env.GITHUB_OUTPUT, `invalid=${count('invalid')}\nchanged=${count('added') + count('updated')}\n`);
+  appendFileSync(process.env.GITHUB_OUTPUT, `invalid=${count('invalid')}\nunreadable=${count('unreadable')}\nchanged=${count('added') + count('updated')}\n`);
   appendFileSync(process.env.GITHUB_OUTPUT, `ids=${results.filter((r) => ['added', 'updated'].includes(r.status)).map((r) => r.id).join(', ')}\n`);
 }

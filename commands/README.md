@@ -112,6 +112,34 @@ sit at `verifiedAt: null` for a long time, and that is honest.
 another; that is the kind of event that invalidates a file. A routine content update is not. When
 revising, keep the old value in `notes` with the date rather than silently overwriting.
 
+## REST games: how an operation is CALLED
+
+A game with a REST admin API needs more than a port. RCON and console games carry a line of text; a REST game needs a
+**method, a path and usually a body** — so `rest.ops` says how each operation is called:
+
+```json
+"rest": {
+  "defaultPort": 7777,
+  "basePath": "/api/v1",
+  "auth": { "type": "bearer", "credentialSetting": "AdminToken" },
+  "ops": {
+    "listPlayers": { "method": "POST", "path": "", "body": { "function": "QueryServerState" } },
+    "kick":        { "method": "POST", "path": "", "body": { "function": "Kick", "data": { "playerId": "{playerId}" } } },
+    "say":         { "method": "POST", "path": "", "body": { "function": "Broadcast", "data": { "message": "{message}" } } }
+  }
+}
+```
+
+- **`path` is appended to `basePath`**, and may be EMPTY when the whole API is a single endpoint with the operation named
+  inside the body — Satisfactory works exactly this way.
+- **Only `{playerId}` and `{message}`** may appear, in the path or anywhere in the body, at any depth. `{reason}` and
+  `{duration}` are not filled for REST.
+- A value carrying a newline or other control character is **refused rather than sent**.
+- Without `ops`, a REST game can be described but never commanded — it is research, not a manageable game.
+
+Added 2026-09-25, after the first four REST games (Killing Floor 2, Satisfactory, Space Engineers, Farming Simulator 19)
+were published with their endpoints written into `notes` as prose, because the schema had nowhere to put them.
+
 ## `index.json`
 
 Generated, never hand-edited. One row per file, so a client can resolve a game without fetching every

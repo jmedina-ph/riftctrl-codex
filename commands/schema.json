@@ -5,21 +5,30 @@
   "description": "How one dedicated game server is commanded: which transport it answers, and the exact command text for the core four operations (list players, kick, ban, say). One file per game. Field names deliberately match the ConsoleDescriptor the runtime already compiles, so a file needs no translation layer.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "slug", "game", "transport", "sources", "confidence", "researchedAt"],
-
+  "required": [
+    "schemaVersion",
+    "slug",
+    "game",
+    "transport",
+    "sources",
+    "confidence",
+    "researchedAt"
+  ],
   "properties": {
-    "schemaVersion": { "const": 1 },
-
+    "schemaVersion": {
+      "const": 1
+    },
     "slug": {
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9._-]*$",
-      "description": "Filename key. MUST equal the file's own basename. Not expected to match any other source's key — the other sources disagree with each other already; matching happens on game.displayName and game.appId."
+      "description": "Filename key. MUST equal the file's own basename. Not expected to match any other source's key \u2014 the other sources disagree with each other already; matching happens on game.displayName and game.appId."
     },
-
     "game": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["displayName"],
+      "required": [
+        "displayName"
+      ],
       "properties": {
         "displayName": {
           "type": "string",
@@ -27,150 +36,498 @@
           "description": "The game's real name as its publisher writes it, e.g. \"Palworld Dedicated Server\". This is the primary match key, resolved exactly as AMP's Meta.DisplayName and WindowsGSM's FullName are today."
         },
         "appId": {
-          "type": ["integer", "null"],
+          "type": [
+            "integer",
+            "null"
+          ],
           "minimum": 1,
           "description": "Steam app id of the DEDICATED SERVER app where one exists, else the game's. The strongest match key available; this repo publishes the app-id list beside these files."
         },
         "aliases": {
           "type": "array",
-          "items": { "type": "string", "minLength": 1 },
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
           "uniqueItems": true,
           "default": [],
           "description": "Other names the game is published under, including abbreviations other sources key on (\"CE\" for Conan Exiles)."
         }
       }
     },
-
     "transport": {
-      "enum": ["rcon", "rest", "stdin", "none"],
-      "description": "The channel this server accepts commands on. \"none\" is a legitimate, valuable answer: it tells RIFT//CTRL to stop probing and go straight to the host-level floor. Preference order rcon > rest > stdin is the runtime's, not this file's — record what the game HAS."
+      "enum": [
+        "rcon",
+        "rest",
+        "stdin",
+        "none"
+      ],
+      "description": "The channel this server accepts commands on. \"none\" is a legitimate, valuable answer: it tells RIFT//CTRL to stop probing and go straight to the host-level floor. Preference order rcon > rest > stdin is the runtime's, not this file's \u2014 record what the game HAS."
     },
-
     "rcon": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "flavour": {
-          "enum": ["source", "custom"],
+          "enum": [
+            "source",
+            "custom"
+          ],
           "description": "\"source\" = the Valve Source RCON wire protocol (the common case). \"custom\" = the game speaks its own thing on its own port; describe it in notes."
         },
-        "defaultPort": { "type": ["integer", "null"], "minimum": 1, "maximum": 65535 },
-        "portSetting": { "type": ["string", "null"], "description": "Name of the server setting that sets the RCON port, e.g. \"RCONPort\"." },
-        "enableSetting": { "type": ["string", "null"], "description": "Name of the setting that turns RCON on, e.g. \"RCONEnabled\"." },
-        "passwordSetting": { "type": ["string", "null"], "description": "Name of the setting holding the RCON password, e.g. \"AdminPassword\"." }
+        "defaultPort": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "portSetting": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Name of the server setting that sets the RCON port, e.g. \"RCONPort\"."
+        },
+        "enableSetting": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Name of the setting that turns RCON on, e.g. \"RCONEnabled\"."
+        },
+        "passwordSetting": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Name of the setting holding the RCON password, e.g. \"AdminPassword\"."
+        }
       }
     },
-
     "rest": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "defaultPort": { "type": ["integer", "null"], "minimum": 1, "maximum": 65535 },
-        "basePath": { "type": "string", "description": "Path prefix, e.g. \"/v1/api\"." },
+        "defaultPort": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "basePath": {
+          "type": "string",
+          "description": "Path prefix, e.g. \"/v1/api\"."
+        },
         "auth": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "type": { "enum": ["none", "basic", "bearer", "header", "query"] },
-            "name": { "type": "string", "description": "Header or query-parameter name when type is \"header\" or \"query\"." },
-            "credentialSetting": { "type": ["string", "null"], "description": "Name of the server setting holding the credential." }
+            "type": {
+              "enum": [
+                "none",
+                "basic",
+                "bearer",
+                "header",
+                "query"
+              ]
+            },
+            "name": {
+              "type": "string",
+              "description": "Header or query-parameter name when type is \"header\" or \"query\"."
+            },
+            "credentialSetting": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Name of the server setting holding the credential."
+            }
+          }
+        },
+        "ops": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "How each operation is CALLED over this game's admin API: the HTTP method, the path (appended to basePath), and an optional JSON body. Without these a REST game can be described but never commanded, which is why REST files could not be used before 2026-09-25. Only {playerId} and {message} may appear, in the path or anywhere in the body \u2014 a value carrying a newline or other control character is refused rather than sent. A single-endpoint API (one path, the operation named inside the body) is expressed by giving every op the same path and differing bodies.",
+          "properties": {
+            "info": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "method",
+                "path"
+              ],
+              "description": "Server status. No placeholders.",
+              "properties": {
+                "method": {
+                  "enum": [
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "DELETE",
+                    "PATCH"
+                  ]
+                },
+                "path": {
+                  "type": "string",
+                  "description": "Appended to `basePath`, e.g. \"/players\". EMPTY when the whole API is one endpoint and `basePath` already names it \u2014 Satisfactory's is `POST /api/v1` with the operation inside the body."
+                },
+                "body": {
+                  "type": "object",
+                  "description": "JSON body. Strings are filled at any depth; numbers and booleans pass through."
+                }
+              }
+            },
+            "listPlayers": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "method",
+                "path"
+              ],
+              "description": "Lists connected players; the response is read with `playerParse`. No placeholders.",
+              "properties": {
+                "method": {
+                  "enum": [
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "DELETE",
+                    "PATCH"
+                  ]
+                },
+                "path": {
+                  "type": "string",
+                  "description": "Appended to `basePath`, e.g. \"/players\". EMPTY when the whole API is one endpoint and `basePath` already names it \u2014 Satisfactory's is `POST /api/v1` with the operation inside the body."
+                },
+                "body": {
+                  "type": "object",
+                  "description": "JSON body. Strings are filled at any depth; numbers and booleans pass through."
+                }
+              }
+            },
+            "kick": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "method",
+                "path"
+              ],
+              "description": "Removes a player. Token: {playerId}.",
+              "properties": {
+                "method": {
+                  "enum": [
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "DELETE",
+                    "PATCH"
+                  ]
+                },
+                "path": {
+                  "type": "string",
+                  "description": "Appended to `basePath`, e.g. \"/players\". EMPTY when the whole API is one endpoint and `basePath` already names it \u2014 Satisfactory's is `POST /api/v1` with the operation inside the body."
+                },
+                "body": {
+                  "type": "object",
+                  "description": "JSON body. Strings are filled at any depth; numbers and booleans pass through."
+                }
+              }
+            },
+            "ban": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "method",
+                "path"
+              ],
+              "description": "Bans a player. Token: {playerId}.",
+              "properties": {
+                "method": {
+                  "enum": [
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "DELETE",
+                    "PATCH"
+                  ]
+                },
+                "path": {
+                  "type": "string",
+                  "description": "Appended to `basePath`, e.g. \"/players\". EMPTY when the whole API is one endpoint and `basePath` already names it \u2014 Satisfactory's is `POST /api/v1` with the operation inside the body."
+                },
+                "body": {
+                  "type": "object",
+                  "description": "JSON body. Strings are filled at any depth; numbers and booleans pass through."
+                }
+              }
+            },
+            "unban": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "method",
+                "path"
+              ],
+              "description": "Lifts a ban. Token: {playerId}.",
+              "properties": {
+                "method": {
+                  "enum": [
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "DELETE",
+                    "PATCH"
+                  ]
+                },
+                "path": {
+                  "type": "string",
+                  "description": "Appended to `basePath`, e.g. \"/players\". EMPTY when the whole API is one endpoint and `basePath` already names it \u2014 Satisfactory's is `POST /api/v1` with the operation inside the body."
+                },
+                "body": {
+                  "type": "object",
+                  "description": "JSON body. Strings are filled at any depth; numbers and booleans pass through."
+                }
+              }
+            },
+            "say": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "method",
+                "path"
+              ],
+              "description": "Message to everyone. Token: {message}.",
+              "properties": {
+                "method": {
+                  "enum": [
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "DELETE",
+                    "PATCH"
+                  ]
+                },
+                "path": {
+                  "type": "string",
+                  "description": "Appended to `basePath`, e.g. \"/players\". EMPTY when the whole API is one endpoint and `basePath` already names it \u2014 Satisfactory's is `POST /api/v1` with the operation inside the body."
+                },
+                "body": {
+                  "type": "object",
+                  "description": "JSON body. Strings are filled at any depth; numbers and booleans pass through."
+                }
+              }
+            }
           }
         }
       }
     },
-
     "stdin": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "note": { "type": "string", "description": "Anything the runtime must know to write to this server's console, e.g. that it needs a TTY." }
+        "note": {
+          "type": "string",
+          "description": "Anything the runtime must know to write to this server's console, e.g. that it needs a TTY."
+        }
       }
     },
-
     "playerId": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["label", "example", "pattern"],
+      "required": [
+        "label",
+        "example",
+        "pattern"
+      ],
       "description": "What this game calls a player when moderating one. Wrong here means kick and ban silently target nobody.",
       "properties": {
-        "label": { "type": "string", "minLength": 1, "description": "Human label, e.g. \"Steam ID\", \"Username\", \"UID\"." },
-        "example": { "type": "string", "minLength": 1, "description": "A realistic example, shown in manual-entry fields." },
-        "pattern": { "type": "string", "minLength": 1, "description": "Regex source matching the BARE identifier, without any prefix. Unanchored — the runtime anchors it." },
-        "prefix": { "type": "string", "description": "Canonical prefix stripped on input and re-added on output, where the game uses one." }
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human label, e.g. \"Steam ID\", \"Username\", \"UID\"."
+        },
+        "example": {
+          "type": "string",
+          "minLength": 1,
+          "description": "A realistic example, shown in manual-entry fields."
+        },
+        "pattern": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Regex source matching the BARE identifier, without any prefix. Unanchored \u2014 the runtime anchors it."
+        },
+        "prefix": {
+          "type": "string",
+          "description": "Canonical prefix stripped on input and re-added on output, where the game uses one."
+        }
       }
     },
-
     "commands": {
       "type": "object",
       "additionalProperties": false,
       "description": "Exact command text. Placeholders are substituted literally; use ONLY the tokens listed per field. Write the command as a player would type it in the server console, with no leading slash unless the game requires one.",
       "properties": {
-        "info": { "$ref": "#/definitions/command", "description": "Server status/info. No placeholders." },
-        "listPlayers": { "$ref": "#/definitions/command", "description": "Lists connected players. No placeholders. Required for the roster." },
-        "kick": { "$ref": "#/definitions/command", "description": "Tokens: {playerId}, optionally {playerName}, {reason}." },
-        "ban": { "$ref": "#/definitions/command", "description": "Tokens: {playerId}, optionally {playerName}, {reason}, {duration}." },
-        "unban": { "$ref": "#/definitions/command", "description": "Tokens: {playerId}. Omit when the game has no live unban — record banList instead." },
-        "say": { "$ref": "#/definitions/command", "description": "Broadcasts to everyone. Token: {message}." },
-        "motd": { "$ref": "#/definitions/command", "description": "Sets the message of the day, where the game has a command for it. Token: {message}." }
+        "info": {
+          "$ref": "#/definitions/command",
+          "description": "Server status/info. No placeholders."
+        },
+        "listPlayers": {
+          "$ref": "#/definitions/command",
+          "description": "Lists connected players. No placeholders. Required for the roster."
+        },
+        "kick": {
+          "$ref": "#/definitions/command",
+          "description": "Tokens: {playerId}, optionally {playerName}, {reason}."
+        },
+        "ban": {
+          "$ref": "#/definitions/command",
+          "description": "Tokens: {playerId}, optionally {playerName}, {reason}, {duration}."
+        },
+        "unban": {
+          "$ref": "#/definitions/command",
+          "description": "Tokens: {playerId}. Omit when the game has no live unban \u2014 record banList instead."
+        },
+        "say": {
+          "$ref": "#/definitions/command",
+          "description": "Broadcasts to everyone. Token: {message}."
+        },
+        "motd": {
+          "$ref": "#/definitions/command",
+          "description": "Sets the message of the day, where the game has a command for it. Token: {message}."
+        }
       }
     },
-
     "playerParse": {
       "type": "object",
       "description": "How to turn the listPlayers response into rows. Only needed when commands.listPlayers is present.",
-      "required": ["mode"],
+      "required": [
+        "mode"
+      ],
       "oneOf": [
         {
           "additionalProperties": false,
-          "required": ["mode", "delimiter", "hasHeader", "playerIdFromEnd"],
+          "required": [
+            "mode",
+            "delimiter",
+            "hasHeader",
+            "playerIdFromEnd"
+          ],
           "properties": {
-            "mode": { "const": "csv" },
-            "delimiter": { "type": "string", "minLength": 1 },
-            "hasHeader": { "type": "boolean" },
-            "playerIdFromEnd": { "type": "integer", "minimum": 1, "description": "1 = last column. Counted from the END so that names containing the delimiter do not shift it." },
-            "accountIdFromEnd": { "type": "integer", "minimum": 1, "description": "Omit when the game exposes no second identifier." }
+            "mode": {
+              "const": "csv"
+            },
+            "delimiter": {
+              "type": "string",
+              "minLength": 1
+            },
+            "hasHeader": {
+              "type": "boolean"
+            },
+            "playerIdFromEnd": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "1 = last column. Counted from the END so that names containing the delimiter do not shift it."
+            },
+            "accountIdFromEnd": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Omit when the game exposes no second identifier."
+            }
           }
         },
         {
           "additionalProperties": false,
-          "required": ["mode", "linePattern"],
+          "required": [
+            "mode",
+            "linePattern"
+          ],
           "properties": {
-            "mode": { "const": "regex" },
-            "linePattern": { "type": "string", "description": "Applied per line. Must contain named groups (?<name>…) and (?<playerId>…); (?<accountId>…) optional." },
-            "skipLinePattern": { "type": "string", "description": "Lines matching this are headers/footers and are dropped." }
+            "mode": {
+              "const": "regex"
+            },
+            "linePattern": {
+              "type": "string",
+              "description": "Applied per line. Must contain named groups (?<name>\u2026) and (?<playerId>\u2026); (?<accountId>\u2026) optional."
+            },
+            "skipLinePattern": {
+              "type": "string",
+              "description": "Lines matching this are headers/footers and are dropped."
+            }
           }
         },
         {
           "additionalProperties": false,
-          "required": ["mode", "namePath", "playerIdPath"],
+          "required": [
+            "mode",
+            "namePath",
+            "playerIdPath"
+          ],
           "properties": {
-            "mode": { "const": "json" },
-            "rootPath": { "type": "array", "items": { "type": "string" }, "description": "Path to the array of players, e.g. [\"data\",\"players\"]. Omit when the response IS the array." },
-            "namePath": { "type": "array", "items": { "type": "string" } },
-            "playerIdPath": { "type": "array", "items": { "type": "string" } },
-            "accountIdPath": { "type": "array", "items": { "type": "string" } }
+            "mode": {
+              "const": "json"
+            },
+            "rootPath": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Path to the array of players, e.g. [\"data\",\"players\"]. Omit when the response IS the array."
+            },
+            "namePath": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "playerIdPath": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "accountIdPath": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
           }
         }
       ]
     },
-
     "banList": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["paths", "lineIdPattern"],
+      "required": [
+        "paths",
+        "lineIdPattern"
+      ],
       "description": "File-based bans, for games where banning edits a file rather than (or as well as) taking a command.",
       "properties": {
         "paths": {
           "type": "array",
           "minItems": 1,
-          "items": { "type": "string", "minLength": 1 },
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
           "description": "Candidate locations relative to the install root. List every one seen in the wild; the runtime takes the first that exists."
         },
-        "lineIdPattern": { "type": "string", "minLength": 1, "description": "Regex with exactly ONE capture group, pulling the bare id out of a ban-file line." },
-        "liveUnban": { "type": "string", "description": "Command template using {playerId}, when the game can also unban live." }
+        "lineIdPattern": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Regex with exactly ONE capture group, pulling the bare id out of a ban-file line."
+        },
+        "liveUnban": {
+          "type": "string",
+          "description": "Command template using {playerId}, when the game can also unban live."
+        }
       }
     },
-
     "sources": {
       "type": "array",
       "minItems": 1,
@@ -178,64 +535,142 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["url", "retrievedAt"],
+        "required": [
+          "url",
+          "retrievedAt"
+        ],
         "properties": {
-          "url": { "type": "string", "format": "uri" },
-          "title": { "type": "string" },
-          "kind": { "enum": ["official", "wiki", "community", "code", "forum"], "description": "\"official\" = the publisher's own docs. Two community posts agreeing is weaker than one official page." },
-          "retrievedAt": { "type": "string", "format": "date" }
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "title": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "official",
+              "wiki",
+              "community",
+              "code",
+              "forum"
+            ],
+            "description": "\"official\" = the publisher's own docs. Two community posts agreeing is weaker than one official page."
+          },
+          "retrievedAt": {
+            "type": "string",
+            "format": "date"
+          }
         }
       }
     },
-
     "confidence": {
-      "enum": ["high", "low"],
+      "enum": [
+        "high",
+        "low"
+      ],
       "description": "\"high\" requires TWO OR MORE independent sources agreeing, matching the two-source rule the rest of RIFT//CTRL already applies to launch-argument forms and ports. One page, however good it looks, is \"low\"."
     },
-
-    "researchedAt": { "type": "string", "format": "date" },
-
+    "researchedAt": {
+      "type": "string",
+      "format": "date"
+    },
     "verifiedAt": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "format": "date",
       "description": "Set ONLY when these commands have been run against a real running server and observed to work. Research is not verification; this field is the difference."
     },
-
     "notes": {
       "type": "string",
-      "description": "Anything a person would need to not be surprised — a protocol change, a version cutoff, a command that exists but does nothing, why the answer is \"none\"."
+      "description": "Anything a person would need to not be surprised \u2014 a protocol change, a version cutoff, a command that exists but does nothing, why the answer is \"none\"."
     }
   },
-
   "definitions": {
     "command": {
       "type": "string",
       "minLength": 1
     }
   },
-
   "allOf": [
     {
-      "if": { "properties": { "transport": { "const": "none" } }, "required": ["transport"] },
+      "if": {
+        "properties": {
+          "transport": {
+            "const": "none"
+          }
+        },
+        "required": [
+          "transport"
+        ]
+      },
       "then": {
         "description": "A game with no command channel must not carry commands. Recording commands for a server that cannot receive them is how a dead button ships.",
         "properties": {
-          "commands": { "maxProperties": 0 }
+          "commands": {
+            "maxProperties": 0
+          }
         },
-        "required": ["notes"]
+        "required": [
+          "notes"
+        ]
       }
     },
     {
-      "if": { "properties": { "confidence": { "const": "high" } }, "required": ["confidence"] },
-      "then": { "properties": { "sources": { "minItems": 2 } } }
+      "if": {
+        "properties": {
+          "confidence": {
+            "const": "high"
+          }
+        },
+        "required": [
+          "confidence"
+        ]
+      },
+      "then": {
+        "properties": {
+          "sources": {
+            "minItems": 2
+          }
+        }
+      }
     },
     {
-      "if": { "properties": { "transport": { "const": "rcon" } }, "required": ["transport"] },
-      "then": { "required": ["rcon"] }
+      "if": {
+        "properties": {
+          "transport": {
+            "const": "rcon"
+          }
+        },
+        "required": [
+          "transport"
+        ]
+      },
+      "then": {
+        "required": [
+          "rcon"
+        ]
+      }
     },
     {
-      "if": { "properties": { "transport": { "const": "rest" } }, "required": ["transport"] },
-      "then": { "required": ["rest"] }
+      "if": {
+        "properties": {
+          "transport": {
+            "const": "rest"
+          }
+        },
+        "required": [
+          "transport"
+        ]
+      },
+      "then": {
+        "required": [
+          "rest"
+        ],
+        "description": "A REST game must carry its `rest` block; without `rest.ops` nothing can be called, so an op-less file is recorded as research, not as a manageable game."
+      }
     }
   ]
 }
